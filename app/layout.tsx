@@ -9,7 +9,7 @@ const meta = {
   description: 'Brought to you by Vercel, Stripe, and Supabase.',
   cardImage: '/og.png',
   robots: 'follow, index',
-  favicon: '/favicon.ico',
+  favicon: '/favicon.svg',
   url: 'https://subscription-starter.vercel.app',
   type: 'website'
 };
@@ -56,7 +56,7 @@ export default function RootLayout({
           >
             {children}
           </main>
-          <Footer />
+          {/* <Footer /> */}
         </SupabaseProvider>
       </body>
     </html>

@@ -1,4 +1,5 @@
 import ManageSubscriptionButton from './ManageSubscriptionButton';
+import SignOutButton from './SignOutButton';
 import {
   getSession,
   getUserDetails,
@@ -157,6 +158,9 @@ export default async function Account() {
             </form>
           </div>
         </Card>
+      </div>
+      <div className="w-full m-auto pb-8 flex justify-center">
+       <SignOutButton />
       </div>
     </section>
   );
