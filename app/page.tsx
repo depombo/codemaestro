@@ -10,8 +10,10 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
+import Link from 'next/link';
 
 import Logo from '@/components/icons/Logo';
+import Github from '@/components/icons/GitHub';
 
 export default async function UserDashboard() {
   const [session, userDetails, subscription] = await Promise.all([
@@ -73,6 +75,24 @@ export default async function UserDashboard() {
     revalidatePath('/account');
   };
 
+  const GithubBadge = ({name}: {name: string}) => {
+    return (
+      <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
+        <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
+          <Github className="mr-5 h-2" />
+          <p>{name}</p>
+          {
+          <button
+            className="text-gray-500 hover:text-red-500 focus:outline-none"
+          >
+          &#10005; {/* "X" character */}
+        </button>
+        }
+        </span>
+      </Link>
+    )
+  };
+
   return (
     <section className="mb-32 bg-black">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
@@ -105,7 +125,7 @@ export default async function UserDashboard() {
         </Card>
       </div> */}
 
-      <div className="p-4">
+      <div className="p-6">
         <Card
           title="Default Code Maestro"
           description="Code Maestro without any context"
@@ -121,6 +141,9 @@ export default async function UserDashboard() {
             </div>
           }
         >
+          <div className="flex">
+            <GithubBadge name='denoland/deno' />
+          </div>
         </Card>
       </div>
 
@@ -164,7 +187,7 @@ export default async function UserDashboard() {
                   type="text"
                   name="name"
                   className="w-1/2 p-3 rounded-md bg-zinc-800"
-                  placeholder="denoland/deno"
+                  placeholder="denoland/deno_std"
                 />
                 {/* TODO add validation that repo is valid */}
                 <Button
