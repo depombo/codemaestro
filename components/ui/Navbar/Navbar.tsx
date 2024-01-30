@@ -18,16 +18,16 @@ export default async function Navbar() {
       <a href="#skip" className="sr-only focus:not-sr-only">
         Skip to content
       </a>
-      <div className="max-w-6xl px-6 mx-auto">
-        <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
+      <div className="max-w-6xl px-6 mx-auto ">
+        <div className="relative flex flex-row justify-between py-2 align-center md:py-4">
           <div className="flex items-center flex-1">
               <Link href="/" className={s.logo} aria-label="Logo">
-              <svg width="50" height="50" xmlns="http://www.w3.org/2000/svg">
+              <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
                 {/* White Rectangle */}
                 {/* Black SVG content */}
-                <rect width="100%" height="100%" rx="25" ry="25" fill="white" />
+                <rect width="100%" height="100%" rx="15" ry="15" fill="white" />
 
-                <Logo x="5" y="5" fill="black" stroke="zinc-700"/>
+                <Logo height="32" x="1" y="4" fill="black" stroke="zinc-700"/>
               </svg>
               </Link>
 
