@@ -1,11 +1,10 @@
 import {
+  getServerClient,
   getSession,
   getUserDetails,
   getSubscription
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
-import { Database } from '@/types_db';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
@@ -16,21 +15,19 @@ import Logo from '@/components/icons/Logo';
 import Github from '@/components/icons/GitHub';
 
 export default async function UserDashboard() {
-  const [session, userDetails, subscription] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-    getSubscription()
-  ]);
+  const cookieStore = cookies();
 
+  const supabase = await getServerClient(cookieStore);
+  const session = await getSession(supabase);
   if (!session) {
     return redirect('/signin');
   }
 
   const getMaestros = async () => {
     'use server';
+    const supabase = await getServerClient(cookieStore);
+    const session = await getSession(supabase);
 
-    const supabase = createServerActionClient<Database>({ cookies });
-    const session = await getSession();
     const user = session?.user;
     const { error, data } = await supabase
       .from('code_maestros')
@@ -46,12 +43,12 @@ export default async function UserDashboard() {
 
   const createMaestro = async (formData: FormData) => {
     'use server';
+    const supabase = await getServerClient(cookieStore);
+    const session = await getSession(supabase);
 
     console.log(formData);
     const name = formData.get('name') as string;
     const repo = formData.get('repo') as string;
-    const supabase = createServerActionClient<Database>({ cookies });
-    const session = await getSession();
     const user = session?.user;
     const { error } = await supabase
       .from('code_maestros')
@@ -64,6 +61,9 @@ export default async function UserDashboard() {
 
   const chatMaestro = async () => {
     'use server';
+    const supabase = await getServerClient(cookieStore);
+    const session = await getSession(supabase);
+
     console.log('chat')
     redirect('/chat');
   };

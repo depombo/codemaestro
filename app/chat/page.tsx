@@ -1,52 +1,59 @@
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import {
+  getServerClient,
   getSession,
   getUserDetails,
   getSubscription
 } from '@/app/supabase-server';
 import { redirect } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Database } from '@/types_db';
 import Logo from '@/components/icons/Logo';
 
+import { cookies } from "next/headers";
+
+import { GithubRepoLoader } from "langchain/document_loaders/web/github";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 
 
 export default async function ChatPage() {
+  const cookieStore = cookies();
+
+  const supabase = await getServerClient(cookieStore);
+
   const [session, userDetails, subscription] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-    getSubscription()
+    getSession(supabase),
+    getUserDetails(supabase),
+    getSubscription(supabase)
   ]);
 
   if (!session || !userDetails) {
     return redirect('/signin');
   }
 
-  const supabase = createClientComponentClient<Database>();
-  const messages: any[] = [
+  const loader = new GithubRepoLoader(
+    "https://github.com/depombo/lfdepombo.com",
     {
-      role: 'user',
-      content: `
-      You're an AI assistant who answers questions about documents.
+      branch: "main",
+      recursive: false,
+      unknown: "warn",
+      maxConcurrency: 5, // Defaults to 2
+    }
+  );
+  const docs = [];
+  for await (const doc of loader.loadAsStream()) {
+    docs.push(doc);
+  }
 
-      You're a chat bot, so keep your replies succinct.
-
-      You're only allowed to use the documents below to answer the question.
-
-      If the question isn't related to these documents, say:
-      "Sorry, I couldn't find any information on that."
-
-      If the information isn't available in the below documents, say:
-      "Sorry, I couldn't find any information on that."
-
-      Do not go off topic.
-
-      Documents:
-    `,
-    },
-  ]
-  const isLoading = false;
+  // const vectorStore = await SupabaseVectorStore.fromDocuments(
+  //   docs,
+  //   new OpenAIEmbeddings(),
+  //   {
+  //     client: supabase,
+  //     tableName: "documents",
+  //     queryName: "match_documents",
+  //   }
+  // );
 
   return (
     <div className="flex flex-col items-center w-4/5 h-4/5 p-4">

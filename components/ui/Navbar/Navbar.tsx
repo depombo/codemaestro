@@ -1,16 +1,22 @@
 import Link from 'next/link';
 import {
+  getServerClient,
   getSession,
   getUserDetails,
 } from '@/app/supabase-server';
 import Logo from '@/components/icons/Logo';
 
 import s from './Navbar.module.css';
+import { cookies } from 'next/headers';
 
 export default async function Navbar() {
+  const cookieStore = cookies();
+
+  const supabase = await getServerClient(cookieStore);
+
   const [session, userDetails] = await Promise.all([
-    getSession(),
-    getUserDetails(),
+    getSession(supabase),
+    getUserDetails(supabase),
   ]);
 
   return (

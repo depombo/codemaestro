@@ -1,14 +1,36 @@
 import { Database } from '@/types_db';
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr'
+import { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
-import { cache } from 'react';
 
-export const createServerSupabaseClient = cache(() =>
-  createServerComponentClient<Database>({ cookies })
-);
+export async function getBrowserClient(): Promise<SupabaseClient<Database>> {
+  return createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
+}
 
-export async function getSession() {
-  const supabase = createServerSupabaseClient();
+export async function getServerClient(cookieStore: ReturnType<typeof cookies>): Promise<SupabaseClient<Database>> {
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return cookieStore.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          cookieStore.set({ name, value, ...options })
+        },
+        remove(name: string, options: CookieOptions) {
+          cookieStore.set({ name, value: '', ...options })
+        },
+      },
+    }
+  );
+}
+
+export async function getSession(supabase: SupabaseClient) {
   try {
     const {
       data: { session }
@@ -20,8 +42,7 @@ export async function getSession() {
   }
 }
 
-export async function getUserDetails() {
-  const supabase = createServerSupabaseClient();
+export async function getUserDetails(supabase: SupabaseClient) {
   try {
     const { data: userDetails } = await supabase
       .from('users')
@@ -34,8 +55,7 @@ export async function getUserDetails() {
   }
 }
 
-export async function getSubscription() {
-  const supabase = createServerSupabaseClient();
+export async function getSubscription(supabase: SupabaseClient) {
   try {
     const { data: subscription } = await supabase
       .from('subscriptions')
@@ -50,8 +70,7 @@ export async function getSubscription() {
   }
 }
 
-export const getActiveProductsWithPrices = async () => {
-  const supabase = createServerSupabaseClient();
+export const getActiveProductsWithPrices = async (supabase: SupabaseClient) => {
   const { data, error } = await supabase
     .from('products')
     .select('*, prices(*)')

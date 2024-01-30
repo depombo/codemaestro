@@ -1,4 +1,3 @@
-import SupabaseProvider from './supabase-provider';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
@@ -47,8 +46,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black loading">
-        <SupabaseProvider>
-          {/* @ts-expect-error */}
           <Navbar />
           <main
             id="skip"
@@ -57,7 +54,6 @@ export default function RootLayout({
             {children}
           </main>
           {/* <Footer /> */}
-        </SupabaseProvider>
       </body>
     </html>
   );
