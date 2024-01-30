@@ -68,13 +68,11 @@ export default async function UserDashboard() {
         <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
           <Github className="mr-5 h-2" />
           <p>{name}</p>
-          {
-          <button
+          {/* <button
             className="text-gray-500 hover:text-red-500 focus:outline-none"
           >
-          &#10005; {/* "X" character */}
-        </button>
-        }
+            &#10005;
+          </button> */}
         </span>
       </Link>
     )
