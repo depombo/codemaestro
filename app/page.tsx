@@ -26,6 +26,24 @@ export default async function UserDashboard() {
     return redirect('/signin');
   }
 
+  // const getMaestros = async (formData: FormData) => {
+  //   'use server';
+
+  //   const newName = formData.get('name') as string;
+  //   const supabase = createServerActionClient<Database>({ cookies });
+  //   const session = await getSession();
+  //   const user = session?.user;
+  //   const { error } = await supabase
+  //     .from('users')
+  //     .update({ full_name: newName })
+  //     .eq('id', user?.id);
+  //   if (error) {
+  //     console.log(error);
+  //   }
+  //   revalidatePath('/account');
+  // };
+
+
   const updateName = async (formData: FormData) => {
     'use server';
 
@@ -68,6 +86,25 @@ export default async function UserDashboard() {
         </div>
       </div>
 
+      {/* <div className="p-4">
+        <Card
+          title="Default Code Maestro"
+          description="Code Maestro without any context"
+          footer={
+            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <Button
+                variant="slim"
+                type="submit"
+                form="nameForm"
+              >
+                Chat with Maestro
+              </Button>
+            </div>
+          }
+        >
+        </Card>
+      </div> */}
+
       <div className="p-4">
         <Card
           title="Default Code Maestro"
@@ -79,7 +116,6 @@ export default async function UserDashboard() {
                 type="submit"
                 form="nameForm"
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Chat with Maestro
               </Button>
             </div>
@@ -91,7 +127,7 @@ export default async function UserDashboard() {
       <div className="p-4">
         <Card
           title="New Code Maestro"
-          description="Enter a name for the new Code Maestro and a Github repo to start chatting with it"
+          description="Enter the name and contextual Github repositories to create a Code Maestro to chat with"
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
               <Button
@@ -106,26 +142,39 @@ export default async function UserDashboard() {
           }
         >
           <form id="nameForm" action={updateName}>
-            <div className="mt-8 mb-4 text-xl font-semibold">
+            <div className="mt-6 mb-2 ml-2 text-l font-semibold">
+              <label>Maestro Name</label>
+            </div>
+            <div className="mt-4 mb-4 text-l font-semibold">
               <input
                 title="Maestro Name"
                 type="text"
                 name="name"
                 className="w-1/2 p-3 rounded-md bg-zinc-800"
-                placeholder="Name"
+                placeholder="Deno Backend"
                 maxLength={64}
               />
             </div>
-            <div className="mt-8 mb-4 text-xl font-semibold">
-              {/* TODO create labels */}
+            <div className="mt-8 mb-2 ml-2 text-l font-semibold">
+              <label>Github Repository Name</label>
+            </div>
+            <div className="mt-4 mb-4 text-l font-semibold">
                 <input
-                title="Maestro Context"
+                  title="Maestro Context"
                   type="text"
                   name="name"
                   className="w-1/2 p-3 rounded-md bg-zinc-800"
-                  placeholder="Github repository URL"
-                  maxLength={64}
+                  placeholder="denoland/deno"
                 />
+                {/* TODO add validation that repo is valid */}
+                <Button
+                  className="mx-8"
+                  variant="slim"
+                  width={1}
+                  disabled={false}
+                >
+                  +
+                </Button>
             </div>
           </form>
         </Card>
@@ -138,13 +187,13 @@ interface Props {
   title?: string;
   description?: string;
   footer?: ReactNode;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 function Card({ title, description, footer, children }: Props) {
   return (
     <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-      <div className="px-5 py-4">
+      <div className="px-4 py-4">
         <div className="flex justify-between py-2 px-1">
           <div>
             <h3 className="mb-1 text-2xl font-medium">{title}</h3>
