@@ -22,57 +22,44 @@ export default async function UserDashboard() {
     getSubscription()
   ]);
 
-  const user = session?.user;
-
   if (!session) {
     return redirect('/signin');
   }
 
-  // const getMaestros = async (formData: FormData) => {
-  //   'use server';
-
-  //   const newName = formData.get('name') as string;
-  //   const supabase = createServerActionClient<Database>({ cookies });
-  //   const session = await getSession();
-  //   const user = session?.user;
-  //   const { error } = await supabase
-  //     .from('users')
-  //     .update({ full_name: newName })
-  //     .eq('id', user?.id);
-  //   if (error) {
-  //     console.log(error);
-  //   }
-  //   revalidatePath('/account');
-  // };
-
-
-  const updateName = async (formData: FormData) => {
+  const getMaestros = async () => {
     'use server';
 
-    const newName = formData.get('name') as string;
+    const supabase = createServerActionClient<Database>({ cookies });
+    const session = await getSession();
+    const user = session?.user;
+    const { error, data } = await supabase
+      .from('code_maestros')
+      .select('*')
+      .eq('user_id', user?.id as string);
+    if (error) {
+      console.log(error);
+    }
+    return data || [];
+  };
+
+  const maestros = await getMaestros();
+
+  const createMaestro = async (formData: FormData) => {
+    'use server';
+
+    console.log(formData);
+    const name = formData.get('name') as string;
+    const repo = formData.get('repo') as string;
     const supabase = createServerActionClient<Database>({ cookies });
     const session = await getSession();
     const user = session?.user;
     const { error } = await supabase
-      .from('users')
-      .update({ full_name: newName })
-      .eq('id', user?.id);
+      .from('code_maestros')
+      .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
     if (error) {
       console.log(error);
     }
-    revalidatePath('/account');
-  };
-
-  const updateEmail = async (formData: FormData) => {
-    'use server';
-
-    const newEmail = formData.get('email') as string;
-    const supabase = createServerActionClient<Database>({ cookies });
-    const { error } = await supabase.auth.updateUser({ email: newEmail });
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
+    revalidatePath('/');
   };
 
   const GithubBadge = ({name}: {name: string}) => {
@@ -106,46 +93,30 @@ export default async function UserDashboard() {
         </div>
       </div>
 
-      {/* <div className="p-4">
-        <Card
-          title="Default Code Maestro"
-          description="Code Maestro without any context"
-          footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <Button
-                variant="slim"
-                type="submit"
-                form="nameForm"
-              >
-                Chat with Maestro
-              </Button>
-            </div>
-          }
-        >
-        </Card>
-      </div> */}
-
-      <div className="p-6">
-        <Card
-          title="Default Code Maestro"
-          description="Code Maestro without any context"
-          footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <Button
-                variant="slim"
-                type="submit"
-                form="nameForm"
-              >
-                Chat with Maestro
-              </Button>
-            </div>
-          }
-        >
-          <div className="flex">
-            <GithubBadge name='denoland/deno' />
+      {
+        maestros.map(m => (
+          <div className="p-4">
+            <Card
+              title={m.name}
+              footer={
+                <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                  <Button
+                    variant="slim"
+                    type="submit"
+                    form="nameForm"
+                  >
+                    Chat with Maestro
+                  </Button>
+                </div>
+              }
+            >
+              <div className="flex">
+                <GithubBadge name={m.github_repo_name} />
+              </div>
+            </Card>
           </div>
-        </Card>
-      </div>
+        ))
+      }
 
       <div className="p-4">
         <Card
@@ -156,7 +127,7 @@ export default async function UserDashboard() {
               <Button
                 variant="slim"
                 type="submit"
-                form="nameForm"
+                form="maestroForm"
               >
                 {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Create Maestro
@@ -164,13 +135,12 @@ export default async function UserDashboard() {
             </div>
           }
         >
-          <form id="nameForm" action={updateName}>
+          <form id="maestroForm" action={createMaestro}>
             <div className="mt-6 mb-2 ml-2 text-l font-semibold">
               <label>Maestro Name</label>
             </div>
             <div className="mt-4 mb-4 text-l font-semibold">
               <input
-                title="Maestro Name"
                 type="text"
                 name="name"
                 className="w-1/2 p-3 rounded-md bg-zinc-800"
@@ -182,22 +152,22 @@ export default async function UserDashboard() {
               <label>Github Repository Name</label>
             </div>
             <div className="mt-4 mb-4 text-l font-semibold">
+                {/* TODO add validation that repo is valid */}
                 <input
-                  title="Maestro Context"
                   type="text"
-                  name="name"
+                  name="repo"
                   className="w-1/2 p-3 rounded-md bg-zinc-800"
                   placeholder="denoland/deno_std"
                 />
-                {/* TODO add validation that repo is valid */}
-                <Button
+                {/* TODO multiple repo support */}
+                {/* <Button
                   className="mx-8"
                   variant="slim"
                   width={1}
                   disabled={false}
                 >
                   +
-                </Button>
+                </Button> */}
             </div>
           </form>
         </Card>
