@@ -1,11 +1,28 @@
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
+import {
+  getSession,
+  getUserDetails,
+  getSubscription
+} from '@/app/supabase-server';
+import { redirect } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/types_db';
 import Logo from '@/components/icons/Logo';
 
 
-export default function ChatPage() {
+
+export default async function ChatPage() {
+  const [session, userDetails, subscription] = await Promise.all([
+    getSession(),
+    getUserDetails(),
+    getSubscription()
+  ]);
+
+  if (!session || !userDetails) {
+    return redirect('/signin');
+  }
+
   const supabase = createClientComponentClient<Database>();
   const messages: any[] = [
     {
@@ -32,20 +49,27 @@ export default function ChatPage() {
   const isLoading = false;
 
   return (
-    <div className="max-w-6xl flex flex-col items-center w-full h-full ">
+    <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
+
       <div className="flex items-start">
         <div className="flex flex-col w-full p-4">
-            <div className="flex items-center space-x-2 rtl:space-x-reverse">
-              <svg width="32" height="32" xmlns="http://www.w3.org/2000/svg">
-                {/* White Rectangle */}
-                {/* Black SVG content */}
-                <rect width="100%" height="100%" rx="15" ry="15" fill="white" />
-
-                <Logo height="24" width="24" x="5" y="4" fill="black" stroke="zinc-700"/>
-              </svg>
+            <div className="flex items-center">
+              <div className="w-10 h-10 rounded-full bg-white">
+                <Logo className='p-2'/>
+              </div>
               <span className="text-sm ml-3 font-semibold text-gray-200">Deno Backend Maestro</span>
             </div>
-            <p className="text-sm font-normal ml-10 py-3 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
+            <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
+        </div>
+      </div>
+
+      <div className="flex items-start">
+        <div className="flex flex-col w-full p-4">
+            <div className="flex items-center">
+              <img src={userDetails.avatar_url || ''} alt="User Avatar" className="w-10 h-10 rounded-full" />
+              <span className="text-sm ml-3 font-semibold text-gray-200">You</span>
+            </div>
+            <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
         </div>
       </div>
 
