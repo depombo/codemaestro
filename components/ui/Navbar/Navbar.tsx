@@ -19,17 +19,17 @@ export default async function Navbar() {
         Skip to content
       </a>
       <div className="max-w-6xl px-6 mx-auto ">
-        <div className="relative flex flex-row justify-between py-2 align-center md:py-4">
-          <div className="flex items-center flex-1">
-              <Link href="/" className={s.logo} aria-label="Logo">
-              <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg">
-                {/* White Rectangle */}
-                {/* Black SVG content */}
-                <rect width="100%" height="100%" rx="15" ry="15" fill="white" />
-
-                <Logo height="32" x="1" y="4" fill="black" stroke="zinc-700"/>
-              </svg>
+        <div className="flex flex-row justify-between py-2 align-center md:py-4">
+          <div className="flex flex-row items-center">
+            <Link href="/">
+              <Logo height="32" x="1" y="4" fill="white" stroke="zinc-700"/>
               </Link>
+              <Link href="/">
+
+              <p className='ml-2 font-bold'>Code Maestro</p>
+              </Link>
+
+          </div>
 
             {/* <nav className="hidden ml-6 space-x-2 lg:block">
               <Link href="/pricing" className={s.link}>
@@ -41,13 +41,12 @@ export default async function Navbar() {
                 </Link>
               )}
             </nav> */}
-          </div>
           <div className="flex justify-end flex-1 space-x-8">
             {userDetails && userDetails.avatar_url ? (
               <div className="relative inline-block text-left">
                 <Link href="/account">
                   <button type="button" className="text-white focus:outline-none">
-                    <img src={userDetails.avatar_url} alt="User Avatar" className="w-12 h-12 rounded-full" />
+                    <img src={userDetails.avatar_url} alt="User Avatar" className="w-10 h-10 rounded-full" />
                   </button>
                 </Link>
               </div>

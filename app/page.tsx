@@ -62,6 +62,12 @@ export default async function UserDashboard() {
     revalidatePath('/');
   };
 
+  const chatMaestro = async () => {
+    'use server';
+    console.log('chat')
+    redirect('/chat');
+  };
+
   const GithubBadge = ({name}: {name: string}) => {
     return (
       <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
@@ -97,15 +103,17 @@ export default async function UserDashboard() {
             <Card
               title={m.name}
               footer={
-                <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                  <Button
-                    variant="slim"
-                    type="submit"
-                    form="nameForm"
-                  >
-                    Chat with Maestro
-                  </Button>
-                </div>
+                <form id="chatMaestro" action={chatMaestro}>
+                  <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                    <Button
+                      variant="slim"
+                      type="submit"
+                      form="chatMaestro"
+                    >
+                      Chat with Maestro
+                    </Button>
+                  </div>
+                </form>
               }
             >
               <div className="flex">
