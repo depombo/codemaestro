@@ -13,9 +13,9 @@ import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
 import Stripe from '@/components/icons/Stripe';
+import GitHub from '@/components/icons/GitHub';
 
 export default async function Account() {
-  const supabase = await getServerClient();
 
   const [session, userDetails, subscription] = await Promise.all([
     getSession(),
@@ -39,6 +39,7 @@ export default async function Account() {
 
   const updateName = async (formData: FormData) => {
     'use server';
+    const supabase = await getServerClient();
 
     const newName = formData.get('name') as string;
     const user = session?.user;
@@ -54,6 +55,7 @@ export default async function Account() {
 
   const updateEmail = async (formData: FormData) => {
     'use server';
+    const supabase = await getServerClient();
 
     const newEmail = formData.get('email') as string;
     const { error } = await supabase.auth.updateUser({ email: newEmail });
@@ -74,7 +76,21 @@ export default async function Account() {
       </div>
       <div className="p-4">
         <Card
-          title="Your Plan"
+          title="Authentication"
+          logo={<GitHub fill='white' height='50' width='50'/>}
+          description={'Manage the connection between Code Maestro and Github'}
+          footer={<ManageStripeButton session={session} />}
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            {subscription ? (
+              `${subscriptionPrice}/${subscription?.prices?.interval}`
+            ) : (
+              <Link href="/">@depombo</Link>
+            )}
+          </div>
+        </Card>
+        <Card
+          title="Plan"
           logo={<Stripe fill='white'/>}
           description={
             subscription
@@ -87,12 +103,12 @@ export default async function Account() {
             {subscription ? (
               `${subscriptionPrice}/${subscription?.prices?.interval}`
             ) : (
-              <Link href="/">Choose your plan</Link>
+              <Link href="/pricing">Choose your plan</Link>
             )}
           </div>
         </Card>
         <Card
-          title="Your Name"
+          title="Name"
           description="Please enter your full name, or a display name you are comfortable with."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
@@ -123,7 +139,7 @@ export default async function Account() {
           </div>
         </Card>
         <Card
-          title="Your Email"
+          title="Email"
           description="Please enter the email address you want to use to login."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
@@ -180,7 +196,9 @@ function Card({ title, description, footer, logo, children }: Props) {
             <h3 className="mb-1 text-2xl font-medium">{title}</h3>
             <p className="text-zinc-300">{description}</p>
           </div>
-          {logo}
+          <div className='mr-4'>
+            {logo}
+          </div>
         </div>
         {children}
       </div>
