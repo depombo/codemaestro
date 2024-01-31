@@ -20,9 +20,9 @@ import {
 } from '@/app/supabase-server';
 
 
-export const chat = async (input: string) => {
+export const chat = async (repo: string, input: string) => {
 
-  const vectorStore = await getOrGenStore();
+  const vectorStore = await getOrGenStore(repo);
 
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
@@ -149,7 +149,7 @@ const isVectorStoreEmpty = async() => {
   return count === 0;
 }
 
-const getOrGenStore = async() => {
+const getOrGenStore = async(repo: string) => {
   const supabase = await getServerClient();
   const storeOpts = {
     client: supabase,
@@ -166,9 +166,9 @@ const getOrGenStore = async() => {
     );
   }
 
-  console.log('generating embeddings as fetching existing failed')
+  console.log('generating embeddings as none are availabe')
   const loader = new GithubRepoLoader(
-    "https://github.com/depombo/lfdepombo.com",
+    repo,
     {
       branch: "main",
       recursive: false,

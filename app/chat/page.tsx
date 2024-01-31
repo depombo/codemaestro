@@ -1,27 +1,24 @@
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import {
-  getServerClient,
   getSession,
   getUserDetails,
-  getSubscription
 } from '@/app/supabase-server';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
 import { chat } from '../llm';
 
 export default async function ChatPage() {
-  const [session, userDetails, subscription] = await Promise.all([
+  const [session, userDetails] = await Promise.all([
     getSession(),
     getUserDetails(),
-    getSubscription()
   ]);
 
   if (!session || !userDetails) {
     return redirect('/signin');
   }
 
-  const result = await chat('what is a compillmer');
+  const result = await chat("https://github.com/depombo/lfdepombo.com", "what is a compillmer");
   console.log(result);
 
   return (
