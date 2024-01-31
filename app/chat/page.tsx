@@ -9,51 +9,16 @@ import {
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
 
-import { cookies } from "next/headers";
-
-import { GithubRepoLoader } from "langchain/document_loaders/web/github";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-
-
 export default async function ChatPage() {
-  const cookieStore = cookies();
-
-  const supabase = await getServerClient(cookieStore);
-
   const [session, userDetails, subscription] = await Promise.all([
-    getSession(supabase),
-    getUserDetails(supabase),
-    getSubscription(supabase)
+    getSession(),
+    getUserDetails(),
+    getSubscription()
   ]);
 
   if (!session || !userDetails) {
     return redirect('/signin');
   }
-
-  const loader = new GithubRepoLoader(
-    "https://github.com/depombo/lfdepombo.com",
-    {
-      branch: "main",
-      recursive: false,
-      unknown: "warn",
-      maxConcurrency: 5, // Defaults to 2
-    }
-  );
-  const docs = [];
-  for await (const doc of loader.loadAsStream()) {
-    docs.push(doc);
-  }
-
-  // const vectorStore = await SupabaseVectorStore.fromDocuments(
-  //   docs,
-  //   new OpenAIEmbeddings(),
-  //   {
-  //     client: supabase,
-  //     tableName: "documents",
-  //     queryName: "match_documents",
-  //   }
-  // );
 
   return (
     <div className="flex flex-col items-center w-4/5 h-4/5 p-4">

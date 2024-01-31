@@ -1,12 +1,9 @@
 import {
   getServerClient,
   getSession,
-  getUserDetails,
-  getSubscription
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 import Link from 'next/link';
@@ -15,20 +12,18 @@ import Logo from '@/components/icons/Logo';
 import Github from '@/components/icons/GitHub';
 
 export default async function UserDashboard() {
-  const cookieStore = cookies();
 
-  const supabase = await getServerClient(cookieStore);
-  const session = await getSession(supabase);
+  const session = await getSession();
   if (!session) {
     return redirect('/signin');
   }
 
   const getMaestros = async () => {
     'use server';
-    const supabase = await getServerClient(cookieStore);
-    const session = await getSession(supabase);
-
+    const session = await getSession();
     const user = session?.user;
+
+    const supabase = await getServerClient();
     const { error, data } = await supabase
       .from('code_maestros')
       .select('*')
@@ -43,13 +38,13 @@ export default async function UserDashboard() {
 
   const createMaestro = async (formData: FormData) => {
     'use server';
-    const supabase = await getServerClient(cookieStore);
-    const session = await getSession(supabase);
-
+    const session = await getSession();
     console.log(formData);
     const name = formData.get('name') as string;
     const repo = formData.get('repo') as string;
     const user = session?.user;
+
+    const supabase = await getServerClient();
     const { error } = await supabase
       .from('code_maestros')
       .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
@@ -61,8 +56,8 @@ export default async function UserDashboard() {
 
   const chatMaestro = async () => {
     'use server';
-    const supabase = await getServerClient(cookieStore);
-    const session = await getSession(supabase);
+    const supabase = await getServerClient();
+    const session = await getSession();
 
     console.log('chat')
     redirect('/chat');

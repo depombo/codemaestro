@@ -14,14 +14,12 @@ import { ReactNode } from 'react';
 import { cookies } from "next/headers";
 
 export default async function Account() {
-  const cookieStore = cookies();
-
-  const supabase = await getServerClient(cookieStore);
+  const supabase = await getServerClient();
 
   const [session, userDetails, subscription] = await Promise.all([
-    getSession(supabase),
-    getUserDetails(supabase),
-    getSubscription(supabase)
+    getSession(),
+    getUserDetails(),
+    getSubscription()
   ]);
 
   const user = session?.user;

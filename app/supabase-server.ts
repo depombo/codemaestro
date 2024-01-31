@@ -1,16 +1,12 @@
+'use server'
+
 import { Database } from '@/types_db';
-import { createBrowserClient, createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
 
-export async function getBrowserClient(): Promise<SupabaseClient<Database>> {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
-}
-
-export async function getServerClient(cookieStore: ReturnType<typeof cookies>): Promise<SupabaseClient<Database>> {
+export async function getServerClient(): Promise<SupabaseClient<Database>> {
+  const cookieStore = cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -30,8 +26,9 @@ export async function getServerClient(cookieStore: ReturnType<typeof cookies>): 
   );
 }
 
-export async function getSession(supabase: SupabaseClient) {
+export async function getSession() {
   try {
+    const supabase = await getServerClient();
     const {
       data: { session }
     } = await supabase.auth.getSession();
@@ -42,8 +39,9 @@ export async function getSession(supabase: SupabaseClient) {
   }
 }
 
-export async function getUserDetails(supabase: SupabaseClient) {
+export async function getUserDetails() {
   try {
+    const supabase = await getServerClient();
     const { data: userDetails } = await supabase
       .from('users')
       .select('*')
@@ -55,8 +53,9 @@ export async function getUserDetails(supabase: SupabaseClient) {
   }
 }
 
-export async function getSubscription(supabase: SupabaseClient) {
+export async function getSubscription() {
   try {
+    const supabase = await getServerClient();
     const { data: subscription } = await supabase
       .from('subscriptions')
       .select('*, prices(*, products(*))')
@@ -70,7 +69,8 @@ export async function getSubscription(supabase: SupabaseClient) {
   }
 }
 
-export const getActiveProductsWithPrices = async (supabase: SupabaseClient) => {
+export const getActiveProductsWithPrices = async () => {
+  const supabase = await getServerClient();
   const { data, error } = await supabase
     .from('products')
     .select('*, prices(*)')

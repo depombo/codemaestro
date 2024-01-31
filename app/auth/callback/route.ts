@@ -6,12 +6,11 @@ import type { Database } from '@/types_db'
 import { getServerClient } from '@/app/supabase-server';
 
 export async function GET(request: NextRequest) {
-  const cookieStore = cookies();
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
 
   if (code) {
-    const supabase = await getServerClient(cookieStore);
+    const supabase = await getServerClient();
     await supabase.auth.exchangeCodeForSession(code)
   }
 

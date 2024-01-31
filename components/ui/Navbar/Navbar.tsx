@@ -7,16 +7,11 @@ import {
 import Logo from '@/components/icons/Logo';
 
 import s from './Navbar.module.css';
-import { cookies } from 'next/headers';
 
 export default async function Navbar() {
-  const cookieStore = cookies();
-
-  const supabase = await getServerClient(cookieStore);
-
   const [session, userDetails] = await Promise.all([
-    getSession(supabase),
-    getUserDetails(supabase),
+    getSession(),
+    getUserDetails(),
   ]);
 
   return (

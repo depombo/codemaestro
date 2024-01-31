@@ -1,19 +1,16 @@
-import { cookies, } from 'next/headers';
 import { stripe } from '@/utils/stripe';
 import { createOrRetrieveCustomer } from '@/utils/supabase-admin';
 import { getURL } from '@/utils/helpers';
 import { getServerClient } from '@/app/supabase-server';
 
 export async function POST(req: Request) {
-  const cookieStore = cookies();
-
   if (req.method === 'POST') {
     // 1. Destructure the price and quantity from the POST body
     const { price, quantity = 1, metadata = {} } = await req.json();
 
     try {
       // 2. Get the user from Supabase auth
-      const supabase = await getServerClient(cookieStore);
+      const supabase = await getServerClient();
       const {
         data: { user }
       } = await supabase.auth.getUser();
