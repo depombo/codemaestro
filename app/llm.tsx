@@ -117,11 +117,12 @@ const getSplitterForFileType = async (file: string) => {
       fileType = "js"
       break;
     case "py":
-       fileType = "python";
-       break;
+      fileType = "python";
+      break;
     case "rs":
       fileType = "rust";
       BarProp;
+      break;
     default:
       fileType = extension
 }
