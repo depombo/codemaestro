@@ -11,7 +11,6 @@ import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
-import { cookies } from "next/headers";
 
 export default async function Account() {
   const supabase = await getServerClient();

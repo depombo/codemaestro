@@ -8,6 +8,7 @@ import {
 } from '@/app/supabase-server';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
+import { chat } from '../llm';
 
 export default async function ChatPage() {
   const [session, userDetails, subscription] = await Promise.all([
@@ -19,6 +20,9 @@ export default async function ChatPage() {
   if (!session || !userDetails) {
     return redirect('/signin');
   }
+
+  const result = await chat('what is a compillmer');
+  console.log(result);
 
   return (
     <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
