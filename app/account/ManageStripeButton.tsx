@@ -10,7 +10,7 @@ interface Props {
   session: Session;
 }
 
-export default function ManageSubscriptionButton({ session }: Props) {
+export default function ManageStripeButton({ session }: Props) {
   const router = useRouter();
   const redirectToCustomerPortal = async () => {
     try {

@@ -19,6 +19,9 @@ import {
   getServerClient,
 } from '@/app/supabase-server';
 
+// https://js.langchain.com/docs/integrations/vectorstores/supabase
+// https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
+// https://js.langchain.com/docs/use_cases/rag/code_understanding
 
 export const chat = async (repo: string, input: string) => {
 

@@ -12,7 +12,6 @@ export default async function AuthUI() {
       <Auth
         supabaseClient={supabase}
         providers={['github']}
-        providerScopes={{github: 'read:user'}}
         redirectTo={`${getURL()}/auth/callback`}
         onlyThirdPartyProviders={true}
         appearance={{

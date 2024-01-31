@@ -1,4 +1,4 @@
-import ManageSubscriptionButton from './ManageSubscriptionButton';
+import ManageStripeButton from './ManageStripeButton';
 import SignOutButton from './SignOutButton';
 import {
   getServerClient,
@@ -11,6 +11,8 @@ import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
+
+import Stripe from '@/components/icons/Stripe';
 
 export default async function Account() {
   const supabase = await getServerClient();
@@ -68,20 +70,18 @@ export default async function Account() {
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             Account
           </h1>
-          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            We partnered with Stripe for a simplified billing.
-          </p>
         </div>
       </div>
       <div className="p-4">
         <Card
           title="Your Plan"
+          logo={<Stripe fill='white'/>}
           description={
             subscription
               ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
               : 'You are not currently subscribed to any plan.'
           }
-          footer={<ManageSubscriptionButton session={session} />}
+          footer={<ManageStripeButton session={session} />}
         >
           <div className="mt-8 mb-4 text-xl font-semibold">
             {subscription ? (
@@ -165,17 +165,23 @@ export default async function Account() {
 
 interface Props {
   title: string;
+  logo?: ReactNode;
   description?: string;
   footer?: ReactNode;
   children: ReactNode;
 }
 
-function Card({ title, description, footer, children }: Props) {
+function Card({ title, description, footer, logo, children }: Props) {
   return (
     <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-      <div className="px-5 py-4">
-        <h3 className="mb-1 text-2xl font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
+      <div className="px-4 py-4">
+        <div className="flex justify-between py-2 px-1">
+          <div>
+            <h3 className="mb-1 text-2xl font-medium">{title}</h3>
+            <p className="text-zinc-300">{description}</p>
+          </div>
+          {logo}
+        </div>
         {children}
       </div>
       <div className="p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
