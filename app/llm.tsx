@@ -121,7 +121,6 @@ const getSplitterForFileType = async (file: string) => {
       break;
     case "rs":
       fileType = "rust";
-      BarProp;
       break;
     default:
       fileType = extension
