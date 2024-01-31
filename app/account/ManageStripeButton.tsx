@@ -10,7 +10,7 @@ interface Props {
   session: Session;
 }
 
-export default function ManageStripeButton({ session }: Props) {
+export default async function ManageStripeButton({ session }: Props) {
   const router = useRouter();
   const redirectToCustomerPortal = async () => {
     try {
@@ -31,7 +31,7 @@ export default function ManageStripeButton({ session }: Props) {
         disabled={!session}
         onClick={redirectToCustomerPortal}
       >
-        Open customer portal
+        Manage on Stripe ↗
       </Button>
     </div>
   );

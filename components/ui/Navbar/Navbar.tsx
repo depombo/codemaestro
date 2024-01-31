@@ -27,7 +27,7 @@ export default async function Navbar() {
               </Link>
               <Link href="/">
 
-              <p className='ml-2 font-bold'>Code Maestro</p>
+              <p className='ml-2 font-bold'>CodeMaestro</p>
               </Link>
 
           </div>

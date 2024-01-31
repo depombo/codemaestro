@@ -13,6 +13,7 @@ export default async function SignOutButton() {
   }
   return (
     <Button
+      variant="slim"
       onClick={handleSignOut}
     >
       Sign out
