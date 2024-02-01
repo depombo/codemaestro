@@ -1,6 +1,7 @@
 import {
   getMaestros,
-  createMaestro
+  createMaestro,
+  deleteMaestro,
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
 import { ReactNode } from 'react';
@@ -8,6 +9,7 @@ import Link from 'next/link';
 
 import Logo from '@/components/icons/Logo';
 import Github from '@/components/icons/GitHub';
+import DeleteMaestroButton from './DeleteMaestroButton';
 
 export default async function UserDashboard() {
 
@@ -48,17 +50,21 @@ export default async function UserDashboard() {
             <Card
               title={m.name}
               footer={
+                <div className='flex flex-row justify-between'>
                   <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
                     <Link href='/chat'>
                       <Button
                         variant="slim"
                         type="submit"
-                        form="chatMaestro"
                       >
                         Chat with Maestro
                       </Button>
                     </Link>
                   </div>
+                    <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                        <DeleteMaestroButton id={m.id} />
+                    </div>
+                </div>
               }
             >
               <div className="flex">
