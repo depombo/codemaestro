@@ -23,7 +23,6 @@ export default async function Account() {
     getSubscription()
   ]);
 
-  const user = session?.user;
   if (!session) redirect('/signin')
   const ghUser = session.user.user_metadata.user_name;
 
@@ -94,9 +93,8 @@ export default async function Account() {
                 variant="slim"
                 type="submit"
                 form="nameForm"
-                disabled={true}
+                disabled={false}
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Name
               </Button>
             </div>
@@ -115,7 +113,7 @@ export default async function Account() {
             </form>
           </div>
         </Card>
-        <Card
+        {/* <Card
           title="Email"
           description="Please enter the email address you want to use to login."
           footer={
@@ -129,7 +127,6 @@ export default async function Account() {
                 form="emailForm"
                 disabled={true}
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Email
               </Button>
             </div>
@@ -147,7 +144,7 @@ export default async function Account() {
               />
             </form>
           </div>
-        </Card>
+        </Card> */}
       </div>
       <div className="w-full m-auto pb-8 flex justify-center">
        <SignOutButton />

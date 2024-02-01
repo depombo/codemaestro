@@ -36,7 +36,7 @@ export default async function ChatPage() {
         <div className="flex flex-col w-full p-4">
             <div className="flex items-center">
               <img src={userDetails.avatar_url || ''} alt="User Avatar" className="w-10 h-10 rounded-full" />
-              <span className="text-sm ml-3 font-semibold text-gray-200">You</span>
+              <span className="text-sm ml-3 font-semibold text-gray-200">{userDetails.full_name}</span>
             </div>
             <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
         </div>
