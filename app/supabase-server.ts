@@ -4,6 +4,7 @@ import { Database } from '@/types_db';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 export async function getServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = cookies();
@@ -26,16 +27,52 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
   );
 }
 
+export const getMaestros = async () => {
+  const session = await getSession();
+  const user = session?.user;
+
+  const supabase = await getServerClient();
+  const { error, data } = await supabase
+    .from('code_maestros')
+    .select('*')
+    .eq('user_id', user?.id as string);
+  if (error) {
+    console.log(error);
+  }
+  return data || [];
+};
+
+
+export const createMaestro = async (formData: FormData) => {
+  const session = await getSession();
+  // console.log(formData);
+  const name = formData.get('name') as string;
+  const repo = formData.get('repo') as string;
+  const user = session?.user;
+
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from('code_maestros')
+    .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
+  if (error) {
+    console.log(error);
+  }
+};
+
+
 export async function getSession() {
   try {
     const supabase = await getServerClient();
     const {
       data: { session }
     } = await supabase.auth.getSession();
+    if (!session) {
+      return redirect('/signin');
+    }
     return session;
   } catch (error) {
     console.error('Error:', error);
-    return null;
+    return redirect('/signin');
   }
 }
 

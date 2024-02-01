@@ -16,6 +16,7 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 import {
+  getSession,
   getServerClient,
 } from '@/app/supabase-server';
 
@@ -169,10 +170,12 @@ const getOrGenStore = async(repo: string) => {
     );
   }
 
-  console.log('generating embeddings as none are availabe')
+  console.log('generating embeddings as none are availabe');
+  const session = await getSession();
   const loader = new GithubRepoLoader(
     repo,
     {
+      accessToken: session.access_token,
       branch: "main",
       recursive: false,
       unknown: "warn",

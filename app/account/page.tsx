@@ -24,10 +24,7 @@ export default async function Account() {
   ]);
 
   const user = session?.user;
-
-  if (!session) {
-    return redirect('/signin');
-  }
+  const ghUser = session.user.user_metadata.user_name;
 
   const subscriptionPrice =
     subscription &&
@@ -80,25 +77,20 @@ export default async function Account() {
           logo={<GitHub fill='white' height='50' width='50'/>}
           description={'Manage the connection between CodeMaestro and GitHub'}
           footer={
-
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
               <p className="pb-4 sm:pb-0">Manage permissions on CodeMaestro's GitHub App Page</p>
-              <a href="https://github.com/apps/codemaestro-sh" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/apps/codemaestro-sh" target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="slim"
                 >
                   Manage on GitHub ↗
                 </Button>
-              </a>
+              </Link>
             </div>
           }
         >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            {subscription ? (
-              `${subscriptionPrice}/${subscription?.prices?.interval}`
-            ) : (
-              <Link href="/">@depombo</Link>
-            )}
+          <div className="mt-8 mb-4 text-xl font-semibold hover:text-zinc-400">
+            <Link href={"https://github.com/" + ghUser} target="_blank" rel="noopener noreferrer">@{ghUser}</Link>
           </div>
         </Card>
         <Card
@@ -111,7 +103,7 @@ export default async function Account() {
           }
           footer={<ManageStripeButton session={session} />}
         >
-          <div className="mt-8 mb-4 text-xl font-semibold">
+          <div className="mt-8 mb-4 text-xl font-semibold hover:text-zinc-400">
             {subscription ? (
               `${subscriptionPrice}/${subscription?.prices?.interval}`
             ) : (

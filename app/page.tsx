@@ -1,10 +1,8 @@
 import {
-  getServerClient,
-  getSession,
+  getMaestros,
+  createMaestro
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
@@ -13,55 +11,7 @@ import Github from '@/components/icons/GitHub';
 
 export default async function UserDashboard() {
 
-  const session = await getSession();
-  if (!session) {
-    return redirect('/signin');
-  }
-
-  const getMaestros = async () => {
-    'use server';
-    const session = await getSession();
-    const user = session?.user;
-
-    const supabase = await getServerClient();
-    const { error, data } = await supabase
-      .from('code_maestros')
-      .select('*')
-      .eq('user_id', user?.id as string);
-    if (error) {
-      console.log(error);
-    }
-    return data || [];
-  };
-
   const maestros = await getMaestros();
-
-  const createMaestro = async (formData: FormData) => {
-    'use server';
-    const session = await getSession();
-    console.log(formData);
-    const name = formData.get('name') as string;
-    const repo = formData.get('repo') as string;
-    const user = session?.user;
-
-    const supabase = await getServerClient();
-    const { error } = await supabase
-      .from('code_maestros')
-      .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/');
-  };
-
-  const chatMaestro = async () => {
-    'use server';
-    const supabase = await getServerClient();
-    const session = await getSession();
-
-    console.log('chat')
-    redirect('/chat');
-  };
 
   const GithubBadge = ({name}: {name: string}) => {
     return (
@@ -98,7 +48,7 @@ export default async function UserDashboard() {
             <Card
               title={m.name}
               footer={
-                <form id="chatMaestro" action={chatMaestro}>
+                <Link href='/chat'>
                   <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
                     <Button
                       variant="slim"
@@ -108,7 +58,7 @@ export default async function UserDashboard() {
                       Chat with Maestro
                     </Button>
                   </div>
-                </form>
+                </Link>
               }
             >
               <div className="flex">
@@ -130,7 +80,6 @@ export default async function UserDashboard() {
                 type="submit"
                 form="maestroForm"
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Create Maestro
               </Button>
             </div>

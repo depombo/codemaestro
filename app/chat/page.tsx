@@ -9,12 +9,8 @@ import Logo from '@/components/icons/Logo';
 import { chat } from '../llm';
 
 export default async function ChatPage() {
-  const [session, userDetails] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-  ]);
-
-  if (!session || !userDetails) {
+  const userDetails = await getUserDetails();
+  if (!userDetails) {
     return redirect('/signin');
   }
 
