@@ -153,6 +153,9 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
 
   const maestros = await getMaestros();
 
+  const maestroId = searchParams?.maestroId;
+
+  const maestro = maestroId ? maestros.filter(m => m.id.toString() === maestroId)[0] : undefined;
   const createMaestro = searchParams?.createMaestro;
   const deleteMaestro = searchParams?.deleteMaestro;
 
@@ -164,31 +167,37 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
       <div className='flex flex-col items-center w-1/5 h-1/5 p-4'>
         {
           maestros.map(m => (
-            <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-              <div className="px-4 py-4">
-                <div className="flex justify-between py-2 px-1">
-                  <div className='pr-10'>
-                    <h3 className="mb-1 text-2xl font-medium">{m.name}</h3>
-                    {/* <p className="text-zinc-300">{description}</p> */}
+            <Link href={`/chat?maestroId=${m.id}`}>
+              <div className={maestro && m.id === maestro?.id ? "w-full max-w-3xl m-auto my-8 border rounded-md white" : "w-full max-w-3xl m-auto my-8 border rounded-md border-zinc-700"}>
+                <div className="px-4 py-4">
+                  <div className="flex justify-between py-2 px-1">
+                    <div className='pr-10'>
+                      <h3 className="mb-1 text-2xl font-medium">{m.name}</h3>
+                      {/* <p className="text-zinc-300">{description}</p> */}
+                    </div>
+                  </div>
+                  <div className='flex flex-row justify-between'>
+                    <div className="flex">
+                      <GithubBadge name={m.github_repo_name} />
+                    </div>
+                    <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+                      {
+                        maestro && m.id === maestro?.id &&
+                          <Link href="/chat?deleteMaestro=true">
+                            <Button
+                              variant="slim"
+                            >
+                              Delete
+                            </Button>
+                          </Link>
+                      }
+                    </div>
                   </div>
                 </div>
-                <div className='flex flex-row justify-between'>
-                  <div className="flex">
-                    <GithubBadge name={m.github_repo_name} />
-                  </div>
-                  <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                    <Link href={"/chat?deleteMaestro=true"}>
-                      <Button
-                        variant="slim"
-                      >
-                        Delete
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
+                {deleteMaestro && <DeleteConfirmationMaestroModal name={m.name} id={m.id} />}
               </div>
-              {deleteMaestro && <DeleteConfirmationMaestroModal name={m.name} id={m.id} />}
-            </div>
+            </Link>
+
           ))
         }
         <Link href='/chat?createMaestro=true'>
@@ -211,7 +220,7 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
               <div className="w-10 h-10 rounded-full bg-white">
                 <Logo className='p-2'/>
               </div>
-              <span className="text-sm ml-3 font-semibold text-gray-200">Deno Backend Maestro</span>
+              <span className="text-sm ml-3 font-semibold text-gray-200">{maestro?.name}</span>
             </div>
             <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
         </div>
