@@ -16,11 +16,8 @@ export default async function Navbar() {
 
   return (
     <nav className={s.root}>
-      <a href="#skip" className="sr-only focus:not-sr-only">
-        Skip to content
-      </a>
-      <div className="max-w-6xl px-6 mx-auto ">
-        <div className="flex flex-row justify-between py-2 align-center md:py-4">
+      <div className="max-w-6xl px-6 mx-auto py-4">
+        <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">
               <Logo height="32" x="1" y="4" fill="white" stroke="zinc-700"/>
@@ -32,23 +29,20 @@ export default async function Navbar() {
 
           </div>
 
-            {/* <nav className="hidden ml-6 space-x-2 lg:block">
-              <Link href="/pricing" className={s.link}>
-                Pricing
-              </Link>
-              {session && (
-                <Link href="/account" className={s.link}>
-                  Account
+
+          <div className="flex justify-end flex-1 space-x-8 items-center align-center">
+            {session ? (
+              <div className="ml-6 space-x-2 lg:block">
+                <Link href="/chat" className={s.link}>
+                  Chat
                 </Link>
-              )}
-            </nav> */}
-          <div className="flex justify-end flex-1 space-x-8">
-            {userDetails && userDetails.avatar_url ? (
-              <div className="relative inline-block text-left">
-                <Link href="/account">
-                  <button type="button" className="text-white focus:outline-none">
-                    <img src={userDetails.avatar_url} alt="User Avatar" className="w-10 h-10 rounded-full" />
-                  </button>
+                {session && (
+                  <Link href="/account" className={s.link}>
+                    Account
+                  </Link>
+                )}
+                <Link href="/pricing" className={s.link}>
+                  Pricing
                 </Link>
               </div>
             ) : (

@@ -3,9 +3,8 @@
 import { Database } from '@/types_db';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
-import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { RedirectType, redirect } from 'next/navigation';
 
 export async function getServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = cookies();
@@ -43,7 +42,7 @@ export const updateName = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
-  revalidatePath('/account');
+  redirect('/account', RedirectType.push);
 };
 
 export const updateEmail = async (formData: FormData) => {
@@ -55,7 +54,7 @@ export const updateEmail = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
-  revalidatePath('/account');
+  redirect('/account', RedirectType.push);
 };
 
 export const getMaestros = async () => {
@@ -73,6 +72,18 @@ export const getMaestros = async () => {
   return data || [];
 };
 
+export const deleteMaestro = async (formData: FormData) => {
+  const id = formData.get('maestroId');
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from('code_maestros')
+    .delete()
+    .match({ id: id });
+  if (error) {
+    console.log(error);
+  }
+  redirect('/chat', RedirectType.push);
+}
 
 export const createMaestro = async (formData: FormData) => {
   const session = await getSession();
@@ -88,7 +99,7 @@ export const createMaestro = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
-  revalidatePath('/');
+  redirect('/chat', RedirectType.push);
 };
 
 
