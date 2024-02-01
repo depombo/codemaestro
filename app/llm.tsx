@@ -91,9 +91,8 @@ export const chat = async (repo: string, input: string) => {
     combineDocumentsChain,
   ]);
 
-  const question = "What is an compillmer?";
   const result = await conversationalQaChain.invoke({
-    question,
+    question: input,
   });
 
   await memory.saveContext(
@@ -177,7 +176,7 @@ const getOrGenStore = async(repo: string) => {
   const loader = new GithubRepoLoader(
     repo,
     {
-      accessToken: session.access_token,
+      accessToken: session.provider_token || '',
       branch: "main",
       recursive: false,
       unknown: "warn",

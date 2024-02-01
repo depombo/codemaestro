@@ -80,7 +80,7 @@ export default async function Account() {
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
               <p className="pb-4 sm:pb-0">Manage permissions on CodeMaestro's GitHub App Page</p>
-              <Link href="https://github.com/apps/codemaestro-sh" target="_blank" rel="noopener noreferrer">
+              <Link href="https://github.com/apps/codemaestro-sh/installations/new" target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="slim"
                 >

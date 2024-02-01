@@ -3,6 +3,7 @@
 import { Database } from '@/types_db';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -57,6 +58,7 @@ export const createMaestro = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
+  revalidatePath('/');
 };
 
 
