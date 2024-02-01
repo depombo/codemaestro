@@ -29,8 +29,8 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
 
 export const getMaestros = async () => {
   const session = await getSession();
-  const user = session?.user;
-
+  if (!session) redirect('/signin')
+  const user = session.user;
   const supabase = await getServerClient();
   const { error, data } = await supabase
     .from('code_maestros')
@@ -48,8 +48,8 @@ export const createMaestro = async (formData: FormData) => {
   // console.log(formData);
   const name = formData.get('name') as string;
   const repo = formData.get('repo') as string;
-  const user = session?.user;
-
+  if (!session) redirect('/signin')
+  const user = session.user;
   const supabase = await getServerClient();
   const { error } = await supabase
     .from('code_maestros')
@@ -66,13 +66,10 @@ export async function getSession() {
     const {
       data: { session }
     } = await supabase.auth.getSession();
-    if (!session) {
-      return redirect('/signin');
-    }
     return session;
   } catch (error) {
     console.error('Error:', error);
-    return redirect('/signin');
+    return null;
   }
 }
 

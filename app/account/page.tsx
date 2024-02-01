@@ -24,6 +24,7 @@ export default async function Account() {
   ]);
 
   const user = session?.user;
+  if (!session) redirect('/signin')
   const ghUser = session.user.user_metadata.user_name;
 
   const subscriptionPrice =

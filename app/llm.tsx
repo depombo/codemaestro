@@ -19,6 +19,7 @@ import {
   getSession,
   getServerClient,
 } from '@/app/supabase-server';
+import { redirect } from "next/navigation";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
@@ -172,6 +173,7 @@ const getOrGenStore = async(repo: string) => {
 
   console.log('generating embeddings as none are availabe');
   const session = await getSession();
+  if (!session) redirect('/signin')
   const loader = new GithubRepoLoader(
     repo,
     {
