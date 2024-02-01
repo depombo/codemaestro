@@ -14,8 +14,8 @@ export default async function ChatPage() {
     return redirect('/signin');
   }
 
-  const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
-  console.log(result);
+  // const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
+  // console.log(result);
 
   return (
     <div className="flex flex-col items-center w-4/5 h-4/5 p-4">

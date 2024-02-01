@@ -1,13 +1,13 @@
 import ManageStripeButton from './ManageStripeButton';
 import SignOutButton from './SignOutButton';
 import {
-  getServerClient,
+  updateEmail,
+  updateName,
   getSession,
   getUserDetails,
   getSubscription
 } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
-import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
@@ -34,34 +34,6 @@ export default async function Account() {
       currency: subscription?.prices?.currency!,
       minimumFractionDigits: 0
     }).format((subscription?.prices?.unit_amount || 0) / 100);
-
-  const updateName = async (formData: FormData) => {
-    'use server';
-    const supabase = await getServerClient();
-
-    const newName = formData.get('name') as string;
-    const user = session?.user;
-    const { error } = await supabase
-      .from('users')
-      .update({ full_name: newName })
-      .eq('id', user?.id);
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
-  };
-
-  const updateEmail = async (formData: FormData) => {
-    'use server';
-    const supabase = await getServerClient();
-
-    const newEmail = formData.get('email') as string;
-    const { error } = await supabase.auth.updateUser({ email: newEmail });
-    if (error) {
-      console.log(error);
-    }
-    revalidatePath('/account');
-  };
 
   return (
     <section className="mb-32 bg-black">

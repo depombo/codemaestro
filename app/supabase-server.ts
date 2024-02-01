@@ -28,6 +28,36 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
   );
 }
 
+
+export const updateName = async (formData: FormData) => {
+  const supabase = await getServerClient();
+
+  const newName = formData.get('name') as string;
+  const session = await getSession();
+  if (!session) redirect('/signin')
+  const user = session.user;
+  const { error } = await supabase
+    .from('users')
+    .update({ full_name: newName })
+    .eq('id', user?.id);
+  if (error) {
+    console.log(error);
+  }
+  revalidatePath('/account');
+};
+
+export const updateEmail = async (formData: FormData) => {
+  const supabase = await getServerClient();
+  const session = await getSession();
+  if (!session) redirect('/signin')
+  const newEmail = formData.get('email') as string;
+  const { error } = await supabase.auth.updateUser({ email: newEmail });
+  if (error) {
+    console.log(error);
+  }
+  revalidatePath('/account');
+};
+
 export const getMaestros = async () => {
   const session = await getSession();
   if (!session) redirect('/signin')

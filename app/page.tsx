@@ -17,7 +17,7 @@ export default async function UserDashboard() {
     return (
       <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
         <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
-          <Github className="mr-5 h-2" />
+          <Github className="h-5" />
           <p>{name}</p>
           {/* <button
             className="text-gray-500 hover:text-red-500 focus:outline-none"
@@ -48,17 +48,17 @@ export default async function UserDashboard() {
             <Card
               title={m.name}
               footer={
-                <Link href='/chat'>
                   <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                    <Button
-                      variant="slim"
-                      type="submit"
-                      form="chatMaestro"
-                    >
-                      Chat with Maestro
-                    </Button>
+                    <Link href='/chat'>
+                      <Button
+                        variant="slim"
+                        type="submit"
+                        form="chatMaestro"
+                      >
+                        Chat with Maestro
+                      </Button>
+                    </Link>
                   </div>
-                </Link>
               }
             >
               <div className="flex">
