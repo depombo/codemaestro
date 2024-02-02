@@ -1,20 +1,14 @@
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import {
-  createMaestro,
-  deleteMaestro,
   getMaestros,
   messageMaestro,
   getUserDetails,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
-import { chat } from '../../llm';
-import GitHub from '@/components/icons/GitHub';
-import Link from 'next/link';
-import { ReactNode } from 'react';
-import { DeleteConfirmationMaestroModal, GithubBadge } from '../Modal';
 import AutoGrowingTextarea from '../AutoGrowingTextarea';
+import Sidebar from '../Sidebar';
 
 type ChatPageProps = {
   params: { maestroId: string };
@@ -29,7 +23,6 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   }
 
   const maestros = await getMaestros();
-  const deleteMaestro = searchParams?.deleteMaestro;
   const maestroId = params.maestroId;
   const maestro = maestros.filter(m => m.id.toString() === maestroId).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
@@ -39,48 +32,11 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   return (
     <div className='flex flex-row'>
-      <div className='flex flex-col items-center p-4 bg-zinc-800 h-full'>
-        {
-          maestros.map(m => (
-            m.id === maestro.id ?
-              (
-                <div key={m.id} className={m.id === maestro.id ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
-                  <div className="flex flex-row justify-between">
-                    <div className="mb-1 text-l font-medium">{m.name}</div>
-                    <Link href={`/chat/${maestroId}?deleteMaestro=true`}>
-                      ✖
-                    </Link>
-                  </div>
-                  <div className="flex">
-                    <GithubBadge name={m.github_repo_name} />
-                  </div>
-                  {deleteMaestro && <DeleteConfirmationMaestroModal name={m.name} id={m.id} />}
-                </div>
-              )
-              :
-              (
-                <Link href={`/chat/${m.id}`}>
-                  <div className={m.id === maestro.id ? "w-full p-4 my-8 border rounded-md white" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
-                    <div className="flex justify-between py-2 px-1">
-                      <div className="mb-1 text-l font-medium">{m.name}</div>
-                    </div>
-                    <div className="flex">
-                      <GithubBadge name={m.github_repo_name} />
-                    </div>
-                  </div>
-                </Link>
-              )
-          ))
-        }
-        <Link href='/chat?createMaestro=true'>
-          <Button
-            variant="slim"
-            type="submit"
-          >
-            New Maestro
-          </Button>
-        </Link>
-      </div>
+      <Sidebar
+        selectedMaestroId={maestroId}
+        maestros={maestros}
+        searchParams={searchParams}
+      />
 
       <div className="flex flex-col grow items-center p-4">
 

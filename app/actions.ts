@@ -11,6 +11,8 @@ import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
+export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
+
 export async function getServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = cookies();
   return createServerClient(

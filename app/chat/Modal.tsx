@@ -1,5 +1,6 @@
 import Button from '@/components/ui/Button';
 import {
+  CodeMaestro,
   createMaestro,
   deleteMaestro,
 } from '@/app/actions';
@@ -95,18 +96,18 @@ export const CreateMaestroModal = () => (
   </div>
 )
 
-export const DeleteConfirmationMaestroModal = ({ id, name }: { id: number, name: string }) => (
+export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaestro }) => (
   <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
     <div className="shadow-lg">
       <div className="p-4 bg-black">
         <Card
-          title={`Are you sure you want to delete ${name} Maestro?`}
+          title={`Are you sure you want to delete ${maestro.name} Maestro?`}
           description="This cannot be undone."
           footer={
             <div className='flex flex-row justify-between'>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
                 <form id="deleteMaestro" action={deleteMaestro}>
-                  <input hidden={true} type="number" name="maestroId" value={id} />
+                  <input hidden={true} type="number" name="maestroId" value={maestro.id} />
                   <Button
                     variant="slim"
                     type="submit"
@@ -117,7 +118,7 @@ export const DeleteConfirmationMaestroModal = ({ id, name }: { id: number, name:
                 </form>
               </div>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href={`/chat/${id}`}>
+                <Link href={`/chat/${maestro.id}`}>
                   <Button
                     variant="slim"
                   >

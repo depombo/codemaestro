@@ -14,6 +14,8 @@ import GitHub from '@/components/icons/GitHub';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { CreateMaestroModal, GithubBadge } from './Modal';
+import MaestroCard from './Sidebar';
+import Sidebar from './Sidebar';
 
 type SearchParamProps = {
   searchParams: Record<string, string> | null | undefined;
@@ -28,48 +30,15 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
 
   const maestros = await getMaestros();
 
-  const createMaestro = searchParams?.createMaestro;
-
   // const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
   // console.log(result);
 
   return (
     <div className='flex flex-row grow'>
-      <div className='flex flex-col items-center p-4 bg-zinc-800 h-full'>
-        {
-          maestros.map(m => (
-            <Link key={m.id} href={`/chat/${m.id}`}>
-              <div className="w-full max-w-3xl m-auto my-8 border rounded-md border-zinc-700">
-                <div className="px-4 py-4">
-                  <div className="flex justify-between py-2 px-1">
-                    <div className='pr-10'>
-                      <h3 className="mb-1 text-2xl font-medium">{m.name}</h3>
-                      {/* <p className="text-zinc-300">{description}</p> */}
-                    </div>
-                  </div>
-                  <div className='flex flex-row justify-between'>
-                    <div className="flex">
-                      <GithubBadge name={m.github_repo_name} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Link>
-
-          ))
-        }
-        <Link href='/chat?createMaestro=true'>
-          <Button
-            variant="slim"
-            type="submit"
-          >
-            New Maestro
-          </Button>
-        </Link>
-
-        {createMaestro && <CreateMaestroModal />}
-
-      </div>
+      <Sidebar
+        maestros={maestros}
+        searchParams={searchParams}
+      />
       {/* <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
 
       <div className="flex items-start">
