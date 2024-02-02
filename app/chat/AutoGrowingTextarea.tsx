@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 
-const AutoGrowingTextarea = () => {
+const AutoGrowingTextarea = ({ ...props }) => {
   const [value, setValue] = useState('');
   const textareaRef = useRef(null);
 
@@ -23,8 +23,8 @@ const AutoGrowingTextarea = () => {
       value={value}
       rows={1}
       onChange={handleInputChange}
-      // Optional: Set a minimum height
       style={{ maxHeight: '8rem' }}
+      {...props}
     />
   );
 };

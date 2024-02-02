@@ -4,6 +4,8 @@
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
 // https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns
 
+// TODO zod data validation
+
 import { Database } from '@/types_db';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -35,7 +37,8 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
 }
 
 export const messageMaestro = async (formData: FormData) => {
-  console.log(formData)
+  const message = formData.get('message') as string;
+  console.log(message)
   // revalidatePath('/chat');
 };
 

@@ -68,6 +68,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
         <form id="messageMaestro" action={messageMaestro} className="flex items-start w-4/5">
           <div className="flex flex-col w-full p-4">
             <AutoGrowingTextarea
+              name="message"
             />
           </div>
           <div className="flex py-4">
