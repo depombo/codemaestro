@@ -6,7 +6,7 @@ import {
   getSession,
   getUserDetails,
   getSubscription
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
@@ -46,7 +46,7 @@ export default async function Account() {
       <div className="p-4">
         <Card
           title="Authentication"
-          logo={<GitHub fill='white' height='50' width='50'/>}
+          logo={<GitHub fill='white' height='50' width='50' />}
           description={'Manage the connection between CodeMaestro and GitHub'}
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
@@ -67,7 +67,7 @@ export default async function Account() {
         </Card>
         <Card
           title="Plan"
-          logo={<Stripe fill='white'/>}
+          logo={<Stripe fill='white' />}
           description={
             subscription
               ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
@@ -147,7 +147,7 @@ export default async function Account() {
         </Card> */}
       </div>
       <div className="w-full m-auto pb-8 flex justify-center">
-       <SignOutButton />
+        <SignOutButton />
       </div>
     </section>
   );

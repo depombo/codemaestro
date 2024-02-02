@@ -18,7 +18,7 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   getSession,
   getServerClient,
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import { redirect } from "next/navigation";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
@@ -76,7 +76,7 @@ export const chat = async (repo: string, input: string) => {
     model,
     new StringOutputParser(),
   ]);
-  
+
   const conversationalQaChain = RunnableSequence.from([
     {
       question: (i: { question: string }) => i.question,
@@ -110,7 +110,7 @@ export const chat = async (repo: string, input: string) => {
 const getSplitterForFileType = async (file: string) => {
   const extension = file.split('.').pop() as any;
   let fileType;
-  switch(extension) {
+  switch (extension) {
     case "mdx":
     case "md":
       fileType = "markdown";
@@ -128,7 +128,7 @@ const getSplitterForFileType = async (file: string) => {
       break;
     default:
       fileType = extension
-}
+  }
   const splitterOpts = {
     // chunkSize: 2000,
     // chunkOverlap: 200,
@@ -139,7 +139,7 @@ const getSplitterForFileType = async (file: string) => {
     new RecursiveCharacterTextSplitter(splitterOpts);
 };
 
-const isVectorStoreEmpty = async() => {
+const isVectorStoreEmpty = async () => {
   const supabase = await getServerClient();
   let { data, error, count } = await supabase
     .from('documents')
@@ -153,7 +153,7 @@ const isVectorStoreEmpty = async() => {
   return count === 0;
 }
 
-const getOrGenStore = async(repo: string) => {
+const getOrGenStore = async (repo: string) => {
   const supabase = await getServerClient();
   const storeOpts = {
     client: supabase,
@@ -197,5 +197,5 @@ const getOrGenStore = async(repo: string) => {
     new OpenAIEmbeddings(),
     storeOpts
   );
-  
+
 }

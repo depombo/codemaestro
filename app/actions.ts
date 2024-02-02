@@ -1,8 +1,13 @@
 'use server'
 
+// server actions that can be used in client or server react components
+// https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
+// https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns
+
 import { Database } from '@/types_db';
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { SupabaseClient } from '@supabase/supabase-js';
+import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
@@ -27,6 +32,10 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
   );
 }
 
+export const messageMaestro = async (formData: FormData) => {
+  console.log(formData)
+  // revalidatePath('/chat');
+};
 
 export const updateName = async (formData: FormData) => {
   const supabase = await getServerClient();
@@ -54,7 +63,7 @@ export const updateEmail = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
-  redirect('/account', RedirectType.push);
+  revalidatePath('/account');
 };
 
 export const getMaestros = async () => {
@@ -99,7 +108,8 @@ export const createMaestro = async (formData: FormData) => {
   if (error) {
     console.log(error);
   }
-  redirect('/chat', RedirectType.push);
+  // TODO send to chat specific to this maestro
+  redirect(`/chat`, RedirectType.push);
 };
 
 

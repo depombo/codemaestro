@@ -6,7 +6,7 @@ import {
   getMaestros,
   getSession,
   getUserDetails,
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
 import { chat } from '../llm';

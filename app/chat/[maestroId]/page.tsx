@@ -4,9 +4,9 @@ import {
   createMaestro,
   deleteMaestro,
   getMaestros,
-  getSession,
+  messageMaestro,
   getUserDetails,
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
 import { chat } from '../../llm';
@@ -15,7 +15,6 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { DeleteConfirmationMaestroModal, GithubBadge } from '../Modal';
 import AutoGrowingTextarea from '../AutoGrowingTextarea';
-import Trash from '@/components/icons/Trash';
 
 type ChatPageProps = {
   params: { maestroId: string };
@@ -110,23 +109,22 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
         </div>
 
-        <div className="flex items-start w-4/5">
+        <form id="messageMaestro" action={messageMaestro} className="flex items-start w-4/5">
           <div className="flex flex-col w-full p-4">
-            <form id="nameForm">
-              <AutoGrowingTextarea
-              />
-            </form>
+            <AutoGrowingTextarea
+            />
           </div>
-          <div className='flex py-4'>
+          <div className="flex py-4">
             <Button
-              className='h-8 w-2'
+              className="h-8 w-2"
               variant="slim"
+              form="messageMaestro"
               type="submit"
             >
               ↑
             </Button>
           </div>
-        </div>
+        </form>
 
       </div>
     </div>

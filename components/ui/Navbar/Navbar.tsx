@@ -3,7 +3,7 @@ import {
   getServerClient,
   getSession,
   getUserDetails,
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import Logo from '@/components/icons/Logo';
 
 import s from './Navbar.module.css';
@@ -20,12 +20,12 @@ export default async function Navbar() {
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">
-              <Logo height="32" x="1" y="4" fill="white" stroke="zinc-700"/>
-              </Link>
-              <Link href="/">
+              <Logo height="32" x="1" y="4" fill="white" stroke="zinc-700" />
+            </Link>
+            <Link href="/">
 
               <p className='ml-2 font-bold'>CodeMaestro</p>
-              </Link>
+            </Link>
 
           </div>
 

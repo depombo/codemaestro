@@ -2,7 +2,7 @@ import Button from '@/components/ui/Button';
 import {
   createMaestro,
   deleteMaestro,
-} from '@/app/supabase-server';
+} from '@/app/actions';
 import Logo from '@/components/icons/Logo';
 import GitHub from '@/components/icons/GitHub';
 import Link from 'next/link';
