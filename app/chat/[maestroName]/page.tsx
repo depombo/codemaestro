@@ -11,7 +11,7 @@ import AutoGrowingTextarea from '../AutoGrowingTextarea';
 import Sidebar from '../Sidebar';
 
 type ChatPageProps = {
-  params: { maestroId: string };
+  params: { maestroName: string };
   searchParams: Record<string, string> | null | undefined;
 };
 
@@ -23,8 +23,8 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   }
 
   const maestros = await getMaestros();
-  const maestroId = params.maestroId;
-  const maestro = maestros.filter(m => m.id.toString() === maestroId).pop();
+  const maestroName = params.maestroName;
+  const maestro = maestros.filter(m => m.name.replace(/[^a-z0-9]+/gi, "") === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
   // const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
@@ -33,7 +33,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   return (
     <div className='flex flex-row'>
       <Sidebar
-        selectedMaestroId={maestroId}
+        selectedMaestroId={maestro.id}
         maestros={maestros}
         searchParams={searchParams}
       />

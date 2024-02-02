@@ -5,6 +5,7 @@ import {
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Sidebar from './Sidebar';
+import { chat } from '../llm';
 
 type SearchParamProps = {
   searchParams: Record<string, string> | null | undefined;

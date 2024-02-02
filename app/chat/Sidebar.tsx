@@ -34,12 +34,13 @@ interface MaestroCardProps {
 
 const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
   const deleteMaestro = searchParams?.deleteMaestro;
+  const cleanPath = maestro.name.replace(/[^a-z0-9]+/gi, "");
   const card = (
     <div className={selected ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
         {
-          selected && <Link href={`/chat/${maestro.id}?deleteMaestro=true`}>
+          selected && <Link href={`/chat/${cleanPath}?deleteMaestro=true`}>
             ✖
           </Link>
         }
@@ -50,12 +51,12 @@ const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
       {deleteMaestro && <DeleteConfirmationMaestroModal maestro={maestro} />}
     </div>
   );
-  return !selected ? <Link href={`/chat/${maestro.id}`}>{card}</Link> : card;
+  return !selected ? <Link href={`/chat/${cleanPath}`}>{card}</Link> : card;
 };
 
 interface SidebarProps {
   maestros: CodeMaestro[];
-  selectedMaestroId?: string;
+  selectedMaestroId?: number;
   searchParams: Record<string, string> | null | undefined;
 }
 
@@ -67,7 +68,7 @@ const Sidebar = ({ maestros, selectedMaestroId, searchParams }: SidebarProps) =>
         maestros.map(m => (
           <MaestroCard
             key={m.id}
-            selected={m.id.toString() === selectedMaestroId}
+            selected={m.id === selectedMaestroId}
             maestro={m}
             searchParams={searchParams}
           />

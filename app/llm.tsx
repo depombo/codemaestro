@@ -3,7 +3,7 @@ import { GithubRepoLoader } from "langchain/document_loaders/web/github";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
-import { BufferMemory } from "langchain/memory";
+import { BufferMemory, ChatMessageHistory, VectorStoreRetrieverMemory } from "langchain/memory";
 
 import {
   ChatPromptTemplate,
@@ -20,6 +20,7 @@ import {
   getServerClient,
 } from '@/app/actions';
 import { redirect } from "next/navigation";
+import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
@@ -38,10 +39,27 @@ export const chat = async (repo: string, input: string) => {
     new StringOutputParser()
   );
 
+  // https://js.langchain.com/docs/modules/memory/chat_messages
+  // https://js.langchain.com/docs/modules/memory/
+  const pastMessages: BaseMessage[] = [];
+  const history = new ChatMessageHistory(pastMessages);
   const memory = new BufferMemory({
     returnMessages: true, // Return stored messages as instances of `BaseMessage`
     memoryKey: "chat_history", // This must match up with our prompt template input variable.
+    chatHistory: history,
   });
+
+  // https://js.langchain.com/docs/integrations/chat_memory
+  // const memory1 = new VectorStoreRetrieverMemory({
+  //   vectorStoreRetriever: vectorStore.asRetriever(5),
+  //   memoryKey: 'chat_history',
+  //   returnDocs: false,
+  // });
+
+  // await memory1.saveContext(
+  //   { input: "My favorite food is pizza" },
+  //   { output: "thats good to know" }
+  // );
 
   const questionGeneratorTemplate = ChatPromptTemplate.fromMessages([
     AIMessagePromptTemplate.fromTemplate(
@@ -49,7 +67,7 @@ export const chat = async (repo: string, input: string) => {
     ),
     new MessagesPlaceholder("chat_history"),
     AIMessagePromptTemplate.fromTemplate(`Follow Up Input: {question}
-  Standalone question:`),
+   Standalone question:`),
   ]);
 
   const combineDocumentsPrompt = ChatPromptTemplate.fromMessages([
