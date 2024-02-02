@@ -1,8 +1,30 @@
 import Link from 'next/link';
 import React from 'react';
-import { CreateMaestroModal, DeleteConfirmationMaestroModal, GithubBadge } from './Modal';
+import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
 import { CodeMaestro } from '../actions';
 import Button from '@/components/ui/Button';
+import GitHub from '@/components/icons/GitHub';
+
+const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
+  const badge = (
+    <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-900 rounded-full">
+      <GitHub className="h-5" />
+      <p>{name}</p>
+      {/* <button
+      className="text-gray-500 hover:text-red-500 focus:outline-none"
+    >
+      &#10005;
+    </button> */}
+    </span>
+  );
+  return (
+    hyperlink ? <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
+      {badge}
+    </Link>
+      :
+      badge
+  )
+};
 
 interface MaestroCardProps {
   maestro: CodeMaestro;
@@ -23,7 +45,7 @@ const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
         }
       </div>
       <div className="flex">
-        <GithubBadge name={maestro.github_repo_name} />
+        <GithubBadge hyperlink={selected} name={maestro.github_repo_name} />
       </div>
       {deleteMaestro && <DeleteConfirmationMaestroModal maestro={maestro} />}
     </div>

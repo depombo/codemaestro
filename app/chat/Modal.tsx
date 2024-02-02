@@ -5,25 +5,8 @@ import {
   deleteMaestro,
 } from '@/app/actions';
 import Logo from '@/components/icons/Logo';
-import GitHub from '@/components/icons/GitHub';
 import Link from 'next/link';
 import { ReactNode } from 'react';
-
-export const GithubBadge = ({ name }: { name: string }) => {
-  return (
-    <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
-      <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-900 rounded-full">
-        <GitHub className="h-5" />
-        <p>{name}</p>
-        {/* <button
-          className="text-gray-500 hover:text-red-500 focus:outline-none"
-        >
-          &#10005;
-        </button> */}
-      </span>
-    </Link>
-  )
-};
 
 export const CreateMaestroModal = () => (
   <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
