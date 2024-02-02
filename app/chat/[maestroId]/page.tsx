@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { ReactNode } from 'react';
 import { DeleteConfirmationMaestroModal, GithubBadge } from '../Modal';
 import AutoGrowingTextarea from '../AutoGrowingTextarea';
+import Trash from '@/components/icons/Trash';
 
 type ChatPageProps = {
   params: { maestroId: string };
@@ -44,28 +45,15 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
           maestros.map(m => (
             m.id === maestro.id ?
               (
-                <div key={m.id} className={m.id === maestro.id ? "w-full max-w-3xl m-auto my-8 border rounded-md white" : "w-full max-w-3xl m-auto my-8 border rounded-md border-zinc-700"}>
-                  <div className="px-4 py-4">
-                    <div className="flex justify-between py-2 px-1">
-                      <div className='pr-10'>
-                        <h3 className="mb-1 text-2xl font-medium">{m.name}</h3>
-                        {/* <p className="text-zinc-300">{description}</p> */}
-                      </div>
-                    </div>
-                    <div className='flex flex-row justify-between'>
-                      <div className="flex">
-                        <GithubBadge name={m.github_repo_name} />
-                      </div>
-                      <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                        <Link href={`/chat/${maestroId}?deleteMaestro=true`}>
-                          <Button
-                            variant="slim"
-                          >
-                            Delete
-                          </Button>
-                        </Link>
-                      </div>
-                    </div>
+                <div key={m.id} className={m.id === maestro.id ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
+                  <div className="flex flex-row justify-between">
+                    <div className="mb-1 text-l font-medium">{m.name}</div>
+                    <Link href={`/chat/${maestroId}?deleteMaestro=true`}>
+                      ✖
+                    </Link>
+                  </div>
+                  <div className="flex">
+                    <GithubBadge name={m.github_repo_name} />
                   </div>
                   {deleteMaestro && <DeleteConfirmationMaestroModal name={m.name} id={m.id} />}
                 </div>
@@ -73,19 +61,12 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
               :
               (
                 <Link href={`/chat/${m.id}`}>
-                  <div className={m.id === maestro.id ? "w-full max-w-3xl m-auto my-8 border rounded-md white" : "w-full max-w-3xl m-auto my-8 border rounded-md border-zinc-700"}>
-                    <div className="px-4 py-4">
-                      <div className="flex justify-between py-2 px-1">
-                        <div className='pr-10'>
-                          <h3 className="mb-1 text-2xl font-medium">{m.name}</h3>
-                          {/* <p className="text-zinc-300">{description}</p> */}
-                        </div>
-                      </div>
-                      <div className='flex flex-row justify-between'>
-                        <div className="flex">
-                          <GithubBadge name={m.github_repo_name} />
-                        </div>
-                      </div>
+                  <div className={m.id === maestro.id ? "w-full p-4 my-8 border rounded-md white" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
+                    <div className="flex justify-between py-2 px-1">
+                      <div className="mb-1 text-l font-medium">{m.name}</div>
+                    </div>
+                    <div className="flex">
+                      <GithubBadge name={m.github_repo_name} />
                     </div>
                   </div>
                 </Link>
