@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import React from 'react';
 import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
-import { CodeMaestro } from '../actions';
+import { CodeMaestro, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
 import GitHub from '@/components/icons/GitHub';
 
@@ -34,7 +34,7 @@ interface MaestroCardProps {
 
 const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
   const deleteMaestro = searchParams?.deleteMaestro;
-  const cleanPath = maestro.name.replace(/[^a-z0-9]+/gi, "");
+  const cleanPath = maestroNamePath(maestro.name);
   const card = (
     <div className={selected ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">

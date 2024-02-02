@@ -16,6 +16,8 @@ import { RedirectType, redirect } from 'next/navigation';
 
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
+// TODO mappers once it makes sense or add into CodeMaestro type
+export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
 
 export async function getServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = cookies();
@@ -50,10 +52,19 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (formData: FormData) => {
+export const messageMaestro = async (maestro: CodeMaestro, formData: FormData) => {
   const message = formData.get('message') as string;
-  console.log(message)
-  // revalidatePath('/chat');
+
+  // const supabase = await getServerClient();
+  // const { error } = await supabase
+  //   .from('messages')
+  //   .insert({ user_id: maestro.user_id, name: name, github_repo_name: repo })
+
+  // if (error) {
+  //   console.log(error);
+  // }
+  // revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
+  console.log(message, maestro)
 };
 
 export const updateName = async (formData: FormData) => {
@@ -100,8 +111,7 @@ export const getMaestros = async () => {
   return data || [];
 };
 
-export const deleteMaestro = async (formData: FormData) => {
-  const id = formData.get('maestroId');
+export const deleteMaestro = async (id: number) => {
   const supabase = await getServerClient();
   const { error } = await supabase
     .from('code_maestros')

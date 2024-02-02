@@ -89,8 +89,7 @@ export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaest
           footer={
             <div className='flex flex-row justify-between'>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <form id="deleteMaestro" action={deleteMaestro}>
-                  <input hidden={true} type="number" name="maestroId" value={maestro.id} />
+                <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id)}>
                   <Button
                     variant="slim"
                     type="submit"

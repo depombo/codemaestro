@@ -5,6 +5,7 @@ import {
   messageMaestro,
   getMessages,
   getUserDetails,
+  maestroNamePath,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Logo from '@/components/icons/Logo';
@@ -55,7 +56,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   const maestros = await getMaestros();
   const maestroName = params.maestroName;
-  const maestro = maestros.filter(m => m.name.replace(/[^a-z0-9]+/gi, "") === maestroName).pop();
+  const maestro = maestros.filter(m => maestroNamePath(m.name) === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
   const messages = await getMessages(maestro.id);
@@ -91,7 +92,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
           }
         </div>
 
-        <form id="messageMaestro" action={messageMaestro} className="flex items-start w-4/5">
+        <form id="messageMaestro" action={messageMaestro.bind(null, maestro)} className="flex items-start w-4/5">
           <div className="flex flex-col w-full p-4">
             <AutoGrowingTextarea
               name="message"
