@@ -34,8 +34,8 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
   // console.log(result);
 
   return (
-    <div className='flex flex-row'>
-      <div className='flex flex-col items-center w-1/5 h-1/5 p-4'>
+    <div className='flex flex-row grow'>
+      <div className='flex flex-col items-center p-4 bg-zinc-800 h-full'>
         {
           maestros.map(m => (
             <Link key={m.id} href={`/chat/${m.id}`}>
@@ -70,7 +70,7 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
         {createMaestro && <CreateMaestroModal />}
 
       </div>
-    {/* <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
+      {/* <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
 
       <div className="flex items-start">
         <div className="flex flex-col w-full p-4">
@@ -115,7 +115,7 @@ function Card({ title, description, footer, children }: Props) {
             <h3 className="mb-1 text-2xl font-medium">{title}</h3>
             <p className="text-zinc-300">{description}</p>
           </div>
-          <Logo fill='white' stroke='zinc-700'/>
+          <Logo fill='white' stroke='zinc-700' />
         </div>
         {children}
       </div>

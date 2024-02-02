@@ -14,6 +14,7 @@ import GitHub from '@/components/icons/GitHub';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import { DeleteConfirmationMaestroModal, GithubBadge } from '../Modal';
+import AutoGrowingTextarea from '../AutoGrowingTextarea';
 
 type ChatPageProps = {
   params: { maestroId: string };
@@ -38,7 +39,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   return (
     <div className='flex flex-row'>
-      <div className='flex flex-col items-center w-1/5 h-1/5 p-4'>
+      <div className='flex flex-col items-center p-4 bg-zinc-800 h-full'>
         {
           maestros.map(m => (
             m.id === maestro.id ?
@@ -88,8 +89,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
                     </div>
                   </div>
                 </Link>
-            )
-
+              )
           ))
         }
         <Link href='/chat?createMaestro=true'>
@@ -101,32 +101,53 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
           </Button>
         </Link>
       </div>
-      
-    <div className="flex flex-col items-center w-4/5 h-4/5 p-4">
 
-      <div className="flex items-start">
-        <div className="flex flex-col w-full p-4">
-            <div className="flex items-center">
-              <div className="w-10 h-10 rounded-full bg-white">
-                <Logo className='p-2'/>
+      <div className="flex flex-col grow items-center p-4">
+
+        <div className='flex flex-col h-full'>
+          <div className="flex items-start">
+            <div className="flex flex-col w-full p-4">
+              <div className="flex items-center">
+                <div className="w-10 h-10 rounded-full bg-white">
+                  <Logo className='p-2' />
+                </div>
+                <span className="text-sm ml-3 font-semibold text-gray-200">{maestro?.name}</span>
               </div>
-              <span className="text-sm ml-3 font-semibold text-gray-200">{maestro?.name}</span>
+              <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
             </div>
-            <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
-        </div>
-      </div>
+          </div>
 
-      <div className="flex items-start">
-        <div className="flex flex-col w-full p-4">
-            <div className="flex items-center">
-              <img src={userDetails.avatar_url || ''} alt="User Avatar" className="w-10 h-10 rounded-full" />
-              <span className="text-sm ml-3 font-semibold text-gray-200">{userDetails.full_name}</span>
+          <div className="flex items-start">
+            <div className="flex flex-col w-full p-4">
+              <div className="flex items-center">
+                <img src={userDetails.avatar_url || ''} alt="User Avatar" className="w-10 h-10 rounded-full" />
+                <span className="text-sm ml-3 font-semibold text-gray-200">{userDetails.full_name}</span>
+              </div>
+              <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
             </div>
-            <p className="text-sm font-normal ml-14 text-gray-200">That's awesome. I think our users will really appreciate the improvements.</p>
-        </div>
-      </div>
+          </div>
 
-    </div>
+        </div>
+
+        <div className="flex items-start w-4/5">
+          <div className="flex flex-col w-full p-4">
+            <form id="nameForm">
+              <AutoGrowingTextarea
+              />
+            </form>
+          </div>
+          <div className='flex py-4'>
+            <Button
+              className='h-8 w-2'
+              variant="slim"
+              type="submit"
+            >
+              ↑
+            </Button>
+          </div>
+        </div>
+
+      </div>
     </div>
   );
 }
