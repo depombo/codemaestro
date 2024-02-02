@@ -15,6 +15,7 @@ import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
 
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
+export type Message = Database['public']['Tables']['messages']['Row'];
 
 export async function getServerClient(): Promise<SupabaseClient<Database>> {
   const cookieStore = cookies();
@@ -36,6 +37,18 @@ export async function getServerClient(): Promise<SupabaseClient<Database>> {
     }
   );
 }
+
+export const getMessages = async (maestroId: number) => {
+  const supabase = await getServerClient();
+  const { error, data } = await supabase
+    .from('messages')
+    .select('*')
+    .eq('maestro_id', maestroId);
+  if (error) {
+    console.log(error);
+  }
+  return data || [];
+};
 
 export const messageMaestro = async (formData: FormData) => {
   const message = formData.get('message') as string;
