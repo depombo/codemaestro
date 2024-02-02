@@ -13,7 +13,7 @@ interface MaestroCardProps {
 const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
   const deleteMaestro = searchParams?.deleteMaestro;
   const card = (
-    <div key={maestro.id} className={selected ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
+    <div className={selected ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
         {
@@ -44,6 +44,7 @@ const Sidebar = ({ maestros, selectedMaestroId, searchParams }: SidebarProps) =>
       {
         maestros.map(m => (
           <MaestroCard
+            key={m.id}
             selected={m.id.toString() === selectedMaestroId}
             maestro={m}
             searchParams={searchParams}
