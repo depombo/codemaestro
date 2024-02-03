@@ -4,6 +4,7 @@ import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
 import { BufferMemory, ChatMessageHistory, VectorStoreRetrieverMemory } from "langchain/memory";
+import { Document } from "@langchain/core/documents";
 
 import {
   ChatPromptTemplate,
@@ -22,7 +23,7 @@ import {
 } from '@/app/actions';
 import { redirect } from "next/navigation";
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
-import { supabaseAdmin } from "./supabase/server";
+import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
@@ -30,12 +31,12 @@ import { supabaseAdmin } from "./supabase/server";
 
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
-  const vectorStore = await getOrGenStore(maestro);
+  const repoUrl = `https://github.com/${maestro.github_repo_name}`;
+  const vectorStore = await getOrGenStore(repoUrl);
 
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
     searchKwargs: { fetchK: 5 },
-    filter: [{ repository: `https://github.com/${maestro.github_repo_name}` }]
   });
 
   const model = new ChatOpenAI({ modelName: modelName }).pipe(
@@ -142,11 +143,12 @@ const getSplitterForFileType = async (file: string) => {
     new RecursiveCharacterTextSplitter(splitterOpts);
 };
 
-const isVectorStoreEmpty = async (maestro: CodeMaestro) => {
-  let { data, error, count } = await supabaseAdmin
+const isVectorStoreEmpty = async (repoUrl: string) => {
+  const supabase = await getServerClient()
+  let { data, error, count } = await supabase
     .from('documents')
     .select('*', { count: 'estimated' })
-    .eq('metadata->>repository', `https://github.com/${maestro.github_repo_name}`)
+    .eq('metadata->>repository', repoUrl)
 
   if (error) {
     console.error('Error checking Vector Store:', error);
@@ -156,14 +158,16 @@ const isVectorStoreEmpty = async (maestro: CodeMaestro) => {
   return count === 0;
 }
 
-const getOrGenStore = async (maestro: CodeMaestro) => {
+const getOrGenStore = async (repoUrl: string) => {
+  const supabase = await getServerClient()
   const storeOpts = {
-    client: supabaseAdmin,
+    client: supabase,
     tableName: "documents",
     queryName: "match_documents",
+    filter: [{ repository: repoUrl }]
   };
 
-  const isStoreEmpty = await isVectorStoreEmpty(maestro);
+  const isStoreEmpty = await isVectorStoreEmpty(repoUrl);
   if (!isStoreEmpty) {
     console.log('use existing embeddings')
     return await SupabaseVectorStore.fromExistingIndex(
@@ -176,7 +180,7 @@ const getOrGenStore = async (maestro: CodeMaestro) => {
   const session = await getSession();
   if (!session) redirect('/signin')
   const loader = new GithubRepoLoader(
-    maestro.github_repo_name,
+    repoUrl,
     {
       accessToken: session.provider_token || '',
       branch: "main",
@@ -191,12 +195,12 @@ const getOrGenStore = async (maestro: CodeMaestro) => {
   for await (const doc of loader.loadAsStream()) {
     const splitter = await getSplitterForFileType(doc.metadata.source);
     // console.log(splitter);
-    // const docWithMeta = new Document({
-    //   pageContent: doc.pageContent,
-    //   metadata: { ...doc.metadata, 'maestro_id': maestro.id }
-    // });
-    // docs.push(...await splitter.splitDocuments([docWithMeta]));
-    docs.push(...await splitter.splitDocuments([doc]));
+    const docWithMeta = new Document({
+      pageContent: doc.pageContent,
+      metadata: { ...doc.metadata, 'user_id': session.user.id }
+    });
+    docs.push(...await splitter.splitDocuments([docWithMeta]));
+    // docs.push(...await splitter.splitDocuments([doc]));
   }
 
   return await SupabaseVectorStore.fromDocuments(
