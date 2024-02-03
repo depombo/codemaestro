@@ -59,7 +59,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   const maestro = maestros.filter(m => maestroNamePath(m.name) === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
-  const messages = await getMessages(maestro.id);
+  const pastMessages = await getMessages(maestro.id);
 
   // const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
   // console.log(result);
@@ -76,8 +76,8 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
         <div className='flex flex-col h-full'>
           {
-            messages.map(m => (
-              !m.user_id ?
+            pastMessages.map(m => (
+              m.model_name ?
                 <MaestroMessage
                   name={maestro.name}
                   message={m.message}
@@ -86,13 +86,13 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
                 <UserMessage
                   name={userDetails.full_name || "You"}
                   avatarUrl={userDetails.avatar_url || ""}
-                  message="That is awesome"
+                  message={m.message}
                 />
             ))
           }
         </div>
 
-        <form id="messageMaestro" action={messageMaestro.bind(null, maestro)} className="flex items-start w-4/5">
+        <form id="messageMaestro" action={messageMaestro.bind(null, maestro, pastMessages)} className="flex items-start w-4/5">
           <div className="flex flex-col w-full p-4">
             <AutoGrowingTextarea
               name="message"

@@ -18,6 +18,8 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   getSession,
   getServerClient,
+  CodeMaestro,
+  Message,
 } from '@/app/actions';
 import { redirect } from "next/navigation";
 import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
@@ -26,23 +28,26 @@ import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
 // https://js.langchain.com/docs/use_cases/rag/code_understanding
 
-export const chat = async (repo: string, input: string) => {
+export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
-  const vectorStore = await getOrGenStore(repo);
+  const vectorStore = await getOrGenStore(maestro.github_repo_name);
 
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
     searchKwargs: { fetchK: 5 },
   });
 
-  const model = new ChatOpenAI({ modelName: "gpt-3.5-turbo" }).pipe(
+  const model = new ChatOpenAI({ modelName: modelName }).pipe(
     new StringOutputParser()
   );
 
   // https://js.langchain.com/docs/modules/memory/chat_messages
   // https://js.langchain.com/docs/modules/memory/
-  const pastMessages: BaseMessage[] = [];
-  const history = new ChatMessageHistory(pastMessages);
+  const history = new ChatMessageHistory();
+  for (const pastMessage of pastMessages) {
+    if (pastMessage.model_name) await history.addMessage(new AIMessage(pastMessage.message))
+    else await history.addMessage(new HumanMessage(pastMessage.message));
+  }
   const memory = new BufferMemory({
     returnMessages: true, // Return stored messages as instances of `BaseMessage`
     memoryKey: "chat_history", // This must match up with our prompt template input variable.
@@ -113,14 +118,14 @@ export const chat = async (repo: string, input: string) => {
     question: input,
   });
 
-  await memory.saveContext(
-    {
-      input: input,
-    },
-    {
-      output: result,
-    }
-  );
+  // await memory.saveContext(
+  //   {
+  //     input: input,
+  //   },
+  //   {
+  //     output: result,
+  //   }
+  // );
 
   return result;
 }

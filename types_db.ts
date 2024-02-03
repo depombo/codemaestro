@@ -91,7 +91,7 @@ export interface Database {
           id: number
           maestro_id: number
           message: string
-          model: string | null
+          model_name: string | null
           user_id: string | null
         }
         Insert: {
@@ -99,7 +99,7 @@ export interface Database {
           id?: number
           maestro_id: number
           message: string
-          model?: string | null
+          model_name?: string | null
           user_id?: string | null
         }
         Update: {
@@ -107,7 +107,7 @@ export interface Database {
           id?: number
           maestro_id?: number
           message?: string
-          model?: string | null
+          model_name?: string | null
           user_id?: string | null
         }
         Relationships: [

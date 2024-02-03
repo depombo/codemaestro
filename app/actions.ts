@@ -13,6 +13,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { RedirectType, redirect } from 'next/navigation';
+import { chat } from './llm';
 
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
@@ -52,19 +53,28 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (maestro: CodeMaestro, formData: FormData) => {
+export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], formData: FormData) => {
   const message = formData.get('message') as string;
+  const supabase = await getServerClient();
+  // save user message
+  const { error } = await supabase
+    .from('messages')
+    .insert({ maestro_id: maestro.id, message: message, user_id: maestro.user_id })
+  if (error) {
+    console.log(error);
+  }
+  revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 
-  // const supabase = await getServerClient();
-  // const { error } = await supabase
-  //   .from('messages')
-  //   .insert({ user_id: maestro.user_id, name: name, github_repo_name: repo })
-
-  // if (error) {
-  //   console.log(error);
-  // }
-  // revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
-  console.log(message, maestro)
+  const modelName = "gpt-3.5-turbo";
+  const output = await chat(message, maestro, pastMessages, modelName);
+  // save ai messages
+  const { error: aiMessageError } = await supabase
+    .from('messages')
+    .insert({ maestro_id: maestro.id, message: output, user_id: maestro.user_id, model_name: modelName })
+  if (aiMessageError) {
+    console.log(aiMessageError);
+  }
+  revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 };
 
 export const updateName = async (formData: FormData) => {
