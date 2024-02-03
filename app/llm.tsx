@@ -114,7 +114,7 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     combineDocumentsChain,
   ]);
 
-  const result = await conversationalQaChain.invoke({
+  const result = await conversationalQaChain.stream({
     question: input,
   });
 
