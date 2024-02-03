@@ -4,9 +4,8 @@ import { cookies } from 'next/headers';
 
 // https://supabase.com/docs/guides/auth/server-side/creating-a-client?environment=api-route#creating-a-client
 // https://github.com/vercel/next.js/tree/canary/examples/with-supabase/utils/supabase
+// https://vercel.com/templates/next.js/supabase
 
-// works for server action and router handlers
-// https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 export async function getServerClient() {
   // https://nextjs.org/docs/app/api-reference/functions/cookies
   const cookieStore = cookies();
