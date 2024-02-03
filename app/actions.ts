@@ -1,7 +1,7 @@
 'use server'
 
 import { Database } from '@/types_db';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
 import { chat } from './llm';
 import { getServerClient } from './supabase/server';
@@ -13,8 +13,9 @@ import { getServerClient } from './supabase/server';
 
 // TODO zod data validation
 
-export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
+export type User = Database['public']['Tables']['users']['Row'];
+export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
 // TODO mappers once it makes sense or add into CodeMaestro type
 export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
 
@@ -25,7 +26,7 @@ export const getMessages = async (maestroId: number) => {
     .select('*')
     .eq('maestro_id', maestroId);
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   return data || [];
 };
@@ -38,18 +39,31 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
     .from('messages')
     .insert({ maestro_id: maestro.id, message: message, user_id: maestro.user_id })
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 
   const modelName = "gpt-3.5-turbo";
-  const output = await chat(message, maestro, pastMessages, modelName);
+  const outputStream = await chat(message, maestro, pastMessages, modelName);
+  const aiMessageFields = { maestro_id: maestro.id, user_id: maestro.user_id, model_name: modelName };
   // save ai messages
-  const { error: aiMessageError } = await supabase
+  let output = ''
+  const { data, error: aiMessageError } = await supabase
     .from('messages')
-    .insert({ maestro_id: maestro.id, message: output, user_id: maestro.user_id, model_name: modelName })
-  if (aiMessageError) {
-    console.log(aiMessageError);
+    .insert({ message: output, ...aiMessageFields })
+    .select('id')
+  const aiMessageId = data?.[0]?.id;
+  if (!aiMessageId) return console.error('insert of initial ai message failed')
+  if (aiMessageError) console.error(aiMessageError);
+  for await (const chunk of outputStream) {
+    output += chunk;
+    const { error: aiMessageError } = await supabase
+      .from('messages')
+      .update({ message: output, ...aiMessageFields })
+      .eq('id', data?.[0]?.id)
+    if (aiMessageError) {
+      console.error(aiMessageError);
+    }
   }
   revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 };
@@ -66,7 +80,7 @@ export const updateName = async (formData: FormData) => {
     .update({ full_name: newName })
     .eq('id', user?.id);
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   redirect('/account', RedirectType.push);
 };
@@ -78,7 +92,7 @@ export const updateEmail = async (formData: FormData) => {
   const newEmail = formData.get('email') as string;
   const { error } = await supabase.auth.updateUser({ email: newEmail });
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   revalidatePath('/account');
 };
@@ -93,7 +107,7 @@ export const getMaestros = async () => {
     .select('*')
     .eq('user_id', user?.id as string);
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   return data || [];
 };
@@ -105,7 +119,7 @@ export const deleteMaestro = async (id: number) => {
     .delete()
     .match({ id: id });
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   redirect('/chat', RedirectType.push);
 }
@@ -122,7 +136,7 @@ export const createMaestro = async (formData: FormData) => {
     .from('code_maestros')
     .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
   if (error) {
-    console.log(error);
+    console.error(error);
   }
   // TODO send to chat specific to this maestro
   redirect(`/chat`, RedirectType.push);
@@ -183,7 +197,7 @@ export const getActiveProductsWithPrices = async () => {
     .order('unit_amount', { foreignTable: 'prices' });
 
   if (error) {
-    console.log(error.message);
+    console.error(error.message);
   }
   return data ?? [];
 };
