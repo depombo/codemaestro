@@ -48,7 +48,7 @@ const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
       <div className="flex">
         <GithubBadge hyperlink={selected} name={maestro.github_repo_name} />
       </div>
-      {deleteMaestro && <DeleteConfirmationMaestroModal maestro={maestro} />}
+      {deleteMaestro && selected && <DeleteConfirmationMaestroModal maestro={maestro} />}
     </div>
   );
   return !selected ? <Link href={`/chat/${cleanPath}`}>{card}</Link> : card;
