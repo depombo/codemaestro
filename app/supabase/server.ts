@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 // works for server action and router handlers
 // https://nextjs.org/docs/app/building-your-application/routing/route-handlers
 export async function getServerClient() {
+  // https://nextjs.org/docs/app/api-reference/functions/cookies
   const cookieStore = cookies();
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -17,11 +18,24 @@ export async function getServerClient() {
         get(name: string) {
           return cookieStore.get(name)?.value
         },
+        // https://github.com/vercel/next.js/blob/canary/examples/with-supabase/utils/supabase/server.ts
         set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options })
+          try {
+            cookieStore.set({ name, value, ...options });
+          } catch (error) {
+            // The `set` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
         },
         remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options })
+          try {
+            cookieStore.set({ name, value: "", ...options });
+          } catch (error) {
+            // The `delete` method was called from a Server Component.
+            // This can be ignored if you have middleware refreshing
+            // user sessions.
+          }
         },
       },
     }
