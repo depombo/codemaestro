@@ -29,9 +29,6 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   const pastMessages = await getMessages(maestro.id);
 
-  // const result = await chat("https://github.com/depombo/journal", "I have several flutter quill editors of different size within a list view. however, if the editor is too large when the keyboard is shown you can no longer see what is being typed, how do I fix it");
-  // console.log(result);
-
   return (
     <div className='flex flex-row'>
       <Sidebar

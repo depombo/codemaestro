@@ -1,4 +1,4 @@
-import { getAPIRouteClient } from '@/app/supabase/server';
+import { getServerClient } from '@/app/supabase/server';
 import { stripe } from '@/utils/stripe';
 import { createOrRetrieveCustomer } from '@/utils/supabase-admin';
 import { getURL } from '@/utils/helpers';
@@ -6,7 +6,7 @@ import { getURL } from '@/utils/helpers';
 export async function POST(req: Request) {
   if (req.method === 'POST') {
     try {
-      const supabase = await getAPIRouteClient();
+      const supabase = await getServerClient();
       const {
         data: { user }
       } = await supabase.auth.getUser();

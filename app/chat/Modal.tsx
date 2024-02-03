@@ -3,6 +3,7 @@ import {
   CodeMaestro,
   createMaestro,
   deleteMaestro,
+  maestroNamePath,
 } from '@/app/actions';
 import Logo from '@/components/icons/Logo';
 import Link from 'next/link';
@@ -100,7 +101,7 @@ export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaest
                 </form>
               </div>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href={`/chat/${maestro.id}`}>
+                <Link href={`/chat/${maestroNamePath(maestro.name)}`}>
                   <Button
                     variant="slim"
                   >
