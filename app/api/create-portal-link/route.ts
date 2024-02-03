@@ -1,6 +1,6 @@
 import { getServerClient } from '@/app/supabase/server';
 import { stripe } from '@/utils/stripe';
-import { createOrRetrieveCustomer } from '@/utils/supabase-admin';
+import { createOrRetrieveCustomer } from '@/app/actions-admin';
 import { getURL } from '@/utils/helpers';
 
 export async function POST(req: Request) {

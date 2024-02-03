@@ -43,6 +43,7 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
   }
   revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 
+  // TODO expose in UI / sidebar
   const modelName = "gpt-3.5-turbo";
   const outputStream = await chat(message, maestro, pastMessages, modelName);
   const aiMessageFields = { maestro_id: maestro.id, user_id: maestro.user_id, model_name: modelName };

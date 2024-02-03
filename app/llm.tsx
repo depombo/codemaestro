@@ -21,8 +21,8 @@ import {
   Message,
 } from '@/app/actions';
 import { redirect } from "next/navigation";
-import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
-import { getServerClient } from "./supabase/server";
+import { HumanMessage, AIMessage } from "@langchain/core/messages";
+import { supabaseAdmin } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
@@ -30,11 +30,12 @@ import { getServerClient } from "./supabase/server";
 
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
-  const vectorStore = await getOrGenStore(maestro.github_repo_name);
+  const vectorStore = await getOrGenStore(maestro);
 
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
     searchKwargs: { fetchK: 5 },
+    filter: [{ repository: `https://github.com/${maestro.github_repo_name}` }]
   });
 
   const model = new ChatOpenAI({ modelName: modelName }).pipe(
@@ -53,18 +54,6 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     memoryKey: "chat_history", // This must match up with our prompt template input variable.
     chatHistory: history,
   });
-
-  // https://js.langchain.com/docs/integrations/chat_memory
-  // const memory1 = new VectorStoreRetrieverMemory({
-  //   vectorStoreRetriever: vectorStore.asRetriever(5),
-  //   memoryKey: 'chat_history',
-  //   returnDocs: false,
-  // });
-
-  // await memory1.saveContext(
-  //   { input: "My favorite food is pizza" },
-  //   { output: "thats good to know" }
-  // );
 
   const questionGeneratorTemplate = ChatPromptTemplate.fromMessages([
     AIMessagePromptTemplate.fromTemplate(
@@ -118,15 +107,6 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     question: input,
   });
 
-  // await memory.saveContext(
-  //   {
-  //     input: input,
-  //   },
-  //   {
-  //     output: result,
-  //   }
-  // );
-
   return result;
 }
 
@@ -162,11 +142,11 @@ const getSplitterForFileType = async (file: string) => {
     new RecursiveCharacterTextSplitter(splitterOpts);
 };
 
-const isVectorStoreEmpty = async () => {
-  const supabase = await getServerClient();
-  let { data, error, count } = await supabase
+const isVectorStoreEmpty = async (maestro: CodeMaestro) => {
+  let { data, error, count } = await supabaseAdmin
     .from('documents')
-    .select('*', { count: 'exact' })
+    .select('*', { count: 'estimated' })
+    .eq('metadata->>repository', `https://github.com/${maestro.github_repo_name}`)
 
   if (error) {
     console.error('Error checking Vector Store:', error);
@@ -176,15 +156,14 @@ const isVectorStoreEmpty = async () => {
   return count === 0;
 }
 
-const getOrGenStore = async (repo: string) => {
-  const supabase = await getServerClient();
+const getOrGenStore = async (maestro: CodeMaestro) => {
   const storeOpts = {
-    client: supabase,
+    client: supabaseAdmin,
     tableName: "documents",
     queryName: "match_documents",
   };
 
-  const isStoreEmpty = await isVectorStoreEmpty();
+  const isStoreEmpty = await isVectorStoreEmpty(maestro);
   if (!isStoreEmpty) {
     console.log('use existing embeddings')
     return await SupabaseVectorStore.fromExistingIndex(
@@ -197,7 +176,7 @@ const getOrGenStore = async (repo: string) => {
   const session = await getSession();
   if (!session) redirect('/signin')
   const loader = new GithubRepoLoader(
-    repo,
+    maestro.github_repo_name,
     {
       accessToken: session.provider_token || '',
       branch: "main",
@@ -212,6 +191,11 @@ const getOrGenStore = async (repo: string) => {
   for await (const doc of loader.loadAsStream()) {
     const splitter = await getSplitterForFileType(doc.metadata.source);
     // console.log(splitter);
+    // const docWithMeta = new Document({
+    //   pageContent: doc.pageContent,
+    //   metadata: { ...doc.metadata, 'maestro_id': maestro.id }
+    // });
+    // docs.push(...await splitter.splitDocuments([docWithMeta]));
     docs.push(...await splitter.splitDocuments([doc]));
   }
 
