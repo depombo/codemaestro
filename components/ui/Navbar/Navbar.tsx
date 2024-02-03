@@ -25,25 +25,19 @@ export default async function Navbar() {
           </div>
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
-            {session ? (
-              <div className="ml-6 space-x-2 lg:block">
-                <Link href="/chat" className={s.link}>
-                  Chat
-                </Link>
-                {session && (
-                  <Link href="/account" className={s.link}>
-                    Account
-                  </Link>
-                )}
-                <Link href="/pricing" className={s.link}>
-                  Pricing
-                </Link>
-              </div>
-            ) : (
-              <Link href="/signin" className={s.link}>
-                Sign in
+            <div className="ml-6 space-x-2 lg:block">
+              <Link href="/chat" className={s.link}>
+                Chat
               </Link>
-            )}
+              <Link href="/pricing" className={s.link}>
+                Pricing
+              </Link>
+              {session && (
+                <Link href="/account" className={s.link}>
+                  Account
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>
