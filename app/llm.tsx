@@ -31,8 +31,7 @@ import { getServerClient } from "./supabase/server";
 
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
-  const repoUrl = `https://github.com/${maestro.github_repo_name}`;
-  const vectorStore = await getOrGenStore(repoUrl);
+  const vectorStore = await getOrGenStore(maestro);
 
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
@@ -143,7 +142,7 @@ const getSplitterForFileType = async (file: string) => {
     new RecursiveCharacterTextSplitter(splitterOpts);
 };
 
-const isVectorStoreEmpty = async (repoUrl: string) => {
+const isRepoInVectorStore = async (repoUrl: string) => {
   const supabase = await getServerClient()
   let { data, error, count } = await supabase
     .from('documents')
@@ -155,41 +154,41 @@ const isVectorStoreEmpty = async (repoUrl: string) => {
     return false;
   }
 
-  return count === 0;
+  const hasRepo = count && count > 0;
+  if (hasRepo) console.log(`found embeddings for repo ${repoUrl}`)
+  return hasRepo;
 }
 
-const getOrGenStore = async (repoUrl: string) => {
-  const supabase = await getServerClient()
-  const storeOpts = {
-    client: supabase,
-    tableName: "documents",
-    queryName: "match_documents",
-    filter: [{ repository: repoUrl }]
+const getRepoInfo = async (repoName: string, accessToken: string) => {
+  const url = `https://api.github.com/repos/${repoName}`;
+  const headers = {
+    "User-Agent": "langchain",
+    Authorization: `Bearer ${accessToken}`,
   };
+  const response = await fetch(url, { headers: headers });
+  const data = await response.json();
+  if (response.ok) return { branch: data["default_branch"], private: data["private"] };
+  throw new Error(`Unable to fetch access repo ${repoName}: ${response.status} ${JSON.stringify(data)}`);
+}
 
-  const isStoreEmpty = await isVectorStoreEmpty(repoUrl);
-  if (!isStoreEmpty) {
-    console.log('use existing embeddings')
-    return await SupabaseVectorStore.fromExistingIndex(
-      new OpenAIEmbeddings(),
-      storeOpts
-    );
-  }
-
-  console.log('generating embeddings as none are availabe');
+const genRepo = async (repoName: string, maestroId: number) => {
   const session = await getSession();
   if (!session) redirect('/signin')
+  const ghToken = session.provider_token || '';
+  // console.log(session)
+  console.log(`generating embeddings for repo ${repoName}`);
+  const repoInfo = await getRepoInfo(repoName, ghToken);
+  const url = `https://github.com/${repoName}`;
   const loader = new GithubRepoLoader(
-    repoUrl,
+    url,
     {
-      accessToken: session.provider_token || '',
-      branch: "main",
+      accessToken: ghToken,
+      branch: repoInfo.branch,
       recursive: false,
       unknown: "warn",
       maxConcurrency: 5, // Defaults to 2
     }
   );
-
   const docs = [];
   // console.log(SupportedTextSplitterLanguages);
   for await (const doc of loader.loadAsStream()) {
@@ -197,16 +196,42 @@ const getOrGenStore = async (repoUrl: string) => {
     // console.log(splitter);
     const docWithMeta = new Document({
       pageContent: doc.pageContent,
-      metadata: { ...doc.metadata, 'user_id': session.user.id }
+      metadata: repoInfo.private ? {
+        ...doc.metadata,
+        "user_id": session.user.id
+      } : doc.metadata
     });
     docs.push(...await splitter.splitDocuments([docWithMeta]));
     // docs.push(...await splitter.splitDocuments([doc]));
   }
-
-  return await SupabaseVectorStore.fromDocuments(
+  await SupabaseVectorStore.fromDocuments(
     docs,
+    new OpenAIEmbeddings(),
+    {
+      client: await getServerClient(),
+      tableName: "documents",
+      queryName: "match_documents",
+      filter: [{ repository: url }]
+    }
+  );
+  console.log(`done generating embeddings for repo ${repoName}`)
+}
+
+const getOrGenStore = async (maestro: CodeMaestro) => {
+  const repoNames = maestro.github_repo_names;
+  const repoUrls = repoNames.map(n => `https://github.com/${n}`);
+  for (let i = 0; i < repoUrls.length; i++) {
+    const hasRepo = await isRepoInVectorStore(repoUrls[i]);
+    if (!hasRepo) await genRepo(repoNames[i], maestro.id);
+  }
+  const storeOpts = {
+    client: await getServerClient(),
+    tableName: "documents",
+    queryName: "match_documents",
+    filter: repoUrls.map(url => ({ repository: url }))
+  };
+  return await SupabaseVectorStore.fromExistingIndex(
     new OpenAIEmbeddings(),
     storeOpts
   );
-
 }

@@ -135,7 +135,8 @@ export const createMaestro = async (formData: FormData) => {
   const supabase = await getServerClient();
   const { error } = await supabase
     .from('code_maestros')
-    .insert({ user_id: user?.id as string, name: name, github_repo_name: repo })
+    .insert({ user_id: user?.id as string, name: name, github_repo_names: repo.split(',') })
+  // TODO get rid of split hack
   if (error) {
     console.error(error);
   }

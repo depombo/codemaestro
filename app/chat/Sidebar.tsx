@@ -46,7 +46,9 @@ const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
         }
       </div>
       <div className="flex">
-        <GithubBadge hyperlink={selected} name={maestro.github_repo_name} />
+        {
+          maestro.github_repo_names.map(n => <GithubBadge hyperlink={selected} name={n} />)
+        }
       </div>
       {deleteMaestro && selected && <DeleteConfirmationMaestroModal maestro={maestro} />}
     </div>

@@ -12,21 +12,21 @@ export interface Database {
       code_maestros: {
         Row: {
           created_at: string
-          github_repo_name: string
+          github_repo_names: string[]
           id: number
           name: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          github_repo_name: string
+          github_repo_names: string[]
           id?: number
           name: string
           user_id: string
         }
         Update: {
           created_at?: string
-          github_repo_name?: string
+          github_repo_names?: string[]
           id?: number
           name?: string
           user_id?: string
@@ -92,7 +92,7 @@ export interface Database {
           maestro_id: number
           message: string
           model_name: string | null
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           created_at?: string
@@ -100,7 +100,7 @@ export interface Database {
           maestro_id: number
           message: string
           model_name?: string | null
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           created_at?: string
@@ -108,7 +108,7 @@ export interface Database {
           maestro_id?: number
           message?: string
           model_name?: string | null
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
