@@ -1,5 +1,11 @@
 'use server'
 
+import { Database } from '@/types_db';
+import { revalidatePath } from 'next/cache';
+import { RedirectType, redirect } from 'next/navigation';
+import { chat } from './llm';
+import { getServerClient } from './supabase/server';
+
 // server actions that can be used in client or server react components
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
 // https://nextjs.org/docs/app/building-your-application/rendering/composition-patterns
@@ -7,39 +13,10 @@
 
 // TODO zod data validation
 
-import { Database } from '@/types_db';
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { SupabaseClient } from '@supabase/supabase-js';
-import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
-import { RedirectType, redirect } from 'next/navigation';
-import { chat } from './llm';
-
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
 export type Message = Database['public']['Tables']['messages']['Row'];
 // TODO mappers once it makes sense or add into CodeMaestro type
 export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
-
-export async function getServerClient(): Promise<SupabaseClient<Database>> {
-  const cookieStore = cookies();
-  return createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          cookieStore.set({ name, value, ...options })
-        },
-        remove(name: string, options: CookieOptions) {
-          cookieStore.set({ name, value: '', ...options })
-        },
-      },
-    }
-  );
-}
 
 export const getMessages = async (maestroId: number) => {
   const supabase = await getServerClient();

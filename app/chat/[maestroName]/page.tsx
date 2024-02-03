@@ -79,11 +79,13 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
             pastMessages.map(m => (
               m.model_name ?
                 <MaestroMessage
+                  key={m.id}
                   name={maestro.name}
                   message={m.message}
                 />
                 :
                 <UserMessage
+                  key={m.id}
                   name={userDetails.full_name || "You"}
                   avatarUrl={userDetails.avatar_url || ""}
                   message={m.message}

@@ -1,22 +1,17 @@
 import Link from 'next/link';
 import {
-  getServerClient,
   getSession,
-  getUserDetails,
 } from '@/app/actions';
 import Logo from '@/components/icons/Logo';
 
 import s from './Navbar.module.css';
 
 export default async function Navbar() {
-  const [session, userDetails] = await Promise.all([
-    getSession(),
-    getUserDetails(),
-  ]);
+  const session = await getSession();
 
   return (
     <nav className={s.root}>
-      <div className="max-w-6xl px-6 mx-auto py-4">
+      <div className="px-6 mx-auto py-4">
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">
@@ -28,7 +23,6 @@ export default async function Navbar() {
             </Link>
 
           </div>
-
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
             {session ? (

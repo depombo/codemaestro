@@ -1,6 +1,6 @@
 'use client';
 
-import { getBrowserClient } from '@/app/supabase-client';
+import { getBrowserClient } from '@/app/supabase/client';
 import { getURL } from '@/utils/helpers';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';

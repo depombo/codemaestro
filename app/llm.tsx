@@ -17,12 +17,12 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 
 import {
   getSession,
-  getServerClient,
   CodeMaestro,
   Message,
 } from '@/app/actions';
 import { redirect } from "next/navigation";
 import { BaseMessage, HumanMessage, AIMessage } from "@langchain/core/messages";
+import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github

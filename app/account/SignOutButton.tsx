@@ -1,6 +1,6 @@
 'use client';
 
-import { getBrowserClient } from '@/app/supabase-client';
+import { getBrowserClient } from '@/app/supabase/client';
 import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
