@@ -4,10 +4,11 @@ import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
 import { CodeMaestro, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
 import GitHub from '@/components/icons/GitHub';
+import Trash from '@/components/icons/Trash';
 
 const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
   const badge = (
-    <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-900 rounded-full">
+    <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
       <GitHub className="h-5" />
       <p>{name}</p>
       {/* <button
@@ -36,16 +37,16 @@ const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
   const deleteMaestro = searchParams?.deleteMaestro;
   const cleanPath = maestroNamePath(maestro.name);
   const card = (
-    <div className={selected ? "w-full p-4 my-8 border rounded-md black" : "w-full p-4 my-8 border rounded-md border-zinc-700"}>
+    <div className={selected ? "flex flex-col p-4 m-2 border border-zinc-700 rounded-md bg-zinc-700" : "flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
         {
-          selected && <Link href={`/chat/${cleanPath}?deleteMaestro=true`}>
-            ✖
+          selected && <Link className='text-sm' href={`/chat/${cleanPath}?deleteMaestro=true`}>
+            <Trash className="h-4" fill="white" />
           </Link>
         }
       </div>
-      <div className="flex">
+      <div className="flex flex-col">
         {
           maestro.github_repo_names.map(n => <GithubBadge hyperlink={selected} name={n} />)
         }
@@ -60,12 +61,13 @@ interface SidebarProps {
   maestros: CodeMaestro[];
   selectedMaestroId?: number;
   searchParams: Record<string, string> | null | undefined;
+  className: string;
 }
 
-const Sidebar = ({ maestros, selectedMaestroId, searchParams }: SidebarProps) => {
+const Sidebar = ({ maestros, selectedMaestroId, searchParams, className }: SidebarProps) => {
   const createMaestro = searchParams?.createMaestro;
   return (
-    <div className='flex flex-col items-center p-4 bg-zinc-800 h-full'>
+    <div className={className}>
       {
         maestros.map(m => (
           <MaestroCard

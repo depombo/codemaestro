@@ -46,14 +46,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black loading">
-          <Navbar />
-          <main
-            id="skip"
-            className="min-h-[calc(100dvh-4rem)] md:min-h[calc(100dvh-5rem)]"
-          >
-            {children}
-          </main>
-          {/* <Footer /> */}
+        <Navbar />
+        {children}
+        {/* <Footer /> */}
       </body>
     </html>
   );

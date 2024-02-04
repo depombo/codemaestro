@@ -19,7 +19,7 @@ import { vscDarkPlus as style } from 'react-syntax-highlighter/dist/esm/styles/p
 const MaestroMessage = ({ name, message }: { name: string, message: string }) => {
   return (
     <div className="flex items-start">
-      <div className="flex flex-col w-full p-4">
+      <div className="flex flex-col p-4">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full bg-white">
             <Logo className='p-2' />
@@ -100,7 +100,7 @@ const MaestroMessage = ({ name, message }: { name: string, message: string }) =>
 const UserMessage = ({ name, message, avatarUrl }: { name: string, message: string, avatarUrl: string }) => {
   return (
     <div className="flex items-start">
-      <div className="flex flex-col w-full p-4">
+      <div className="flex flex-col p-4">
         <div className="flex items-center">
           <img src={avatarUrl} alt="User Avatar" className="w-10 h-10 rounded-full" />
           <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
@@ -115,9 +115,10 @@ type ChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
+  className: string;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages }: ChatHistoryProps) {
+export default function ChatHistory({ maestro, user, pastMessages, className }: ChatHistoryProps) {
   const [messages, setMessages] = useState(pastMessages);
   const supabase = getBrowserClient()
   supabase
@@ -148,30 +149,24 @@ export default function ChatHistory({ maestro, user, pastMessages }: ChatHistory
     .subscribe()
 
   return (
-    <div className='flex flex-row'>
-
-      <div className="flex flex-col grow items-center p-4">
-
-        <div className='flex flex-col h-full'>
-          {
-            messages.map(m => (
-              m.model_name ?
-                <MaestroMessage
-                  key={m.id}
-                  name={maestro.name}
-                  message={m.message}
-                />
-                :
-                <UserMessage
-                  key={m.id}
-                  name={user.full_name || "You"}
-                  avatarUrl={user.avatar_url || ""}
-                  message={m.message}
-                />
-            ))
-          }
-        </div>
-      </div>
+    <div className={className}>
+      {
+        messages.map(m => (
+          m.model_name ?
+            <MaestroMessage
+              key={m.id}
+              name={maestro.name}
+              message={m.message}
+            />
+            :
+            <UserMessage
+              key={m.id}
+              name={user.full_name || "You"}
+              avatarUrl={user.avatar_url || ""}
+              message={m.message}
+            />
+        ))
+      }
     </div>
   );
 }

@@ -30,37 +30,39 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   const pastMessages = await getMessages(maestro.id);
 
   return (
-    <div className='flex flex-row'>
+    <div className="grid grid-cols-6 gap-4 max-h-screen">
       <Sidebar
+        className="grid col-span-1 overflow-auto border-r border-zinc-700"
         selectedMaestroId={maestro.id}
         maestros={maestros}
         searchParams={searchParams}
       />
 
-      <div className="flex flex-col grow items-center p-4">
+      <div className="grid col-span-5 items-center">
 
         <ChatHistory
+          className="max-h-96 overflow-auto"
           user={user}
           maestro={maestro}
           pastMessages={pastMessages}
         />
 
-        <form id="messageMaestro" action={messageMaestro.bind(null, maestro, pastMessages)} className="flex items-start w-4/5">
-          <div className="flex flex-col w-full p-4">
-            <AutoGrowingTextarea
-              name="message"
-            />
-          </div>
-          <div className="flex py-4">
-            <Button
-              className="h-8 w-2"
-              variant="slim"
-              form="messageMaestro"
-              type="submit"
-            >
-              ↑
-            </Button>
-          </div>
+        <form
+          id="messageMaestro"
+          action={messageMaestro.bind(null, maestro, pastMessages)}
+          className="items-start w-4/5"
+        >
+          <AutoGrowingTextarea
+            name="message"
+          />
+          <Button
+            className="h-8 w-2"
+            variant="slim"
+            form="messageMaestro"
+            type="submit"
+          >
+            ↑
+          </Button>
         </form>
 
       </div>
