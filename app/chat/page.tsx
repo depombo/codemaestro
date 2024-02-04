@@ -18,11 +18,10 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
   const maestros = await getMaestros();
 
   return (
-    <div className='flex flex-row grow'>
-      <Sidebar
-        maestros={maestros}
-        searchParams={searchParams}
-      />
-    </div>
+    <Sidebar
+      className='grid col-span-1'
+      maestros={maestros}
+      searchParams={searchParams}
+    />
   );
 }
