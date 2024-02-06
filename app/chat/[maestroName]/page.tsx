@@ -1,13 +1,11 @@
-import Button from '@/components/ui/Button';
 import {
   getMaestros,
-  messageMaestro,
   getMessages,
   getUserDetails,
   maestroNamePath,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
-import AutoGrowingTextarea from '../AutoGrowingTextarea';
+import UserInput from '../UserInput';
 import Sidebar from '../Sidebar';
 import ChatHistory from '../ChatHistory';
 
@@ -47,23 +45,10 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
           pastMessages={pastMessages}
         />
 
-        <form
-          id="messageMaestro"
-          action={messageMaestro.bind(null, maestro, pastMessages)}
-          className="items-start w-4/5"
-        >
-          <AutoGrowingTextarea
-            name="message"
-          />
-          <Button
-            className="h-8 w-2"
-            variant="slim"
-            form="messageMaestro"
-            type="submit"
-          >
-            ↑
-          </Button>
-        </form>
+        <UserInput
+          maestro={maestro}
+          pastMessages={pastMessages}
+        />
 
       </div>
     </div>

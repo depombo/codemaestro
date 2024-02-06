@@ -31,13 +31,12 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], formData: FormData) => {
-  const message = formData.get('message') as string;
+export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string) => {
   const supabase = await getServerClient();
   // save user message
   const { error } = await supabase
     .from('messages')
-    .insert({ maestro_id: maestro.id, message: message, user_id: maestro.user_id })
+    .insert({ maestro_id: maestro.id, message: newMessage, user_id: maestro.user_id })
   if (error) {
     console.error(error);
   }
@@ -46,7 +45,7 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
   // TODO expose in UI / sidebar
   // https://platform.openai.com/docs/models/continuous-model-upgrades
   const modelName = "gpt-4"; // "gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview";
-  const outputStream = await chat(message, maestro, pastMessages, modelName);
+  const outputStream = await chat(newMessage, maestro, pastMessages, modelName);
   const aiMessageFields = { maestro_id: maestro.id, user_id: maestro.user_id, model_name: modelName };
   // save ai messages
   let output = ''
