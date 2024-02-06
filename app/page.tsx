@@ -1,3 +1,6 @@
+import Button from "@/components/ui/Button";
+import Link from "next/link";
+
 export default async function Homepage() {
   return (
     <section className="mb-32 bg-black">
@@ -7,8 +10,12 @@ export default async function Homepage() {
             Code Maestros
           </h1>
           <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            Chat with Code Maestros with knowledge of specific codebases
+            Chat with an AI that understands your code
           </p>
+          <div className="max-w-2xl m-auto mt-10 items-center">
+            <Link href="/chat"><Button variant="slim">Get started</Button></Link>
+          </div>
+
         </div>
       </div>
     </section>
