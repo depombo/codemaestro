@@ -16,7 +16,7 @@ import { vscDarkPlus as style } from 'react-syntax-highlighter/dist/esm/styles/p
 
 // https://www.mozzlog.com/blog/fix-react-markdown-tailwindcss-nextjs
 // https://www.mozzlog.com/blog/react-markdown-custom-renderer
-const MaestroMessage = ({ name, message }: { name: string, message: string }) => {
+const MaestroMessage = ({ name, message, model }: { name: string, message: string, model: string }) => {
   return (
     <div className="flex items-start">
       <div className="flex flex-col p-4">
@@ -24,7 +24,8 @@ const MaestroMessage = ({ name, message }: { name: string, message: string }) =>
           <div className="w-10 h-10 rounded-full bg-white">
             <Logo className='p-2' />
           </div>
-          <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
+          <span className="text-sm ml-3 font-semibold text-gray-200">{name} <sup className='font-normal'>{model}</sup></span>
+
         </div>
         <ReactMarkdown
           className='ml-14'
@@ -157,6 +158,7 @@ export default function ChatHistory({ maestro, user, pastMessages, className }: 
               key={m.id}
               name={maestro.name}
               message={m.message}
+              model={m.model_name}
             />
             :
             <UserMessage
