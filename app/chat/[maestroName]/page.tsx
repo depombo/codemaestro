@@ -28,19 +28,18 @@ export default async function ChatPage({ params }: ChatPageProps) {
   const pastMessages = await getMessages(maestro.id);
 
   return (
-    <div className="flex flex-col">
+    <>
       <ChatHistory
-        className="flex-1 p-4"
+        className="flex-col pt-4 pb-32 px-8"
         user={user}
         maestro={maestro}
         pastMessages={pastMessages}
       />
       <UserInput
-        className="w-full sticky bottom-0 p-4 bg-black border-t border-zinc-700"
+        className="fixed w-full bottom-0 h-28 p-4 bg-black border-t border-zinc-700"
         maestro={maestro}
         pastMessages={pastMessages}
       />
-
-    </div>
+    </>
   );
 }

@@ -97,7 +97,7 @@ export const UserMessage = ({ name, message, avatarUrl }: { name: string, messag
           <img src={avatarUrl} alt="User Avatar" className="w-10 h-10 rounded-full" />
           <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
         </div>
-        <p className="text-sm font-normal ml-14 text-gray-200">{message}</p>
+        <p className="text-sm break-all font-normal ml-14 text-gray-200">{message}</p>
       </div>
     </div>
   )
