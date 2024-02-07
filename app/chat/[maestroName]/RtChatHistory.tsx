@@ -16,8 +16,8 @@ type RtChatHistoryProps = {
 };
 
 export default function ChatHistory({ maestro, user, pastMessages }: RtChatHistoryProps) {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const supabase = getBrowserClient()
+  const [rtMessages, setRtMessages] = useState<Message[]>([]);
+  const supabase = getBrowserClient();
   supabase
     .channel('messages-db')
     .on<Message>(
@@ -28,7 +28,7 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setMessages([...messages, payload.new].filter(m => !pastMessages.includes(m)))
+      (payload) => setRtMessages([...rtMessages, payload.new].filter(m => !pastMessages.includes(m)))
     )
     .on<Message>(
       'postgres_changes',
@@ -38,25 +38,23 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setMessages(
-        messages
+      (payload) => setRtMessages(
+        rtMessages
           .map(m => m.id === payload.new.id ? payload.new : m)
       )
     )
     .subscribe()
 
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-
-  useEffect(scrollToBottom, [messages]);
+  useEffect(scrollToBottom, [rtMessages]);
 
   return (
     <>
       {
-        messages.map(m => (
+        rtMessages.map(m => (
           m.model_name ?
             <MaestroMessage
               key={m.id}
