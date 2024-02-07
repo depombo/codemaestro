@@ -17,10 +17,11 @@ export async function GET(request: NextRequest) {
   // https://github.com/supabase/gotrue-js/issues/131#issuecomment-1566224009
   // save auth token & refresh token for a current user.
   const session = await getSession();
+  // uncomment when they fix it
   // if (!session || !session.provider_token || !session.provider_refresh_token) {
   //   throw new Error("session, provider_token or provider_refresh_token are missing")
   // }
-  await updateGithubTokens(session.user.id, session.provider_token, session.provider_refresh_token);
+  await updateGithubTokens(session!.user.id, session!.provider_token || null, session!.provider_refresh_token || null);
 
   // URL to redirect to after sign in process completes
   return NextResponse.redirect(requestUrl.origin)
