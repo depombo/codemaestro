@@ -5,6 +5,7 @@ import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
 import { BufferMemory, ChatMessageHistory, VectorStoreRetrieverMemory } from "langchain/memory";
 import { Document } from "@langchain/core/documents";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 import {
   ChatPromptTemplate,
@@ -20,14 +21,27 @@ import {
   getSession,
   CodeMaestro,
   Message,
+  getUserDetails,
+  updateGithubTokens,
 } from '@/app/actions';
-import { redirect } from "next/navigation";
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
 // https://js.langchain.com/docs/use_cases/rag/code_understanding
+
+// TODO implement
+// const getMemory = async (pastMessages: Message[]) => {
+//   let tokenEstimate = pastMessages.join(" ").split(" ").length;
+//   // https://js.langchain.com/docs/modules/memory/types/vectorstore_retriever_memory
+//   const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
+//   const memory = new VectorStoreRetrieverMemory({
+//     // 1 is how many documents to return, you might want to return more, eg. 4
+//     vectorStoreRetriever: vectorStore.asRetriever(1),
+//     memoryKey: "history",
+//   });
+// }
 
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
@@ -159,6 +173,44 @@ const isRepoInVectorStore = async (repoUrl: string) => {
   return hasRepo;
 }
 
+const getGithubToken = async () => {
+  const user = await getUserDetails();
+  const ghToken = user?.github_provider_token;
+  const headers = {
+    "User-Agent": "langchain",
+    Authorization: `Bearer ${ghToken}`,
+  };
+  const response = await fetch(
+    "https://api.github.com/user/repos",
+    { headers: headers }
+  );
+  const data = await response.json();
+  // token is good to return
+  if (response.ok) return ghToken;
+  // refresh token, save it and return
+  //  https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/refreshing-user-access-tokens
+  if (response.status === 401) {
+    const response = await fetch(
+      "https://github.com/login/oauth/access_token", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        grant_type: "refresh_token",
+        refresh_token: user?.github_provider_refresh_token,
+        client_id: process.env.GITHUB_APP_CLIENT_ID!,
+        client_secret: process.env.GITHUB_APP_CLIENT_SECRET!,
+      }),
+    });
+    const body = await response.json();
+    await updateGithubTokens(user?.id!, body.provider_token, body.provider_refresh_token);
+    return body.provider_token;
+  }
+  throw new Error(`Unable to fetch access repos for user: ${response.status} ${JSON.stringify(data)}`);
+}
+
 const getRepoInfo = async (repoName: string, accessToken: string) => {
   const url = `https://api.github.com/repos/${repoName}`;
   const headers = {
@@ -171,11 +223,9 @@ const getRepoInfo = async (repoName: string, accessToken: string) => {
   throw new Error(`Unable to fetch access repo ${repoName}: ${response.status} ${JSON.stringify(data)}`);
 }
 
-const genRepo = async (repoName: string, maestroId: number) => {
-  const session = await getSession();
-  if (!session) redirect('/signin')
-  const ghToken = session.provider_token || '';
-  // console.log(session)
+const genRepo = async (repoName: string) => {
+  const ghToken = await getGithubToken();
+  const user = await getUserDetails();
   console.log(`generating embeddings for repo ${repoName}`);
   const repoInfo = await getRepoInfo(repoName, ghToken);
   const url = `https://github.com/${repoName}`;
@@ -198,7 +248,7 @@ const genRepo = async (repoName: string, maestroId: number) => {
       pageContent: doc.pageContent,
       metadata: repoInfo.private ? {
         ...doc.metadata,
-        "user_id": session.user.id
+        "user_id": user?.id
       } : doc.metadata
     });
     docs.push(...await splitter.splitDocuments([docWithMeta]));
@@ -222,7 +272,7 @@ const getOrGenStore = async (maestro: CodeMaestro) => {
   const repoUrls = repoNames.map(n => `https://github.com/${n}`);
   for (let i = 0; i < repoUrls.length; i++) {
     const hasRepo = await isRepoInVectorStore(repoUrls[i]);
-    if (!hasRepo) await genRepo(repoNames[i], maestro.id);
+    if (!hasRepo) await genRepo(repoNames[i]);
   }
   const storeOpts = {
     client: await getServerClient(),

@@ -76,14 +76,31 @@ export const updateName = async (formData: FormData) => {
   if (!session) redirect('/signin')
   const user = session.user;
   const { error } = await supabase
-    .from('users')
+    .from("users")
     .update({ full_name: newName })
-    .eq('id', user?.id);
+    .eq("id", user?.id);
   if (error) {
     console.error(error);
   }
   redirect('/account', RedirectType.push);
 };
+
+export const updateGithubTokens = async (uid: string, accessToken: string | null, refreshToken: string | null) => {
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from("users")
+    .update({
+      github_provider_token: accessToken,
+      github_provider_refresh_token: refreshToken,
+    })
+    .eq("id", uid)
+    .select()
+    .single();
+  if (error) {
+    console.error(error);
+  }
+};
+
 
 export const updateEmail = async (formData: FormData) => {
   const supabase = await getServerClient();
@@ -156,7 +173,7 @@ export async function getSession() {
   }
 }
 
-export async function getUserDetails() {
+export async function getUserDetails(): Promise<User | null> {
   try {
     const supabase = await getServerClient();
     const { data: userDetails } = await supabase

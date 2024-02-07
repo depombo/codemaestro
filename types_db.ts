@@ -6,7 +6,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
+export type Database = {
   public: {
     Tables: {
       code_maestros: {
@@ -278,6 +278,8 @@ export interface Database {
           avatar_url: string | null
           billing_address: Json | null
           full_name: string | null
+          github_provider_refresh_token: string | null
+          github_provider_token: string | null
           id: string
           payment_method: Json | null
         }
@@ -285,6 +287,8 @@ export interface Database {
           avatar_url?: string | null
           billing_address?: Json | null
           full_name?: string | null
+          github_provider_refresh_token?: string | null
+          github_provider_token?: string | null
           id: string
           payment_method?: Json | null
         }
@@ -292,6 +296,8 @@ export interface Database {
           avatar_url?: string | null
           billing_address?: Json | null
           full_name?: string | null
+          github_provider_refresh_token?: string | null
+          github_provider_token?: string | null
           id?: string
           payment_method?: Json | null
         }
