@@ -35,7 +35,6 @@ export default async function ChatPage({ params }: ChatPageProps) {
         maestro={maestro}
         pastMessages={pastMessages}
       />
-
       <UserInput
         className="w-full sticky bottom-0 p-4 bg-black border-t border-zinc-700"
         maestro={maestro}
