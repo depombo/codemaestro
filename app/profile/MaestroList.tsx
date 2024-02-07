@@ -39,7 +39,7 @@ const MaestroCard = ({ maestro, searchParams }: MaestroCardProps) => {
     <div className={"flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
-        <Link className='text-sm' href={`/chat/${cleanPath}?deleteMaestro=true`}>
+        <Link className='text-sm' href={`/profile?deleteMaestro=${cleanPath}`}>
           <Trash className="h-4" fill="white" />
         </Link>
       </div>
@@ -56,7 +56,13 @@ const MaestroCard = ({ maestro, searchParams }: MaestroCardProps) => {
           Chat
         </Button>
       </Link>
-      {deleteMaestro && <DeleteConfirmationMaestroModal maestro={maestro} />}
+      {
+        deleteMaestro === cleanPath &&
+        <DeleteConfirmationMaestroModal
+          redirectPath={`/profile`}
+          maestro={maestro}
+        />
+      }
     </div>
   );
 };
@@ -68,7 +74,7 @@ interface MaestroListProps {
   className: string;
 }
 
-const MaestroList = ({ maestros, selectedMaestroId, searchParams, className }: MaestroListProps) => {
+const MaestroList = ({ maestros, searchParams, className }: MaestroListProps) => {
   const createMaestro = searchParams?.createMaestro;
   return (
     <div className={className}>
@@ -81,7 +87,7 @@ const MaestroList = ({ maestros, selectedMaestroId, searchParams, className }: M
           />
         ))
       }
-      <Link href='/chat?createMaestro=true'>
+      <Link href='/profile?createMaestro=true'>
         <Button
           variant="slim"
           type="submit"
@@ -89,7 +95,7 @@ const MaestroList = ({ maestros, selectedMaestroId, searchParams, className }: M
           New Maestro
         </Button>
       </Link>
-      {createMaestro && <CreateMaestroModal />}
+      {createMaestro && <CreateMaestroModal redirectPath={`/profile`} />}
     </div>
   );
 };

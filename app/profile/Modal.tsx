@@ -3,13 +3,13 @@ import {
   CodeMaestro,
   createMaestro,
   deleteMaestro,
-  maestroNamePath,
 } from '@/app/actions';
 import Logo from '@/components/icons/Logo';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
-export const CreateMaestroModal = () => (
+// TODO send to chat specific to this maestro
+export const CreateMaestroModal = ({ redirectPath }: { redirectPath: string }) => (
   <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
     <div className="shadow-lg">
       <div className="p-4 bg-black">
@@ -28,7 +28,7 @@ export const CreateMaestroModal = () => (
                 </Button>
               </div>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href="/chat">
+                <Link href={redirectPath}>
                   <Button
                     variant="slim"
                   >
@@ -39,7 +39,7 @@ export const CreateMaestroModal = () => (
             </div>
           }
         >
-          <form id="createMaestro" action={createMaestro}>
+          <form id="createMaestro" action={createMaestro.bind(null, redirectPath)}>
             <div className="mt-6 mb-2 ml-2 text-l font-semibold">
               <label>Maestro Name</label>
             </div>
@@ -80,7 +80,7 @@ export const CreateMaestroModal = () => (
   </div>
 )
 
-export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaestro }) => (
+export const DeleteConfirmationMaestroModal = ({ maestro, redirectPath }: { maestro: CodeMaestro, redirectPath: string }) => (
   <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
     <div className="shadow-lg">
       <div className="p-4 bg-black">
@@ -90,7 +90,7 @@ export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaest
           footer={
             <div className='flex flex-row justify-between'>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id)}>
+                <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id, redirectPath)}>
                   <Button
                     variant="slim"
                     type="submit"
@@ -101,7 +101,7 @@ export const DeleteConfirmationMaestroModal = ({ maestro }: { maestro: CodeMaest
                 </form>
               </div>
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href={`/chat/${maestroNamePath(maestro.name)}`}>
+                <Link href={redirectPath}>
                   <Button
                     variant="slim"
                   >

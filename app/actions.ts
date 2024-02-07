@@ -1,7 +1,7 @@
 'use server'
 
 import { Database } from '@/types_db';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
 import { chat } from './llm';
 import { getServerClient } from './supabase/server';
@@ -113,7 +113,7 @@ export const getMaestros = async () => {
   return data || [];
 };
 
-export const deleteMaestro = async (id: number) => {
+export const deleteMaestro = async (id: number, redirectPath: string) => {
   const supabase = await getServerClient();
   const { error } = await supabase
     .from('code_maestros')
@@ -122,10 +122,10 @@ export const deleteMaestro = async (id: number) => {
   if (error) {
     console.error(error);
   }
-  redirect('/chat', RedirectType.push);
+  redirect(redirectPath, RedirectType.push);
 }
 
-export const createMaestro = async (formData: FormData) => {
+export const createMaestro = async (redirectPath: string, formData: FormData) => {
   const session = await getSession();
   // console.log(formData);
   const name = formData.get('name') as string;
@@ -140,8 +140,7 @@ export const createMaestro = async (formData: FormData) => {
   if (error) {
     console.error(error);
   }
-  // TODO send to chat specific to this maestro
-  redirect(`/chat`, RedirectType.push);
+  redirect(redirectPath, RedirectType.push);
 };
 
 
