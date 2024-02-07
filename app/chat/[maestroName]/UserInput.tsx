@@ -24,15 +24,20 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
     (textarea as HTMLTextAreaElement).style.height = (textarea as HTMLTextAreaElement).scrollHeight + 'px';
   };
 
-  const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleFormSubmit = async (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault()
     const messageToSend = message;
     setIsLoading(true);
     setMessage('');
     await messageMaestro(maestro, pastMessages, messageToSend);
     setIsLoading(false);
   }
-
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === "Enter") {
+      event.preventDefault(); // Prevents the addition of a new line in the textarea (if you don't want this)
+      handleFormSubmit();
+    }
+  };
   return (
     <div className={className}>
       <form
@@ -42,6 +47,7 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
       >
         <textarea
           ref={textareaRef}
+          onKeyDown={handleKeyPress}
           className={"text-sm w-full rounded-md bg-zinc-800 overflow-scroll-y resize-none p-2 outline-none"}
           placeholder="Type here..."
           value={message}
