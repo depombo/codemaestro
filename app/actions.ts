@@ -24,6 +24,7 @@ export const getMessages = async (maestroId: number) => {
   const { error, data } = await supabase
     .from('messages')
     .select('*')
+    .order('created_at')
     .eq('maestro_id', maestroId);
   if (error) {
     console.error(error);
@@ -40,7 +41,6 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
   if (error) {
     console.error(error);
   }
-  revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 
   // TODO expose in UI / sidebar
   // https://platform.openai.com/docs/models/continuous-model-upgrades
@@ -66,7 +66,6 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
       console.error(aiMessageError);
     }
   }
-  revalidatePath(`/chat/${maestroNamePath(maestro.name)}`);
 };
 
 export const updateName = async (formData: FormData) => {
