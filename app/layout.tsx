@@ -4,12 +4,12 @@ import { PropsWithChildren } from 'react';
 import 'styles/main.css';
 
 const meta = {
-  title: 'Next.js Subscription Starter',
+  title: 'CodeMaestro',
   description: 'Brought to you by Vercel, Stripe, and Supabase.',
   cardImage: '/og.png',
   robots: 'follow, index',
-  favicon: '/favicon.svg',
-  url: 'https://subscription-starter.vercel.app',
+  favicon: '/favicon.ico',
+  url: 'https://codemaestro.sh',
   type: 'website'
 };
 
