@@ -6,7 +6,7 @@ import {
   User,
 } from '@/app/actions';
 import { getBrowserClient } from '../../supabase/client';
-import { useState, } from 'react';
+import { useEffect, useRef, useState, } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
 
 type RtChatHistoryProps = {
@@ -45,6 +45,14 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
     )
     .subscribe()
 
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
+
+  useEffect(scrollToBottom, [messages]);
+
   return (
     <>
       {
@@ -65,6 +73,7 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
             />
         ))
       }
+      <div ref={messagesEndRef} />
     </>
   );
 }
