@@ -9,8 +9,8 @@ import { vscDarkPlus as style } from 'react-syntax-highlighter/dist/esm/styles/p
 // https://www.mozzlog.com/blog/react-markdown-custom-renderer
 export const MaestroMessage = ({ name, message, model }: { name: string, message: string, model: string }) => {
   return (
-    <div className="flex items-start">
-      <div className="flex flex-col p-4">
+    <div className="items-start">
+      <div className="p-4">
         <div className="flex items-center">
           <div className="w-10 h-10 rounded-full bg-white">
             <Logo className='p-2' />
@@ -91,8 +91,8 @@ export const MaestroMessage = ({ name, message, model }: { name: string, message
 
 export const UserMessage = ({ name, message, avatarUrl }: { name: string, message: string, avatarUrl: string }) => {
   return (
-    <div className="flex items-start">
-      <div className="flex flex-col p-4">
+    <div className="items-start">
+      <div className="p-4">
         <div className="flex items-center">
           <img src={avatarUrl} alt="User Avatar" className="w-10 h-10 rounded-full" />
           <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
