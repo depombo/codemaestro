@@ -29,42 +29,46 @@ const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) 
 
 interface MaestroCardProps {
   maestro: CodeMaestro;
-  selected: boolean;
   searchParams: Record<string, string> | null | undefined;
 }
 
-const MaestroCard = ({ maestro, selected, searchParams }: MaestroCardProps) => {
+const MaestroCard = ({ maestro, searchParams }: MaestroCardProps) => {
   const deleteMaestro = searchParams?.deleteMaestro;
   const cleanPath = maestroNamePath(maestro.name);
-  const card = (
-    <div className={selected ? "flex flex-col p-4 m-2 border border-zinc-700 rounded-md bg-zinc-700" : "flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
+  return (
+    <div className={"flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
       <div className="flex flex-row justify-between">
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
-        {
-          selected && <Link className='text-sm' href={`/chat/${cleanPath}?deleteMaestro=true`}>
-            <Trash className="h-4" fill="white" />
-          </Link>
-        }
+        <Link className='text-sm' href={`/chat/${cleanPath}?deleteMaestro=true`}>
+          <Trash className="h-4" fill="white" />
+        </Link>
       </div>
       <div className="flex flex-col">
         {
-          maestro.github_repo_names.map(n => <GithubBadge key={n} hyperlink={selected} name={n} />)
+          maestro.github_repo_names.map(n => <GithubBadge key={n} hyperlink={true} name={n} />)
         }
       </div>
-      {deleteMaestro && selected && <DeleteConfirmationMaestroModal maestro={maestro} />}
+      <Link href={`/chat/${cleanPath}`}>
+        <Button
+          variant="slim"
+          type="submit"
+        >
+          Chat
+        </Button>
+      </Link>
+      {deleteMaestro && <DeleteConfirmationMaestroModal maestro={maestro} />}
     </div>
   );
-  return !selected ? <Link href={`/chat/${cleanPath}`}>{card}</Link> : card;
 };
 
-interface SidebarProps {
+interface MaestroListProps {
   maestros: CodeMaestro[];
   selectedMaestroId?: number;
   searchParams: Record<string, string> | null | undefined;
   className: string;
 }
 
-const Sidebar = ({ maestros, selectedMaestroId, searchParams, className }: SidebarProps) => {
+const MaestroList = ({ maestros, selectedMaestroId, searchParams, className }: MaestroListProps) => {
   const createMaestro = searchParams?.createMaestro;
   return (
     <div className={className}>
@@ -72,7 +76,6 @@ const Sidebar = ({ maestros, selectedMaestroId, searchParams, className }: Sideb
         maestros.map(m => (
           <MaestroCard
             key={m.id}
-            selected={m.id === selectedMaestroId}
             maestro={m}
             searchParams={searchParams}
           />
@@ -91,4 +94,4 @@ const Sidebar = ({ maestros, selectedMaestroId, searchParams, className }: Sideb
   );
 };
 
-export default Sidebar;
+export default MaestroList;

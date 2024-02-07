@@ -15,7 +15,7 @@ import { ReactNode } from 'react';
 import Stripe from '@/components/icons/Stripe';
 import GitHub from '@/components/icons/GitHub';
 
-export default async function Account() {
+export default async function Settings() {
 
   const [session, userDetails, subscription] = await Promise.all([
     getSession(),
@@ -39,7 +39,7 @@ export default async function Account() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Account
+            Settings
           </h1>
         </div>
       </div>

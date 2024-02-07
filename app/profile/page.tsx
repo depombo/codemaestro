@@ -4,7 +4,7 @@ import {
   getUserDetails,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
-import Sidebar from './Sidebar';
+import MaestroList from './MaestroList';
 
 type SearchParamProps = {
   searchParams: Record<string, string> | null | undefined;
@@ -18,7 +18,7 @@ export default async function ChatPage({ searchParams }: SearchParamProps) {
   const maestros = await getMaestros();
 
   return (
-    <Sidebar
+    <MaestroList
       className='grid col-span-1'
       maestros={maestros}
       searchParams={searchParams}

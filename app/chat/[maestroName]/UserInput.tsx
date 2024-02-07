@@ -2,14 +2,15 @@
 
 import Button from '@/components/ui/Button';
 import React, { useState, useRef, FormEvent } from 'react';
-import { CodeMaestro, Message, messageMaestro } from '../actions';
+import { CodeMaestro, Message, messageMaestro } from '../../actions';
 
 type UserInputProps = {
   maestro: CodeMaestro;
   pastMessages: Message[];
+  className: string;
 };
 
-const UserInput = ({ pastMessages, maestro }: UserInputProps) => {
+const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
@@ -33,30 +34,32 @@ const UserInput = ({ pastMessages, maestro }: UserInputProps) => {
   }
 
   return (
-    <form
-      id="messageMaestro"
-      onSubmit={handleFormSubmit}
-      className="items-start w-4/5"
-    >
-      <textarea
-        ref={textareaRef}
-        className={"w-full text-sm rounded-md bg-zinc-800 resize-none overflow-scroll-y p-2 w-full outline-none"}
-        placeholder="Type here..."
-        value={message}
-        rows={1}
-        onChange={handleInputChange}
-        style={{ maxHeight: '8rem' }}
-      />
-      <Button
-        className="h-8 w-2"
-        disabled={isLoading}
-        variant="slim"
-        form="messageMaestro"
-        type="submit"
+    <div className={className}>
+      <form
+        id="messageMaestro"
+        onSubmit={handleFormSubmit}
+        className='flex flex-row w-full items-center'
       >
-        ↑
-      </Button>
-    </form>
+        <textarea
+          ref={textareaRef}
+          className={"text-sm w-full rounded-md bg-zinc-800 overflow-scroll-y resize-none p-2 outline-none"}
+          placeholder="Type here..."
+          value={message}
+          rows={2}
+          onChange={handleInputChange}
+          style={{ maxHeight: '8rem' }}
+        />
+        <Button
+          className="h-8 w-2 ml-4"
+          disabled={isLoading}
+          variant="slim"
+          form="messageMaestro"
+          type="submit"
+        >
+          ↑
+        </Button>
+      </form>
+    </div>
   );
 };
 

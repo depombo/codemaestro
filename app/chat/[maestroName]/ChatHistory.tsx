@@ -6,7 +6,7 @@ import {
   User,
 } from '@/app/actions';
 import Logo from '@/components/icons/Logo';
-import { getBrowserClient } from '../supabase/client';
+import { getBrowserClient } from '../../supabase/client';
 import { useState, } from 'react';
 
 import ReactMarkdown from 'react-markdown'

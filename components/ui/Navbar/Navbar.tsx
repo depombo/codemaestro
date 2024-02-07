@@ -26,15 +26,15 @@ export default async function Navbar() {
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
             <div className="ml-6 space-x-2 lg:block">
-              <Link href="/chat" className={s.link}>
-                Chat
+              <Link href="/profile" className={s.link}>
+                {session ? "Profile" : 'Dashboard'}
               </Link>
               <Link href="/pricing" className={s.link}>
                 Pricing
               </Link>
               {session && (
-                <Link href="/account" className={s.link}>
-                  Account
+                <Link href="/settings" className={s.link}>
+                  Settings
                 </Link>
               )}
             </div>

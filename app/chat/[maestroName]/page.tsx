@@ -5,52 +5,43 @@ import {
   maestroNamePath,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
-import UserInput from '../UserInput';
-import Sidebar from '../Sidebar';
-import ChatHistory from '../ChatHistory';
+import UserInput from './UserInput';
+import ChatHistory from './ChatHistory';
 
 type ChatPageProps = {
   params: { maestroName: string };
-  searchParams: Record<string, string> | null | undefined;
 };
 
-export default async function ChatPage({ params, searchParams }: ChatPageProps) {
+export default async function ChatPage({ params }: ChatPageProps) {
   const user = await getUserDetails();
   if (!user) {
     return redirect('/signin');
   }
-
-  const maestros = await getMaestros();
   const maestroName = params.maestroName;
+  if (!maestroName) {
+    return redirect('/profile');
+  }
+  const maestros = await getMaestros();
   const maestro = maestros.filter(m => maestroNamePath(m.name) === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
   const pastMessages = await getMessages(maestro.id);
 
   return (
-    <div className="grid grid-cols-6 gap-4 max-h-screen">
-      <Sidebar
-        className="grid col-span-1 overflow-auto border-r border-zinc-700"
-        selectedMaestroId={maestro.id}
-        maestros={maestros}
-        searchParams={searchParams}
+    <div className="flex flex-col">
+      <ChatHistory
+        className="flex-1 p-4"
+        user={user}
+        maestro={maestro}
+        pastMessages={pastMessages}
       />
 
-      <div className="grid col-span-5 items-center">
+      <UserInput
+        className="w-full sticky bottom-0 p-4 bg-black border-t border-zinc-700"
+        maestro={maestro}
+        pastMessages={pastMessages}
+      />
 
-        <ChatHistory
-          className="max-h-96 overflow-auto"
-          user={user}
-          maestro={maestro}
-          pastMessages={pastMessages}
-        />
-
-        <UserInput
-          maestro={maestro}
-          pastMessages={pastMessages}
-        />
-
-      </div>
     </div>
   );
 }
