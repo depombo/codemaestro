@@ -1,7 +1,6 @@
 import ManageStripeButton from './ManageStripeButton';
 import SignOutButton from './SignOutButton';
 import {
-  updateEmail,
   updateName,
   getSession,
   getUserDetails,
@@ -14,6 +13,7 @@ import { ReactNode } from 'react';
 
 import Stripe from '@/components/icons/Stripe';
 import GitHub from '@/components/icons/GitHub';
+import ManageGithubButton from './ManageGithubButton';
 
 export default async function Settings() {
 
@@ -49,16 +49,7 @@ export default async function Settings() {
           logo={<GitHub fill='white' height='50' width='50' />}
           description={'Manage the connection between CodeMaestro and GitHub'}
           footer={
-            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">Manage permissions on CodeMaestro's GitHub App Page</p>
-              <Link href="https://github.com/apps/codemaestro-sh/installations/new" target="_blank" rel="noopener noreferrer">
-                <Button
-                  variant="slim"
-                >
-                  Manage on GitHub ↗
-                </Button>
-              </Link>
-            </div>
+            <ManageGithubButton />
           }
         >
           <div className="mt-8 mb-4 text-xl font-semibold hover:text-zinc-400">
