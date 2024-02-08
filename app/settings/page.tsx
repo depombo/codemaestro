@@ -4,7 +4,8 @@ import {
   updateName,
   getSession,
   getUserDetails,
-  getSubscription
+  getSubscription,
+  updateUsername
 } from '@/app/actions';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
@@ -71,6 +72,36 @@ export default async function Settings() {
             ) : (
               <Link href="/pricing">Choose your plan</Link>
             )}
+          </div>
+        </Card>
+        <Card
+          title="Username"
+          description="Please enter your unique username."
+          footer={
+            <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
+              <p className="pb-4 sm:pb-0">Only ASCII letters, digits, and the characters ., -, and _.</p>
+              <Button
+                variant="slim"
+                type="submit"
+                form="usernameForm"
+                disabled={false}
+              >
+                Update Username
+              </Button>
+            </div>
+          }
+        >
+          <div className="mt-8 mb-4 text-xl font-semibold">
+            <form id="nameForm" action={updateUsername}>
+              <input
+                type="text"
+                name="username"
+                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                defaultValue={userDetails?.username ?? ''}
+                placeholder="Your name"
+                maxLength={64}
+              />
+            </form>
           </div>
         </Card>
         <Card

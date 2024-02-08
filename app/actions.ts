@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
 import { chat } from './llm';
 import { getServerClient } from './supabase/server';
+import { Session } from '@supabase/supabase-js';
 
 // server actions that can be used in client or server react components
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
@@ -67,7 +68,6 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
 
 export const updateName = async (formData: FormData) => {
   const supabase = await getServerClient();
-
   const newName = formData.get('name') as string;
   const session = await getSession();
   if (!session) redirect('/signin')
@@ -82,33 +82,37 @@ export const updateName = async (formData: FormData) => {
   redirect('/account', RedirectType.push);
 };
 
-export const updateUsername = async (uid: string, username: string) => {
+export const updateUsername = async (formData: FormData) => {
   const supabase = await getServerClient();
+  const newUsername = formData.get('name') as string;
+  const session = await getSession();
+  if (!session) redirect('/signin')
   const { error } = await supabase
     .from("users")
     .update({
-      username: username,
+      username: newUsername,
     })
-    .eq("id", uid);
+    .eq("id", session.user.id);
   if (error) {
     console.error(error);
   }
 };
 
-export const updateGithubTokens = async (uid: string, accessToken: string | null, refreshToken: string | null) => {
+export const updateGithubTokens = async (accessToken: string | null, refreshToken: string | null) => {
   const supabase = await getServerClient();
+  const session = await getSession();
+  if (!session) redirect('/signin')
   const { error } = await supabase
     .from("users")
     .update({
       github_provider_token: accessToken,
       github_provider_refresh_token: refreshToken,
     })
-    .eq("id", uid);
+    .eq("id", session.user.id);
   if (error) {
     console.error(error);
   }
 };
-
 
 export const updateEmail = async (formData: FormData) => {
   const supabase = await getServerClient();
@@ -167,13 +171,14 @@ export const createMaestro = async (redirectPath: string, formData: FormData) =>
   redirect(redirectPath, RedirectType.push);
 };
 
-
-export async function getSession() {
+// TODO error handling and solidify type
+export async function getSession(): Promise<Session | null> {
   try {
     const supabase = await getServerClient();
     const {
       data: { session }
     } = await supabase.auth.getSession();
+    // if (!session) redirect('/signin');
     return session;
   } catch (error) {
     console.error('Error:', error);
@@ -181,14 +186,15 @@ export async function getSession() {
   }
 }
 
-// TODO this only works for one user wtf
 export async function getUserDetails(): Promise<User | null> {
   try {
     const supabase = await getServerClient();
+    const session = await getSession();
+    if (!session) redirect('/signin')
     const { data } = await supabase
       .from('users')
       .select('*')
-      // .match({ id: id })
+      .match({ id: session.user.id })
       .single();
     return data;
   } catch (error) {

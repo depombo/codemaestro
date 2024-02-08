@@ -3,9 +3,8 @@ import { GithubRepoLoader } from "langchain/document_loaders/web/github";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
-import { BufferMemory, ChatMessageHistory, VectorStoreRetrieverMemory } from "langchain/memory";
+import { BufferMemory, ChatMessageHistory, } from "langchain/memory";
 import { Document } from "@langchain/core/documents";
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
 
 import {
   ChatPromptTemplate,
@@ -193,7 +192,7 @@ const getGithubToken = async () => {
       }),
     });
     const body = await response.json();
-    await updateGithubTokens(user?.id!, body.provider_token, body.provider_refresh_token);
+    await updateGithubTokens(body.provider_token, body.provider_refresh_token);
     return body.provider_token;
   }
   throw new Error(`Unable to fetch access repos for user: ${response.status} ${JSON.stringify(data)}`);
