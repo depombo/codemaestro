@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers';
+import { Database } from '@/types_db';
 
 // https://supabase.com/docs/guides/auth/server-side/creating-a-client?environment=api-route#creating-a-client
 // https://github.com/vercel/next.js/tree/canary/examples/with-supabase/utils/supabase
@@ -9,7 +10,7 @@ import { cookies } from 'next/headers';
 export async function getServerClient() {
   // https://nextjs.org/docs/app/api-reference/functions/cookies
   const cookieStore = cookies();
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
@@ -43,7 +44,7 @@ export async function getServerClient() {
 
 // Note: uses the SERVICE_ROLE_KEY which you must only use in a secure server-side context
 // as it has admin privileges and overwrites RLS policies!
-export const supabaseAdmin = createClient(
+export const supabaseAdmin = createClient<Database>(
   process.env.NEXT_PUBLIC_SUPABASE_URL || '',
   process.env.SUPABASE_SERVICE_ROLE_KEY || '',
   {

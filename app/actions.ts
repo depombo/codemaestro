@@ -82,6 +82,19 @@ export const updateName = async (formData: FormData) => {
   redirect('/account', RedirectType.push);
 };
 
+export const updateUsername = async (uid: string, username: string) => {
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from("users")
+    .update({
+      username: username,
+    })
+    .eq("id", uid);
+  if (error) {
+    console.error(error);
+  }
+};
+
 export const updateGithubTokens = async (uid: string, accessToken: string | null, refreshToken: string | null) => {
   const supabase = await getServerClient();
   const { error } = await supabase
@@ -90,9 +103,7 @@ export const updateGithubTokens = async (uid: string, accessToken: string | null
       github_provider_token: accessToken,
       github_provider_refresh_token: refreshToken,
     })
-    .eq("id", uid)
-    .select()
-    .single();
+    .eq("id", uid);
   if (error) {
     console.error(error);
   }
@@ -111,7 +122,7 @@ export const updateEmail = async (formData: FormData) => {
   revalidatePath('/account');
 };
 
-export const getMaestros = async () => {
+export const getMaestros = async (): Promise<CodeMaestro[] | null> => {
   const session = await getSession();
   if (!session) redirect('/signin')
   const user = session.user;
@@ -170,14 +181,16 @@ export async function getSession() {
   }
 }
 
+// TODO this only works for one user wtf
 export async function getUserDetails(): Promise<User | null> {
   try {
     const supabase = await getServerClient();
-    const { data: userDetails } = await supabase
+    const { data } = await supabase
       .from('users')
       .select('*')
+      // .match({ id: id })
       .single();
-    return userDetails;
+    return data;
   } catch (error) {
     console.error('Error:', error);
     return null;

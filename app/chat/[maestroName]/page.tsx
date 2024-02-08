@@ -22,7 +22,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
     return redirect('/profile');
   }
   const maestros = await getMaestros();
-  const maestro = maestros.filter(m => maestroNamePath(m.name) === maestroName).pop();
+  const maestro = maestros?.filter(m => maestroNamePath(m.name) === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
   const pastMessages = await getMessages(maestro.id);

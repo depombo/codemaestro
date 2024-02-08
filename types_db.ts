@@ -282,6 +282,7 @@ export type Database = {
           github_provider_token: string | null
           id: string
           payment_method: Json | null
+          username: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -291,6 +292,7 @@ export type Database = {
           github_provider_token?: string | null
           id: string
           payment_method?: Json | null
+          username?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -300,6 +302,7 @@ export type Database = {
           github_provider_token?: string | null
           id?: string
           payment_method?: Json | null
+          username?: string | null
         }
         Relationships: [
           {
