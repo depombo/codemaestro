@@ -10,6 +10,8 @@ export const getURL = () => {
   // Make sure to include `https://` when not localhost.
   url = url.includes('http') ? url : `https://${url}`;
   // Make sure to including trailing `/`.
+  console.log(url);
+  console.log(process?.env?.NEXT_PUBLIC_SITE_URL);
   url = url.charAt(url.length - 1) === '/' ? url : `${url}/`;
   return url;
 };
