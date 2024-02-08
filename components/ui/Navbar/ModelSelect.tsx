@@ -18,7 +18,7 @@ export function getModel(param: string | null): string {
 export const ModelSelect = () => {
 
   const pathName = usePathname();
-  if (!pathName.includes('/chat/')) return;
+  if (pathName.split('/').filter(s => s.length > 1).length !== 2) return;
   const searchParams = useSearchParams();
   const model = searchParams.get('model') || 'gpt-3.5-turbo';
   const [selected, setSelected] = useState(model);
@@ -26,7 +26,10 @@ export const ModelSelect = () => {
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newValue = event.target.value;
-    router.push(`${pathName}?model=${newValue}`)
+    // https://nextjs.org/docs/app/api-reference/functions/use-router#disabling-scroll-restoration
+    router.push(`${pathName}?model=${newValue}`, {
+      scroll: false,
+    })
   };
   return (
     <>

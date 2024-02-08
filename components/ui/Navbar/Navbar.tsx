@@ -7,6 +7,7 @@ import { IconSeparator, Logo } from '@/components/icons';
 import s from './Navbar.module.css';
 import { ModelSelect } from './ModelSelect';
 import TabbedButton from './TabbedButton';
+import { MaestroName } from './MaestroName';
 
 export default async function Navbar() {
   const user = await getUserDetails();
@@ -22,13 +23,20 @@ export default async function Navbar() {
             {/* <Link href="/">
               <p className='ml-2 font-bold'>CodeMaestro</p>
             </Link> */}
-            <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
-            <Link href={`/${user?.username}`}>
-              <img src={user?.avatar_url!} alt="User Avatar" className="w-6 h-6 mr-3 rounded-full" />
-            </Link>
-            <Link href={`/${user?.username}`}>
-              {user?.username}
-            </Link>
+            {
+              user && (
+                <>
+                  <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
+                  <Link href={`/${user.username}`}>
+                    <img src={user.avatar_url!} alt="User Avatar" className="w-6 h-6 mr-3 rounded-full" />
+                  </Link>
+                  <Link href={`/${user.username}`}>
+                    {user.username}
+                  </Link>
+                </>
+              )
+            }
+            <MaestroName />
             <ModelSelect />
           </div>
 
