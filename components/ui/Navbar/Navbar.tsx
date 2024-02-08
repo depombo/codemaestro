@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import {
-  getSession,
   getUserDetails
 } from '@/app/actions';
 import { IconSeparator, Logo } from '@/components/icons';
@@ -10,7 +9,6 @@ import { ModelSelect } from './ModelSelect';
 import TabbedButton from './TabbedButton';
 
 export default async function Navbar() {
-  const session = await getSession();
   const user = await getUserDetails();
 
   return (
@@ -25,11 +23,11 @@ export default async function Navbar() {
               <p className='ml-2 font-bold'>CodeMaestro</p>
             </Link> */}
             <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
-            <Link href="/profile">
+            <Link href={`/${user?.username}`}>
               <img src={user?.avatar_url!} alt="User Avatar" className="w-6 h-6 mr-3 rounded-full" />
             </Link>
-            <Link href="/profile">
-              {user?.full_name}
+            <Link href={`/${user?.username}`}>
+              {user?.username}
             </Link>
             <ModelSelect />
           </div>
