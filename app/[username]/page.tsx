@@ -21,6 +21,7 @@ export default async function ChatPage({ params, searchParams }: Props) {
 
   return (
     <MaestroList
+      user={userDetails}
       className='grid col-span-1'
       maestros={maestros!}
       searchParams={searchParams}
