@@ -11,20 +11,20 @@ export const MaestroMessage = ({ name, message, model }: { name: string, message
   return (
     <div className="items-start">
       <div className="p-4">
-        <div className="flex items-center">
-          <div className="w-10 h-10 rounded-full bg-white">
-            <Logo className='p-2' />
+        <div className="flex items-start">
+          <div className="w-6 h-6 rounded-full bg-white">
+            <Logo className='p-1' height="24" width="24" />
           </div>
           <span className="text-sm ml-3 font-semibold text-gray-200">{name} <sup className='font-normal'>{model}</sup></span>
 
         </div>
         <ReactMarkdown
-          className='ml-14'
+          className='ml-10'
           components={{
             code: ({ children, className, node, ...rest }) => {
               const match = /language-(\w+)/.exec(className || '')
               return match ? (
-                <div className='p-4'>
+                <div className='py-2'>
                   <SyntaxHighlighter
                     PreTag="div"
                     children={String(children).replace(/\n$/, '')}
@@ -93,11 +93,11 @@ export const UserMessage = ({ name, message, avatarUrl }: { name: string, messag
   return (
     <div className="items-start">
       <div className="p-4">
-        <div className="flex items-center">
-          <img src={avatarUrl} alt="User Avatar" className="w-10 h-10 rounded-full" />
+        <div className="flex items-start">
+          <img src={avatarUrl} alt="User Avatar" className="w-6 h-6 rounded-full" />
           <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
         </div>
-        <p className="text-sm break-all font-normal ml-14 text-gray-200">{message}</p>
+        <p className="text-sm break-all font-normal ml-10 text-gray-200">{message}</p>
       </div>
     </div>
   )

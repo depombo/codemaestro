@@ -29,7 +29,7 @@ export default async function Navbar() {
             <Link href="/profile">
               {user?.full_name}
             </Link>
-            {/* <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" /> */}
+
           </div>
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
