@@ -7,6 +7,7 @@ import { IconSeparator, Logo } from '@/components/icons';
 
 import s from './Navbar.module.css';
 import { ModelSelect } from './ModelSelect';
+import TabbedButton from './TabbedButton';
 
 export default async function Navbar() {
   const session = await getSession();
@@ -34,7 +35,8 @@ export default async function Navbar() {
           </div>
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
-            <div className="ml-6 space-x-2 lg:block">
+            <TabbedButton />
+            {/* <div className="ml-6 space-x-2 lg:block">
               {!session && (
                 <Link href="/profile" className={s.link}>
                   Dashboard
@@ -48,7 +50,7 @@ export default async function Navbar() {
                   Settings
                 </Link>
               )}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
