@@ -18,6 +18,7 @@ export async function GET(request: NextRequest) {
   // save auth token & refresh token for a current user.
   const session = await getSession();
   // uncomment when they fix it
+  // https://github.com/orgs/community/discussions/24745
   // if (!session || !session.provider_token || !session.provider_refresh_token) {
   //   throw new Error("session, provider_token or provider_refresh_token are missing")
   // }

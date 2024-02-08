@@ -56,7 +56,7 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
           style={{ maxHeight: '8rem' }}
         />
         <Button
-          disabled={!message.length}
+          disabled={!message.trim().length}
           className="h-8 w-2 ml-4"
           loading={isLoading}
           variant="slim"

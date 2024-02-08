@@ -31,18 +31,6 @@ import { getServerClient } from "./supabase/server";
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
 // https://js.langchain.com/docs/use_cases/rag/code_understanding
 
-// TODO implement
-// const getMemory = async (pastMessages: Message[]) => {
-//   let tokenEstimate = pastMessages.join(" ").split(" ").length;
-//   // https://js.langchain.com/docs/modules/memory/types/vectorstore_retriever_memory
-//   const vectorStore = new MemoryVectorStore(new OpenAIEmbeddings());
-//   const memory = new VectorStoreRetrieverMemory({
-//     // 1 is how many documents to return, you might want to return more, eg. 4
-//     vectorStoreRetriever: vectorStore.asRetriever(1),
-//     memoryKey: "history",
-//   });
-// }
-
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
   const vectorStore = await getOrGenStore(maestro);
