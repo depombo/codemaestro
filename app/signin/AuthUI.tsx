@@ -1,7 +1,7 @@
 'use client';
 
 import { getBrowserClient } from '@/app/supabase/client';
-import GitHub from '@/components/icons/GitHub';
+import { GitHub } from '@/components/icons';
 import Button from '@/components/ui/Button';
 import { getURL } from '@/utils/helpers';
 

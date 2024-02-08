@@ -1,4 +1,4 @@
-import Logo from '@/components/icons/Logo';
+import { Logo } from '@/components/icons';
 
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'

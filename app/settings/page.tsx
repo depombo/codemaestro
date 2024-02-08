@@ -11,8 +11,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
-import Stripe from '@/components/icons/Stripe';
-import GitHub from '@/components/icons/GitHub';
+import { Stripe, GitHub } from '@/components/icons';
 import ManageGithubButton from './ManageGithubButton';
 
 export default async function Settings() {

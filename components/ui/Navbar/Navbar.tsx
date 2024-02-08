@@ -2,7 +2,7 @@ import Link from 'next/link';
 import {
   getSession,
 } from '@/app/actions';
-import Logo from '@/components/icons/Logo';
+import { Logo } from '@/components/icons';
 
 import s from './Navbar.module.css';
 

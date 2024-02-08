@@ -3,8 +3,7 @@ import React from 'react';
 import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
 import { CodeMaestro, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
-import GitHub from '@/components/icons/GitHub';
-import Trash from '@/components/icons/Trash';
+import { GitHub, Trash } from '@/components/icons';
 
 const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
   const badge = (

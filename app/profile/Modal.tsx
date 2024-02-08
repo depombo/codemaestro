@@ -4,7 +4,7 @@ import {
   createMaestro,
   deleteMaestro,
 } from '@/app/actions';
-import Logo from '@/components/icons/Logo';
+import { Logo } from '@/components/icons';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 
