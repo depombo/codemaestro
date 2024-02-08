@@ -3,6 +3,7 @@
 import { IconSeparator } from '@/components/icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
+import Selector from '../Selector';
 
 
 // https://platform.openai.com/docs/models/continuous-model-upgrades
@@ -24,8 +25,7 @@ export const ModelSelect = () => {
   const [selected, setSelected] = useState(model);
   const router = useRouter();
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const newValue = event.target.value;
+  const handleChange = (newValue: string) => {
     // https://nextjs.org/docs/app/api-reference/functions/use-router#disabling-scroll-restoration
     router.push(`${pathName}?model=${newValue}`, {
       scroll: false,
@@ -35,13 +35,7 @@ export const ModelSelect = () => {
     <>
       <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
       <div className='flex flex-row items-center'>
-        <select onChange={handleChange} className='bg-black appearance-none focus:ring-transparent border-none cursor-pointer'>
-          {MODELS.map((model, index) => (
-            <option key={index} value={model} selected={model === selected}>
-              {model} {/* {option.value === selected && ' ▼'} */}
-            </option>
-          ))}
-        </select>
+        <Selector options={MODELS} selection={selected} onChange={handleChange} />
       </div>
     </>
   );
