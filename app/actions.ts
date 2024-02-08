@@ -32,7 +32,7 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string) => {
+export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string, modelName: string) => {
   const supabase = await getServerClient();
   // save user message
   const { error } = await supabase
@@ -42,9 +42,6 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
     console.error(error);
   }
 
-  // TODO expose in UI / sidebar
-  // https://platform.openai.com/docs/models/continuous-model-upgrades
-  const modelName = "gpt-4"; // "gpt-3.5-turbo", "gpt-4", "gpt-4-turbo-preview";
   const outputStream = await chat(newMessage, maestro, pastMessages, modelName);
   const aiMessageFields = { maestro_id: maestro.id, user_id: maestro.user_id, model_name: modelName };
   // save ai messages

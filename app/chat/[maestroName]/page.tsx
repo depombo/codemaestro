@@ -30,7 +30,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
   return (
     <>
       <ChatHistory
-        className="flex-col pt-4 pb-32 px-8"
+        className="flex-col pt-4 pb-32 px-8 sm:px-20"
         user={user}
         maestro={maestro}
         pastMessages={pastMessages}

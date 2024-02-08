@@ -6,6 +6,7 @@ import {
 import { IconSeparator, Logo } from '@/components/icons';
 
 import s from './Navbar.module.css';
+import { ModelSelect } from './ModelSelect';
 
 export default async function Navbar() {
   const session = await getSession();
@@ -29,7 +30,7 @@ export default async function Navbar() {
             <Link href="/profile">
               {user?.full_name}
             </Link>
-
+            <ModelSelect />
           </div>
 
           <div className="flex justify-end flex-1 space-x-8 items-center align-center">
