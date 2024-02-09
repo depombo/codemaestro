@@ -14,11 +14,12 @@ type RtChatHistoryProps = {
   user: User;
   pastMessages: Message[];
   searchParams: Record<string, string> | null | undefined;
+  className: string;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages, searchParams }: RtChatHistoryProps) {
+export default function ChatHistory({ maestro, user, pastMessages, searchParams, className }: RtChatHistoryProps) {
   const bookmarked = !!searchParams?.bookmarked;
-  const [rtMessages, setRtMessages] = useState<Message[]>([]);
+  const [rtMessages, setRtMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
     .channel('messages-db')
@@ -30,7 +31,10 @@ export default function ChatHistory({ maestro, user, pastMessages, searchParams 
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setRtMessages([...rtMessages, payload.new].filter(m => !pastMessages.includes(m)))
+      (payload) => {
+        setRtMessages([...rtMessages, payload.new])
+        scrollToBottom()
+      }
     )
     .on<Message>(
       'postgres_changes',
@@ -40,10 +44,12 @@ export default function ChatHistory({ maestro, user, pastMessages, searchParams 
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setRtMessages(
-        rtMessages
-          .map(m => m.id === payload.new.id ? payload.new : m)
-      )
+      (payload) => {
+        setRtMessages(
+          rtMessages
+            .map(m => m.id === payload.new.id ? payload.new : m)
+        )
+      }
     )
     .subscribe()
 
@@ -51,10 +57,10 @@ export default function ChatHistory({ maestro, user, pastMessages, searchParams 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-  useEffect(scrollToBottom, [rtMessages]);
+  // useEffect(scrollToBottom, [rtMessages]);
 
   return (
-    <>
+    <div className={className}>
       {
         rtMessages.filter(m => !bookmarked || bookmarked === m.bookmarked).map(m => (
           m.model_name ?
@@ -73,6 +79,6 @@ export default function ChatHistory({ maestro, user, pastMessages, searchParams 
         ))
       }
       <div ref={messagesEndRef} />
-    </>
+    </div>
   );
 }

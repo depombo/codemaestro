@@ -6,7 +6,7 @@ import {
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import UserInput from './UserInput';
-import ChatHistory from './ChatHistory';
+import RtChatHistory from './RtChatHistory';
 
 type ChatPageProps = {
   searchParams: Record<string, string> | null | undefined;
@@ -30,7 +30,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   return (
     <>
-      <ChatHistory
+      <RtChatHistory
         className="flex-col pt-4 pb-32 px-8 sm:px-20"
         user={user}
         maestro={maestro}
