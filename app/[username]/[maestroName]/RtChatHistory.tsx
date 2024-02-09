@@ -8,15 +8,19 @@ import {
 import { getBrowserClient } from '../../supabase/client';
 import { useEffect, useRef, useState, } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
+import { SearchParams } from '@/utils/helpers';
 
 type RtChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
+  searchParams: SearchParams;
+  className: string;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages }: RtChatHistoryProps) {
-  const [rtMessages, setRtMessages] = useState<Message[]>([]);
+export default function ChatHistory({ maestro, user, pastMessages, searchParams, className }: RtChatHistoryProps) {
+  const bookmarked = !!searchParams?.bookmarked;
+  const [rtMessages, setRtMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
     .channel('messages-db')
@@ -28,7 +32,10 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setRtMessages([...rtMessages, payload.new].filter(m => !pastMessages.includes(m)))
+      (payload) => {
+        setRtMessages([...rtMessages, payload.new])
+        scrollToBottom()
+      }
     )
     .on<Message>(
       'postgres_changes',
@@ -38,10 +45,12 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
         table: 'messages',
         filter: `maestro_id=eq.${maestro.id}`,
       },
-      (payload) => setRtMessages(
-        rtMessages
-          .map(m => m.id === payload.new.id ? payload.new : m)
-      )
+      (payload) => {
+        setRtMessages(
+          rtMessages
+            .map(m => m.id === payload.new.id ? payload.new : m)
+        )
+      }
     )
     .subscribe()
 
@@ -49,12 +58,12 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }
-  useEffect(scrollToBottom, [rtMessages]);
+  // useEffect(scrollToBottom, [rtMessages]);
 
   return (
-    <>
+    <div className={className}>
       {
-        rtMessages.map(m => (
+        rtMessages.filter(m => !bookmarked || bookmarked === m.bookmarked).map(m => (
           m.model_name ?
             <MaestroMessage
               key={m.id}
@@ -71,6 +80,6 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
         ))
       }
       <div ref={messagesEndRef} />
-    </>
+    </div>
   );
 }

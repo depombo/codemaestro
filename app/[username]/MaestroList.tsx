@@ -4,6 +4,7 @@ import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
 import { CodeMaestro, User, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
 import { GitHub, } from '@/components/icons';
+import { SearchParams } from '@/utils/helpers';
 
 const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
   const badge = (
@@ -28,7 +29,7 @@ const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) 
 
 interface MaestroCardProps {
   maestro: CodeMaestro;
-  searchParams: Record<string, string> | null | undefined;
+  searchParams: SearchParams;
   username: string,
 }
 
@@ -77,7 +78,7 @@ const MaestroCard = ({ maestro, searchParams, username }: MaestroCardProps) => {
 interface MaestroListProps {
   maestros: CodeMaestro[];
   selectedMaestroId?: number;
-  searchParams: Record<string, string> | null | undefined;
+  searchParams: SearchParams;
   className: string;
   user: User;
 }

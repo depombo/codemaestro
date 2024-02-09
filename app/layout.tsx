@@ -1,5 +1,3 @@
-import Footer from '@/components/ui/Footer';
-import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
 import 'styles/main.css';
 
@@ -46,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-black loading">
-        <Navbar />
+        {/* <Navbar /> */}
         {children}
         {/* <Footer /> */}
       </body>
