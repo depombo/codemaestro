@@ -5,7 +5,7 @@ import { getBrowserClient } from '@/app/supabase/client';
 import { IconBookmark, IconBookmarkFilled } from '@/components/icons';
 import { useState } from 'react';
 
-const BookmarkMessage = async ({ msg }: { msg: Message }) => {
+const BookmarkMessage = ({ msg }: { msg: Message }) => {
   const [bookmarked, setBookmarked] = useState(msg.bookmarked);
   const classes = 'fill-zinc-700 hover:fill-zinc-500 cursor-pointer h-5 w-5';
   const supabase = getBrowserClient();
@@ -16,6 +16,9 @@ const BookmarkMessage = async ({ msg }: { msg: Message }) => {
       .from('messages')
       .update({ bookmarked: !bookmarked })
       .eq('id', msg.id)
+      .then(resp => {
+        if (resp.error) console.error(resp.error)
+      })
     // TODO surface error
   }
   return (

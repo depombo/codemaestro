@@ -13,9 +13,11 @@ type RtChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
+  searchParams: Record<string, string> | null | undefined;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages }: RtChatHistoryProps) {
+export default function ChatHistory({ maestro, user, pastMessages, searchParams }: RtChatHistoryProps) {
+  const bookmarked = !!searchParams?.bookmarked;
   const [rtMessages, setRtMessages] = useState<Message[]>([]);
   const supabase = getBrowserClient();
   supabase
@@ -54,7 +56,7 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
   return (
     <>
       {
-        rtMessages.map(m => (
+        rtMessages.filter(m => !bookmarked || bookmarked === m.bookmarked).map(m => (
           m.model_name ?
             <MaestroMessage
               key={m.id}

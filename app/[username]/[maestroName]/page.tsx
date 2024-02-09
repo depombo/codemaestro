@@ -9,10 +9,11 @@ import UserInput from './UserInput';
 import ChatHistory from './ChatHistory';
 
 type ChatPageProps = {
+  searchParams: Record<string, string> | null | undefined;
   params: { maestroName: string };
 };
 
-export default async function ChatPage({ params }: ChatPageProps) {
+export default async function ChatPage({ params, searchParams }: ChatPageProps) {
   const user = await getUserDetails();
   if (!user) {
     return redirect('/signin');
@@ -34,6 +35,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
         user={user}
         maestro={maestro}
         pastMessages={pastMessages}
+        searchParams={searchParams}
       />
       <UserInput
         className="fixed w-full bottom-0 h-28 p-4 bg-black border-t border-zinc-700"
