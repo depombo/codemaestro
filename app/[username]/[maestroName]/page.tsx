@@ -7,10 +7,12 @@ import {
 import { redirect } from 'next/navigation';
 import UserInput from './UserInput';
 import RtChatHistory from './RtChatHistory';
+import Navbar from '@/components/ui/Navbar';
+import { SearchParams } from '@/utils/helpers';
 
 type ChatPageProps = {
-  searchParams: Record<string, string> | null | undefined;
-  params: { maestroName: string };
+  searchParams: SearchParams;
+  params: { maestroName: string, username: string };
 };
 
 export default async function ChatPage({ params, searchParams }: ChatPageProps) {
@@ -30,6 +32,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
 
   return (
     <>
+      <Navbar params={params} />
       <RtChatHistory
         className="flex-col pt-4 pb-32 px-8 sm:px-20"
         user={user}

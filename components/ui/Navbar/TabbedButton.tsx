@@ -6,8 +6,8 @@ import React, { useState } from 'react';
 const TabbedButton = () => {
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState(!!searchParams.get('bookmarked') ? 'bookmarked' : 'allMessages'); // Default to 'allMessages'
-  const pathName = usePathname();
   const router = useRouter();
+  const pathName = usePathname();
 
   return (
     <div className="bg-zinc-700 p-1 rounded-lg inline-flex">
@@ -18,7 +18,7 @@ const TabbedButton = () => {
             scroll: false,
           })
         }}
-        className={`px-4 py-2 rounded-lg transition-all ${activeTab === 'allMessages'
+        className={`px-4 py-2 text-sm rounded-lg transition-all ${activeTab === 'allMessages'
           ? 'bg-white text-black'
           : 'text-white hover:bg-gray-700 hover:text-white'
           }`}
@@ -32,7 +32,7 @@ const TabbedButton = () => {
             scroll: false,
           })
         }}
-        className={`px-4 py-2 rounded-lg transition-all ${activeTab === 'bookmarked'
+        className={`px-4 py-2 text-sm rounded-lg transition-all ${activeTab === 'bookmarked'
           ? 'bg-white text-black'
           : 'text-white hover:bg-gray-700 hover:text-white'
           }`}

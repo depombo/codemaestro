@@ -19,7 +19,6 @@ export function getModel(param: string | null): string {
 export const ModelSelect = () => {
 
   const pathName = usePathname();
-  if (pathName.split('/').filter(s => s.length > 1).length !== 2) return;
   const searchParams = useSearchParams();
   const model = searchParams.get('model') || 'gpt-3.5-turbo';
   const [selected, setSelected] = useState(model);

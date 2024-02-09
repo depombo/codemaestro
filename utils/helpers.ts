@@ -1,5 +1,8 @@
 import { Database } from '@/types_db';
 
+// https://nextjs.org/docs/app/api-reference/file-conventions/page#params-optional
+export type SearchParams = { [key: string]: string | string[] | undefined };
+
 type Price = Database['public']['Tables']['prices']['Row'];
 
 export const getURL = () => {

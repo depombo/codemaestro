@@ -7,24 +7,27 @@ import { IconSeparator, Logo } from '@/components/icons';
 import s from './Navbar.module.css';
 import { ModelSelect } from './ModelSelect';
 import TabbedButton from './TabbedButton';
-import { MaestroName } from './MaestroName';
 
-export default async function Navbar() {
+export default async function Navbar({
+  params,
+}: {
+  params?: { username?: string, maestroName?: string },
+},
+) {
   const user = await getUserDetails();
+  const isChat = !!params && !!params.maestroName;
 
   return (
-    <nav className={s.root}>
-      <div className="px-6 mx-auto py-4">
+    <nav className={"sticky top-0 bg-black z-40 transition-all duration-150 h-16 md:h-20 border-b border-zinc-700"}>
+      <div className="p-2 mx-auto">
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">
               <Logo height="24" x="1" y="4" fill="white" />
             </Link>
-            {/* <Link href="/">
-              <p className='ml-2 font-bold'>CodeMaestro</p>
-            </Link> */}
+
             {
-              user && (
+              user ? (
                 <>
                   <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
                   <Link href={`/${user.username}`}>
@@ -35,28 +38,28 @@ export default async function Navbar() {
                   </Link>
                 </>
               )
+                :
+                <Link href="/">
+                  <p className='ml-2 font-bold'>CodeMaestro</p>
+                </Link>
             }
-            <MaestroName />
-            <ModelSelect />
+            {isChat && <><IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" /> {params.maestroName} </>}
+            {isChat && <ModelSelect />}
           </div>
 
-          <div className="flex justify-end flex-1 space-x-8 items-center align-center">
-            <TabbedButton />
-            {/* <div className="ml-6 space-x-2 lg:block">
-              {!session && (
-                <Link href="/profile" className={s.link}>
-                  Dashboard
-                </Link>
-              )}
-              <Link href="/pricing" className={s.link}>
-                Pricing
+          <div className="flex justify-end flex-1 space-x-8 px-8 items-center align-center">
+            {isChat && <TabbedButton />}
+            {!user && <Link className={s.link} href="/signin">
+              Dashboard
+            </Link>}
+            {user && (
+              <Link href="/settings" className={s.link}>
+                Settings
               </Link>
-              {session && (
-                <Link href="/settings" className={s.link}>
-                  Settings
-                </Link>
-              )}
-            </div> */}
+            )}
+            <Link href="/pricing" className={s.link}>
+              Pricing
+            </Link>
           </div>
         </div>
       </div>

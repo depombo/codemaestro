@@ -8,12 +8,13 @@ import {
 import { getBrowserClient } from '../../supabase/client';
 import { useEffect, useRef, useState, } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
+import { SearchParams } from '@/utils/helpers';
 
 type RtChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
-  searchParams: Record<string, string> | null | undefined;
+  searchParams: SearchParams;
   className: string;
 };
 
