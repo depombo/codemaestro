@@ -3,7 +3,7 @@ import React from 'react';
 import { CreateMaestroModal, DeleteConfirmationMaestroModal } from './Modal';
 import { CodeMaestro, User, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
-import { GitHub, Trash } from '@/components/icons';
+import { GitHub, } from '@/components/icons';
 
 const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
   const badge = (
@@ -37,25 +37,32 @@ const MaestroCard = ({ maestro, searchParams, username }: MaestroCardProps) => {
   const cleanPath = maestroNamePath(maestro.name);
   return (
     <div className={"flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
-      <div className="flex flex-row justify-between">
-        <div className="mb-1 text-l font-medium">{maestro.name}</div>
-        <Link className='text-sm' href={`/${username}?deleteMaestro=${cleanPath}`}>
-          <Trash className="h-4" fill="white" />
-        </Link>
-      </div>
+      <div className="mb-1 text-l font-medium">{maestro.name}</div>
       <div className="flex flex-col">
         {
           maestro.github_repo_names.map(n => <GithubBadge key={n} hyperlink={true} name={n} />)
         }
       </div>
-      <Link href={`/${username}/${cleanPath}`}>
-        <Button
-          variant="slim"
-          type="submit"
-        >
-          Chat
-        </Button>
-      </Link>
+      <div className="flex flex-row justify-between">
+
+        <Link href={`/${username}/${cleanPath}`}>
+          <Button
+            variant="slim"
+            type="submit"
+          >
+            Chat
+          </Button>
+        </Link>
+        <Link href={`/${username}?deleteMaestro=${cleanPath}`}>
+          <Button
+            variant="slim"
+            type="submit"
+          >
+            Delete
+          </Button>
+        </Link>
+      </div>
+
       {
         deleteMaestro === cleanPath &&
         <DeleteConfirmationMaestroModal

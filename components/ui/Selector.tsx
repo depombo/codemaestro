@@ -36,7 +36,7 @@ const Selector = ({ options, onChange, selection }: { options: string[], onChang
             {options.map((option, index) => (
               <a
                 key={index}
-                className="block px-4 py-2 text-sm text-white hover:bg-zinc-700 hover:text-white"
+                className="block px-4 py-2 text-sm rounded-md text-white hover:bg-zinc-700 hover:text-white"
                 role="menuitem"
                 onClick={() => {
                   setSelectedOption(option);

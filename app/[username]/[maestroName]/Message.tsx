@@ -3,11 +3,12 @@ import { Logo } from '@/components/icons';
 import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus as style } from 'react-syntax-highlighter/dist/esm/styles/prism'
-
+import { MessageFooter } from './MessageFooter';
+import { Message } from '@/app/actions';
 
 // https://www.mozzlog.com/blog/fix-react-markdown-tailwindcss-nextjs
 // https://www.mozzlog.com/blog/react-markdown-custom-renderer
-export const MaestroMessage = ({ name, message, model }: { name: string, message: string, model: string }) => {
+export const MaestroMessage = ({ name, msg }: { name: string, msg: Message }) => {
   return (
     <div className="items-start">
       <div className="p-4">
@@ -15,7 +16,7 @@ export const MaestroMessage = ({ name, message, model }: { name: string, message
           <div className="w-6 h-6 rounded-full bg-white">
             <Logo className='p-1' height="24" width="24" />
           </div>
-          <span className="text-sm ml-3 font-semibold text-gray-200">{name} <sup className='font-normal'>{model}</sup></span>
+          <span className="text-sm ml-3 font-semibold text-gray-200">{name} <sup className='font-normal'>{msg.model_name}</sup></span>
 
         </div>
         <ReactMarkdown
@@ -83,13 +84,14 @@ export const MaestroMessage = ({ name, message, model }: { name: string, message
                 {...props}
               />
             ),
-          }} children={message} />
+          }} children={msg.message} />
+        <MessageFooter msg={msg} />
       </div>
     </div>
   )
 };
 
-export const UserMessage = ({ name, message, avatarUrl }: { name: string, message: string, avatarUrl: string }) => {
+export const UserMessage = ({ name, msg, avatarUrl }: { name: string, msg: Message, avatarUrl: string }) => {
   return (
     <div className="items-start">
       <div className="p-4">
@@ -97,7 +99,8 @@ export const UserMessage = ({ name, message, avatarUrl }: { name: string, messag
           <img src={avatarUrl} alt="User Avatar" className="w-6 h-6 rounded-full" />
           <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
         </div>
-        <p className="text-sm break-all font-normal ml-10 text-gray-200">{message}</p>
+        <p className="text-sm break-all font-normal ml-10 text-gray-200">{msg.message}</p>
+        <MessageFooter msg={msg} />
       </div>
     </div>
   )

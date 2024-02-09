@@ -59,15 +59,14 @@ export default function ChatHistory({ maestro, user, pastMessages }: RtChatHisto
             <MaestroMessage
               key={m.id}
               name={maestro.name}
-              message={m.message}
-              model={m.model_name}
+              msg={m}
             />
             :
             <UserMessage
               key={m.id}
               name={user.full_name || "You"}
               avatarUrl={user.avatar_url || ""}
-              message={m.message}
+              msg={m}
             />
         ))
       }

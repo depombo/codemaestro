@@ -34,9 +34,7 @@ export const ModelSelect = () => {
   return (
     <>
       <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
-      <div className='flex flex-row items-center'>
-        <Selector options={MODELS} selection={selected} onChange={handleChange} />
-      </div>
+      <Selector options={MODELS} selection={selected} onChange={handleChange} />
     </>
   );
 };

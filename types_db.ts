@@ -87,6 +87,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          bookmarked: boolean
           created_at: string
           id: number
           maestro_id: number
@@ -95,6 +96,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          bookmarked?: boolean
           created_at?: string
           id?: number
           maestro_id: number
@@ -103,6 +105,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          bookmarked?: boolean
           created_at?: string
           id?: number
           maestro_id?: number
