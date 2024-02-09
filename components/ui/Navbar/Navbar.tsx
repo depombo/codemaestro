@@ -52,14 +52,16 @@ export default async function Navbar({
             {!user && <Link className={s.link} href="/signin">
               Dashboard
             </Link>}
-            {user && (
-              <Link href="/settings" className={s.link}>
-                Settings
-              </Link>
-            )}
-            <Link href="/pricing" className={s.link}>
-              Pricing
+            {user && !isChat && <Link href="/settings" className={s.link}>
+              Settings
             </Link>
+            }
+            {
+              !isChat && <Link href="/pricing" className={s.link}>
+                Pricing
+              </Link>
+            }
+
           </div>
         </div>
       </div>
