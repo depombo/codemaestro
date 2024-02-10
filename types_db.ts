@@ -12,21 +12,18 @@ export type Database = {
       code_maestros: {
         Row: {
           created_at: string
-          github_repo_names: string[]
           id: number
           name: string
           user_id: string
         }
         Insert: {
           created_at?: string
-          github_repo_names: string[]
           id?: number
           name: string
           user_id: string
         }
         Update: {
           created_at?: string
-          github_repo_names?: string[]
           id?: number
           name?: string
           user_id?: string
@@ -34,6 +31,35 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "code_maestros_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      context_sources: {
+        Row: {
+          created_at: string
+          id: number
+          url: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          url: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          url?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "context_sources_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -84,6 +110,42 @@ export type Database = {
           metadata?: Json | null
         }
         Relationships: []
+      }
+      maestro_context: {
+        Row: {
+          created_at: string
+          id: number
+          maestro_id: number
+          source_id: number
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          maestro_id: number
+          source_id: number
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          maestro_id?: number
+          source_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maestro_context_maestro_id_fkey"
+            columns: ["maestro_id"]
+            isOneToOne: false
+            referencedRelation: "code_maestros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maestro_context_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "context_sources"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       messages: {
         Row: {
@@ -322,6 +384,18 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      kw_match_documents: {
+        Args: {
+          query_text: string
+          match_count: number
+        }
+        Returns: {
+          id: number
+          content: string
+          metadata: Json
+          similarity: number
+        }[]
+      }
       match_documents: {
         Args: {
           query_embedding: string

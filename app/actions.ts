@@ -16,7 +16,8 @@ import { Session } from '@supabase/supabase-js';
 
 export type Message = Database['public']['Tables']['messages']['Row'];
 export type User = Database['public']['Tables']['users']['Row'];
-export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'];
+type ContextSource = Database['public']['Tables']['context_sources']['Row'];
+export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'] & { 'context_sources': ContextSource[] };
 // TODO mappers once it makes sense or add into CodeMaestro type
 export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
 
@@ -133,12 +134,12 @@ export const getMaestros = async (): Promise<CodeMaestro[] | null> => {
   const supabase = await getServerClient();
   const { error, data } = await supabase
     .from('code_maestros')
-    .select('*')
+    .select('*, context_sources(id, url)')
     .eq('user_id', user?.id as string);
   if (error) {
     console.error(error);
   }
-  return data || [];
+  return data as CodeMaestro[] || [];
 };
 
 export const deleteMaestro = async (id: number, redirectPath: string) => {
@@ -153,21 +154,51 @@ export const deleteMaestro = async (id: number, redirectPath: string) => {
   redirect(redirectPath, RedirectType.push);
 }
 
+// TODO create and join independently
+const createAndJoinSource = async (formData: FormData, maestro: CodeMaestro) => {
+  const session = await getSession();
+  // TODO get rid of split hack
+  const repos = (formData.get('repo') as string).split(',');
+  if (!session) redirect('/signin')
+  const user = session.user;
+  const supabase = await getServerClient();
+  const { data, error } = await supabase
+    .from('context_sources')
+    .insert(repos
+      .map(r => ({
+        // TODO tell me if it is public or not somehow
+        user_id: user?.id,
+        url: r
+      }))
+    )
+    .select();
+  const sources = data ?? [];
+  const { error: errorJ } = await supabase
+    .from('maestro_context')
+    .insert(sources
+      .map(src => ({
+        source_id: src.id,
+        maestro_id: maestro.id,
+      }))
+    );
+  if (errorJ) console.error(error);
+};
+
+
 export const createMaestro = async (redirectPath: string, formData: FormData) => {
   const session = await getSession();
   // console.log(formData);
   const name = formData.get('name') as string;
-  const repo = formData.get('repo') as string;
   if (!session) redirect('/signin')
   const user = session.user;
   const supabase = await getServerClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('code_maestros')
-    .insert({ user_id: user?.id as string, name: name, github_repo_names: repo.split(',') })
-  // TODO get rid of split hack
-  if (error) {
-    console.error(error);
-  }
+    .insert({ user_id: user?.id as string, name: name })
+    .select()
+    .single();
+  if (error) console.error(error);
+  await createAndJoinSource(formData, { ...data!, context_sources: [] });
   redirect(redirectPath, RedirectType.push);
 };
 

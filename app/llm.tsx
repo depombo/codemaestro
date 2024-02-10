@@ -271,18 +271,33 @@ const genRepo = async (repoName: string) => {
   console.log(`done generating embeddings for repo ${repoName}`)
 }
 
+const GITHUB_BASE_URL = "https://github.com"
+
+const extractOwnerAndRepoAndPath = (url: string) => {
+  const match = url.match(new RegExp(`${GITHUB_BASE_URL}/([^/]+)/([^/]+)(/tree/[^/]+/(.+))?`, "i"));
+  if (!match) {
+    throw new Error("Invalid GitHub URL format.");
+  }
+  return { owner: match[1], repo: match[2], path: match[4] || "" };
+}
+
 const getOrGenStore = async (maestro: CodeMaestro) => {
-  const repoNames = maestro.github_repo_names;
-  const repoUrls = repoNames.map(n => `https://github.com/${n}`);
-  for (let i = 0; i < repoUrls.length; i++) {
-    const hasRepo = await isRepoInVectorStore(repoUrls[i]);
-    if (!hasRepo) await genRepo(repoNames[i]);
+  const sources = maestro.context_sources.map(n => ({
+    url: n.url,
+    repository: n.url.startsWith(GITHUB_BASE_URL) ? extractOwnerAndRepoAndPath(n.url) : null
+  }));
+  for (const source of sources) {
+    const hasRepo = await isRepoInVectorStore(source.url);
+    if (!hasRepo && source.repository) {
+      const { owner, repo } = source.repository;
+      await genRepo(`${owner}/${repo}`);
+    }
   }
   const storeOpts = {
     client: await getServerClient(),
     tableName: "documents",
     queryName: "match_documents",
-    filter: repoUrls.map(url => ({ repository: url }))
+    filter: sources.map(src => ({ repository: src.url }))
   };
   return await SupabaseVectorStore.fromExistingIndex(
     new OpenAIEmbeddings(),

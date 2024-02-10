@@ -41,7 +41,7 @@ const MaestroCard = ({ maestro, searchParams, username }: MaestroCardProps) => {
       <div className="mb-1 text-l font-medium">{maestro.name}</div>
       <div className="flex flex-col">
         {
-          maestro.github_repo_names.map(n => <GithubBadge key={n} hyperlink={true} name={n} />)
+          maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} name={s.url} />)
         }
       </div>
       <div className="flex flex-row justify-between">
