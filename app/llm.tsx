@@ -28,7 +28,7 @@ import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
-// https://js.langchain.com/docs/use_cases/rag/code_understanding
+// https://js.langchain.com/docs/use_cases/code_understanding
 
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
@@ -221,9 +221,11 @@ const genRepo = async (repoName: string) => {
     {
       accessToken: ghToken,
       branch: repoInfo.branch,
-      recursive: false,
+      recursive: true,
       unknown: "warn",
       maxConcurrency: 5, // Defaults to 2
+      // ignore lock files, .gitignore and any dotfile
+      ignorePaths: ['package-lock.json', '.*', '*.lock']
     }
   );
   const docs = [];
