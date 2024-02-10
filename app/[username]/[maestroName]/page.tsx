@@ -9,6 +9,7 @@ import UserInput from './UserInput';
 import RtChatHistory from './RtChatHistory';
 import Navbar from '@/components/ui/Navbar';
 import { SearchParams } from '@/utils/helpers';
+import { getRelevantDocs } from '@/app/llm';
 
 type ChatPageProps = {
   searchParams: SearchParams;
@@ -28,6 +29,8 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   const maestro = maestros?.filter(m => maestroNamePath(m.name) === maestroName).pop();
   if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
 
+  // console.log('retrieve documents')
+  // console.log(await getRelevantDocs('what is the name of the file that has the chat history?'));
   const pastMessages = await getMessages(maestro.id);
 
   return (

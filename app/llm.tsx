@@ -5,6 +5,7 @@ import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase"
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
 import { BufferMemory, ChatMessageHistory, } from "langchain/memory";
 import { Document } from "@langchain/core/documents";
+import { SupabaseHybridSearch } from "@langchain/community/retrievers/supabase";
 
 import {
   ChatPromptTemplate,
@@ -17,7 +18,6 @@ import { formatDocumentsAsString } from "langchain/util/document";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
 import {
-  getSession,
   CodeMaestro,
   Message,
   getUserDetails,
@@ -110,6 +110,21 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
 
   return result;
 }
+
+export const getRelevantDocs = async (query: string) => {
+  const embeddings = new OpenAIEmbeddings();
+
+  const retriever = new SupabaseHybridSearch(embeddings, {
+    client: await getServerClient(),
+    similarityK: 2,
+    keywordK: 2,
+    tableName: "documents",
+    similarityQueryName: "match_documents",
+    keywordQueryName: "kw_match_documents",
+  });
+
+  return retriever.getRelevantDocuments(query);
+};
 
 const getSplitterForFileType = async (file: string) => {
   const extension = file.split('.').pop() as any;
