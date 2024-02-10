@@ -6,11 +6,19 @@ import Button from '@/components/ui/Button';
 import { GitHub, } from '@/components/icons';
 import { SearchParams } from '@/utils/helpers';
 
-const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) => {
+const GithubBadge = ({ url, hyperlink }: { url: string, hyperlink: boolean }) => {
   const badge = (
     <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
-      <GitHub className="h-5" />
-      <p>{name}</p>
+      {
+        url.startsWith('https://github.com/') ?
+          <>
+            <GitHub className="h-5" />
+            <p>{url.split('https://github.com/')[1]}</p>
+          </>
+          :
+          <p>{url}</p>
+      }
+
       {/* <button
       className="text-gray-500 hover:text-red-500 focus:outline-none"
     >
@@ -19,7 +27,7 @@ const GithubBadge = ({ name, hyperlink }: { name: string, hyperlink: boolean }) 
     </span>
   );
   return (
-    hyperlink ? <Link href={`https://github.com/${name}`} target="_blank" rel="noopener noreferrer">
+    hyperlink ? <Link href={url} target="_blank" rel="noopener noreferrer">
       {badge}
     </Link>
       :
@@ -41,7 +49,7 @@ const MaestroCard = ({ maestro, searchParams, username }: MaestroCardProps) => {
       <div className="mb-1 text-l font-medium">{maestro.name}</div>
       <div className="flex flex-col">
         {
-          maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} name={s.url} />)
+          maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} url={s.url} />)
         }
       </div>
       <div className="flex flex-row justify-between">

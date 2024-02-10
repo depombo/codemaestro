@@ -1,5 +1,6 @@
 
 import { GithubRepoLoader } from "langchain/document_loaders/web/github";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
@@ -271,6 +272,24 @@ const genRepo = async (repoName: string) => {
   console.log(`done generating embeddings for repo ${repoName}`)
 }
 
+const genUrl = async (url: string) => {
+  console.log(`generating embeddings for URL ${url}`);
+  const loader = new CheerioWebBaseLoader(url);
+
+  const docs = await loader.loadAndSplit();
+  await SupabaseVectorStore.fromDocuments(
+    docs,
+    new OpenAIEmbeddings(),
+    {
+      client: await getServerClient(),
+      tableName: "documents",
+      queryName: "match_documents",
+      filter: [{ repository: url }]
+    }
+  );
+  console.log(`done generating embeddings for URL ${url}`)
+}
+
 const GITHUB_BASE_URL = "https://github.com"
 
 const extractOwnerAndRepoAndPath = (url: string) => {
@@ -289,6 +308,8 @@ const getOrGenStore = async (maestro: CodeMaestro) => {
       const { owner, repo } = src.repoInfo;
       const hasRepo = await isRepoInVectorStore(src.url);
       if (!hasRepo) await genRepo(`${owner}/${repo}`);
+    } else {
+      await genUrl(src.url);
     }
   }
   const storeOpts = {
