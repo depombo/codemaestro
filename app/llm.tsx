@@ -214,8 +214,25 @@ const getGithubToken = async () => {
   throw new Error(`Unable to fetch access repos for user: ${response.status} ${JSON.stringify(data)}`);
 }
 
-const getRepoInfo = async (repoName: string, accessToken: string) => {
-  const url = `https://api.github.com/repos/${repoName}`;
+// TODO context file
+// const isSrcValid = async
+
+type RepoName = {
+  owner: string;
+  repo: string;
+  path: string
+}
+
+export const isSrcPrivate = async (url: string) => {
+  const repoParts = extractOwnerAndRepoAndPath(url);
+  if (!repoParts) return false;
+  const ghToken = await getGithubToken();
+  const repoInfo = await getRepoInfo(repoParts, ghToken);
+  return repoInfo.private;
+}
+
+const getRepoInfo = async (repoName: RepoName, accessToken: string) => {
+  const url = `https://api.github.com/repos/${repoName.owner}/${repoName.repo}`;
   const headers = {
     "User-Agent": "langchain",
     Authorization: `Bearer ${accessToken}`,
@@ -223,10 +240,10 @@ const getRepoInfo = async (repoName: string, accessToken: string) => {
   const response = await fetch(url, { headers: headers });
   const data = await response.json();
   if (response.ok) return { branch: data["default_branch"], private: data["private"] };
-  throw new Error(`Unable to fetch access repo ${repoName}: ${response.status} ${JSON.stringify(data)}`);
+  throw new Error(`Unable to fetch access repo ${repoName.owner}/${repoName.repo}: ${response.status} ${JSON.stringify(data)}`);
 }
 
-const genRepo = async (repoName: string) => {
+const genRepo = async (repoName: RepoName) => {
   const ghToken = await getGithubToken();
   const user = await getUserDetails();
   console.log(`generating embeddings for repo ${repoName}`);
@@ -292,7 +309,7 @@ const genUrl = async (url: string) => {
 
 const GITHUB_BASE_URL = "https://github.com"
 
-const extractOwnerAndRepoAndPath = (url: string) => {
+const extractOwnerAndRepoAndPath = (url: string): RepoName | null => {
   const match = url.match(new RegExp(`${GITHUB_BASE_URL}/([^/]+)/([^/]+)(/tree/[^/]+/(.+))?`, "i"));
   if (!match) return null;
   return { owner: match[1], repo: match[2], path: match[4] || "" };
@@ -301,13 +318,12 @@ const extractOwnerAndRepoAndPath = (url: string) => {
 const getOrGenStore = async (maestro: CodeMaestro) => {
   const srcs = maestro.context_sources.map(n => ({
     url: n.url,
-    repoInfo: extractOwnerAndRepoAndPath(n.url)
+    repoParts: extractOwnerAndRepoAndPath(n.url)
   }));
   for (const src of srcs) {
-    if (src.repoInfo) {
-      const { owner, repo } = src.repoInfo;
+    if (src.repoParts) {
       const hasRepo = await isRepoInVectorStore(src.url);
-      if (!hasRepo) await genRepo(`${owner}/${repo}`);
+      if (!hasRepo) await genRepo(src.repoParts);
     } else {
       await genUrl(src.url);
     }

@@ -3,7 +3,7 @@
 import { Database } from '@/types_db';
 import { revalidatePath } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
-import { chat } from './llm';
+import { chat, isSrcPrivate } from './llm';
 import { getServerClient } from './supabase/server';
 import { Session } from '@supabase/supabase-js';
 
@@ -161,16 +161,17 @@ const createAndJoinSource = async (formData: FormData, maestro: CodeMaestro) => 
   const repos = (formData.get('repo') as string).split(',');
   if (!session) redirect('/signin')
   const user = session.user;
+  const srcs = await Promise.all(repos
+    .map(async (r) => {
+      return {
+        user_id: await isSrcPrivate(r) ? user?.id : null,
+        url: r,
+      }
+    }))
   const supabase = await getServerClient();
   const { data, error } = await supabase
     .from('context_sources')
-    .insert(repos
-      .map(r => ({
-        // TODO tell me if it is public or not somehow
-        user_id: user?.id,
-        url: r,
-      }))
-    )
+    .insert(srcs)
     .select();
   if (error) console.error(error);
   let sources = data;
