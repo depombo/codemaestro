@@ -134,12 +134,12 @@ export const getMaestros = async (): Promise<CodeMaestro[] | null> => {
   const supabase = await getServerClient();
   const { error, data } = await supabase
     .from('code_maestros')
-    .select('*, context_sources(id, url)')
-    .eq('user_id', user?.id as string);
+    .select('*, context_sources(*)')
+    .eq('user_id', user?.id);
   if (error) {
     console.error(error);
   }
-  return data as CodeMaestro[] || [];
+  return data as CodeMaestro[];
 };
 
 export const deleteMaestro = async (id: number, redirectPath: string) => {
@@ -168,14 +168,23 @@ const createAndJoinSource = async (formData: FormData, maestro: CodeMaestro) => 
       .map(r => ({
         // TODO tell me if it is public or not somehow
         user_id: user?.id,
-        url: r
+        url: r,
       }))
     )
     .select();
-  const sources = data ?? [];
+  if (error) console.error(error);
+  let sources = data;
+  if (error?.code === '23505' || !data) {
+    const { data, error } = await supabase
+      .from('context_sources')
+      .select()
+      .or(repos.map(r => `url.eq.${r}`).join(","));
+    if (error) console.error(error);
+    sources = data;
+  }
   const { error: errorJ } = await supabase
     .from('maestro_context')
-    .insert(sources
+    .insert(sources!
       .map(src => ({
         source_id: src.id,
         maestro_id: maestro.id,
