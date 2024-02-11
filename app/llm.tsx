@@ -246,9 +246,9 @@ const getRepoInfo = async (repoName: RepoName, accessToken: string) => {
 const genRepo = async (repoName: RepoName) => {
   const ghToken = await getGithubToken();
   const user = await getUserDetails();
-  console.log(`generating embeddings for repo ${repoName}`);
+  console.log(`generating embeddings for repo ${repoName.owner}/${repoName.repo}`);
   const repoInfo = await getRepoInfo(repoName, ghToken);
-  const url = `https://github.com/${repoName}`;
+  const url = `https://github.com/${repoName.owner}/${repoName.repo}`;
   const loader = new GithubRepoLoader(
     url,
     {
@@ -286,7 +286,7 @@ const genRepo = async (repoName: RepoName) => {
       filter: [{ repository: url }]
     }
   );
-  console.log(`done generating embeddings for repo ${repoName}`)
+  console.log(`done generating embeddings for repo ${repoName.owner}/${repoName.repo}`)
 }
 
 const genUrl = async (url: string) => {
