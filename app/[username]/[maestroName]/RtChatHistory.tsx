@@ -19,7 +19,6 @@ type RtChatHistoryProps = {
 };
 
 export default function ChatHistory({ maestro, user, pastMessages, searchParams, className }: RtChatHistoryProps) {
-  const bookmarked = !!searchParams?.bookmarked;
   const [rtMessages, setRtMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
@@ -63,7 +62,7 @@ export default function ChatHistory({ maestro, user, pastMessages, searchParams,
   return (
     <div className={className}>
       {
-        rtMessages.filter(m => !bookmarked || bookmarked === m.bookmarked).map(m => (
+        rtMessages.map(m => (
           m.model_name ?
             <MaestroMessage
               key={m.id}
