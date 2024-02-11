@@ -18,6 +18,7 @@ type ChatProps = {
 
 export default function Chat({ maestro, user, pastMessages }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>(pastMessages);
+  const [loaded, setLoaded] = useState<boolean>(false);
   const supabase = getBrowserClient();
   supabase
     .channel('messages-db')
@@ -58,8 +59,12 @@ export default function Chat({ maestro, user, pastMessages }: ChatProps) {
     const scrollDiff = (elem.scrollHeight - elem.scrollTop) - elem.clientHeight;
     // console.log(elem.scrollHeight, elem.scrollTop, elem.clientHeight)
     // console.log(scrollDiff)
+    if (!loaded) {
+      // elem.scrollTop = elem.scrollHeight;
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+      setLoaded(true);
+    }
     if (scrollDiff < 450) {
-      //elem.scrollTop = elem.scrollHeight;
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
   }
