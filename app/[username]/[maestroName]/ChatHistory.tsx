@@ -8,15 +8,15 @@ import {
 import { getBrowserClient } from '../../supabase/client';
 import { useRef, useState, useEffect } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
+import UserInput from './UserInput';
 
 type ChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
-  className: string;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages, className }: ChatHistoryProps) {
+export default function ChatHistory({ maestro, user, pastMessages }: ChatHistoryProps) {
   const [messages, setMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
@@ -44,7 +44,7 @@ export default function ChatHistory({ maestro, user, pastMessages, className }: 
       (payload) => {
         setMessages(
           messages
-            .map(m => m.id === payload.new.id ? payload.new : m)
+            .map(m => m.id === payload.new.id && !payload.new.aborted ? payload.new : m)
         )
       }
     )
@@ -67,25 +67,32 @@ export default function ChatHistory({ maestro, user, pastMessages, className }: 
   // setInterval(scrollToBottom, 1000)
 
   return (
-    <div ref={allMessagesRef} className={className}>
-      {
-        messages.map(m => (
-          m.model_name ?
-            <MaestroMessage
-              key={m.id}
-              name={maestro.name}
-              msg={m}
-            />
-            :
-            <UserMessage
-              key={m.id}
-              name={user.full_name || "You"}
-              avatarUrl={user.avatar_url || ""}
-              msg={m}
-            />
-        ))
-      }
-      <div ref={messagesEndRef} />
-    </div>
+    <>
+      <div ref={allMessagesRef} className="py-4 px-8 sm:px-20 overflow-y-auto">
+        {
+          messages.map(m => (
+            m.model_name ?
+              <MaestroMessage
+                key={m.id}
+                name={maestro.name}
+                msg={m}
+              />
+              :
+              <UserMessage
+                key={m.id}
+                name={user.full_name || "You"}
+                avatarUrl={user.avatar_url || ""}
+                msg={m}
+              />
+          ))
+        }
+        <div ref={messagesEndRef} />
+      </div>
+      <UserInput
+        maestro={maestro}
+        messages={messages}
+      />
+    </>
+
   );
 }

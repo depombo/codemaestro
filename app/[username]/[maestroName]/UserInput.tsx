@@ -4,18 +4,19 @@ import Button from '@/components/ui/Button';
 import React, { useState, useRef, FormEvent } from 'react';
 
 import { CodeMaestro, Message, messageMaestro } from '../../actions';
+import { getBrowserClient } from '@/app/supabase/client';
 
 type UserInputProps = {
   maestro: CodeMaestro;
-  pastMessages: Message[];
-  className: string;
+  messages: Message[];
 };
 
-const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
+const UserInput = ({ messages, maestro }: UserInputProps) => {
   const [message, setMessage] = useState('');
   const textareaRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
-
+  const supabase = getBrowserClient();
+  const lastMessage = messages[messages.length - 1];
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
@@ -28,10 +29,20 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
 
   const handleFormSubmit = async (event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault()
+    if (isLoading) {
+      // abort last message
+      const { error } = await supabase
+        .from("messages")
+        .update({ aborted: true })
+        .eq("id", lastMessage.id);
+      console.error(error);
+      setIsLoading(false);
+      return;
+    }
     const messageToSend = message;
     setIsLoading(true);
     setMessage('');
-    await messageMaestro(maestro, pastMessages, messageToSend);
+    await messageMaestro(maestro, messages, messageToSend);
     setIsLoading(false);
   }
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -41,7 +52,7 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
     }
   };
   return (
-    <div className={className}>
+    <div className="p-4 bg-black border-t border-zinc-700">
       <form
         id="messageMaestro"
         onSubmit={handleFormSubmit}
@@ -58,14 +69,14 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
           style={{ maxHeight: '8rem' }}
         />
         <Button
-          disabled={!message.trim().length}
+          disabled={!isLoading && !message.trim().length}
           className="h-8 w-2 ml-4"
-          loading={isLoading}
           variant="slim"
+          loading={isLoading && !lastMessage.model_name /* loading while maestro starts reply so aborts work */}
           form="messageMaestro"
           type="submit"
         >
-          ↑
+          {isLoading ? (!lastMessage.model_name ? "" : "⏸") : "↑"} {/*"■" */}
         </Button>
       </form>
     </div>

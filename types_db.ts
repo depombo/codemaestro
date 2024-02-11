@@ -152,6 +152,7 @@ export type Database = {
       }
       messages: {
         Row: {
+          aborted: boolean
           created_at: string
           id: number
           maestro_id: number
@@ -160,6 +161,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          aborted?: boolean
           created_at?: string
           id?: number
           maestro_id: number
@@ -168,6 +170,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          aborted?: boolean
           created_at?: string
           id?: number
           maestro_id?: number

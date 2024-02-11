@@ -4,7 +4,6 @@ import {
   getMaestro,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
-import UserInput from './UserInput';
 import ChatHistory from './ChatHistory';
 import Navbar from '@/components/ui/Navbar';
 
@@ -22,15 +21,9 @@ export default async function ChatPage({ params }: ChatPageProps) {
 
   return (
     <div className="flex flex-col justify-between h-screen">
-      <Navbar className={''} params={params} />
+      <Navbar params={params} />
       <ChatHistory
-        className="py-4 px-8 sm:px-20 overflow-y-auto"
         user={user}
-        maestro={maestro}
-        pastMessages={pastMessages}
-      />
-      <UserInput
-        className="p-4 bg-black border-t border-zinc-700"
         maestro={maestro}
         pastMessages={pastMessages}
       />
