@@ -6,11 +6,11 @@ import {
   User,
 } from '@/app/actions';
 import { getBrowserClient } from '../../supabase/client';
-import { useEffect, useRef, useState, } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
 import { SearchParams } from '@/utils/helpers';
 
-type RtChatHistoryProps = {
+type ChatHistoryProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
@@ -18,7 +18,7 @@ type RtChatHistoryProps = {
   className: string;
 };
 
-export default function ChatHistory({ maestro, user, pastMessages, searchParams, className }: RtChatHistoryProps) {
+export default function ChatHistory({ maestro, user, pastMessages, searchParams, className }: ChatHistoryProps) {
   const [rtMessages, setRtMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
