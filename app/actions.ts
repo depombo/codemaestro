@@ -18,6 +18,7 @@ export type Message = Database['public']['Tables']['messages']['Row'];
 export type User = Database['public']['Tables']['users']['Row'];
 type ContextSource = Database['public']['Tables']['context_sources']['Row'];
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'] & { 'context_sources': ContextSource[] };
+export type ModelName = Database['public']['Enums']['model_name'];
 // TODO mappers once it makes sense or add into CodeMaestro type
 export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
 
@@ -34,18 +35,19 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string, modelName: string) => {
+export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string) => {
+  const { id: maestro_id, user_id, model_name } = maestro;
   const supabase = await getServerClient();
   // save user message
   const { error } = await supabase
     .from('messages')
-    .insert({ maestro_id: maestro.id, message: newMessage, user_id: maestro.user_id })
+    .insert({ maestro_id, message: newMessage, user_id })
   if (error) {
     console.error(error);
   }
 
-  const outputStream = await chat(newMessage, maestro, pastMessages, modelName);
-  const aiMessageFields = { maestro_id: maestro.id, user_id: maestro.user_id, model_name: modelName };
+  const outputStream = await chat(newMessage, maestro, pastMessages, model_name);
+  const aiMessageFields = { maestro_id, user_id, model_name };
   // save ai messages
   let output = ''
   const { data, error: aiMessageError } = await supabase
@@ -141,6 +143,24 @@ export const getMaestros = async (): Promise<CodeMaestro[] | null> => {
   }
   return data as CodeMaestro[];
 };
+
+export const getMaestro = async (name: string): Promise<CodeMaestro> => {
+  const maestros = await getMaestros();
+  const maestro = maestros?.filter(m => maestroNamePath(m.name) === name).pop();
+  if (!maestro) throw Error(`Maestro with name ${name} does not exist`);
+  return maestro;
+}
+
+export const updateMaestroModel = async (maestro: CodeMaestro, newModelName: ModelName) => {
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from("code_maestros")
+    .update({ model_name: newModelName })
+    .eq("id", maestro.id);
+  if (error) {
+    console.error(error);
+  }
+}
 
 export const deleteMaestro = async (id: number, redirectPath: string) => {
   const supabase = await getServerClient();

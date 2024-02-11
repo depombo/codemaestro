@@ -2,10 +2,8 @@
 
 import Button from '@/components/ui/Button';
 import React, { useState, useRef, FormEvent } from 'react';
-import { useSearchParams } from 'next/navigation';
 
 import { CodeMaestro, Message, messageMaestro } from '../../actions';
-import { getModel } from './config/ModelSelect';
 
 type UserInputProps = {
   maestro: CodeMaestro;
@@ -18,8 +16,6 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
   const textareaRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false)
 
-  const searchParams = useSearchParams();
-  const model = getModel(searchParams.get('model'));
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
@@ -35,7 +31,7 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
     const messageToSend = message;
     setIsLoading(true);
     setMessage('');
-    await messageMaestro(maestro, pastMessages, messageToSend, model);
+    await messageMaestro(maestro, pastMessages, messageToSend);
     setIsLoading(false);
   }
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {

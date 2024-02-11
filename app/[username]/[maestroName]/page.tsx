@@ -1,8 +1,7 @@
 import {
-  getMaestros,
   getMessages,
   getUserDetails,
-  maestroNamePath,
+  getMaestro,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import UserInput from './UserInput';
@@ -21,14 +20,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   if (!user) {
     return redirect('/signin');
   }
-  const maestroName = params.maestroName;
-  if (!maestroName) {
-    return redirect('/profile');
-  }
-  const maestros = await getMaestros();
-  const maestro = maestros?.filter(m => maestroNamePath(m.name) === maestroName).pop();
-  if (!maestro) return <h2 className="text-center">Something went wrong!</h2>
-
+  const maestro = await getMaestro(params.maestroName);
   const pastMessages = await getMessages(maestro.id);
 
   return (

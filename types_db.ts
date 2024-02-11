@@ -13,18 +13,21 @@ export type Database = {
         Row: {
           created_at: string
           id: number
+          model_name: Database["public"]["Enums"]["model_name"]
           name: string
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: number
+          model_name?: Database["public"]["Enums"]["model_name"]
           name: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: number
+          model_name?: Database["public"]["Enums"]["model_name"]
           name?: string
           user_id?: string
         }
@@ -149,7 +152,6 @@ export type Database = {
       }
       messages: {
         Row: {
-          bookmarked: boolean
           created_at: string
           id: number
           maestro_id: number
@@ -158,7 +160,6 @@ export type Database = {
           user_id: string
         }
         Insert: {
-          bookmarked?: boolean
           created_at?: string
           id?: number
           maestro_id: number
@@ -167,7 +168,6 @@ export type Database = {
           user_id: string
         }
         Update: {
-          bookmarked?: boolean
           created_at?: string
           id?: number
           maestro_id?: number
@@ -412,6 +412,7 @@ export type Database = {
       }
     }
     Enums: {
+      model_name: "gpt-3.5-turbo" | "gpt-4"
       pricing_plan_interval: "day" | "week" | "month" | "year"
       pricing_type: "one_time" | "recurring"
       subscription_status:
