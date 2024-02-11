@@ -36,15 +36,10 @@ export default async function ChatPage({ searchParams, params }: Props) {
           maestro={maestro}
         />
       }
-      <div className={"flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
-        <div className="mb-1 text-l font-medium">{maestro.name}</div>
-        <div className="flex flex-col">
-          {
-            maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} url={s.url} />)
-          }
-        </div>
-        <div className="flex flex-row justify-between">
-        </div>
+      <div className="flex flex-col">
+        {
+          maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} url={s.url} />)
+        }
       </div>
       <Link href={`/${username}/${maestroName}/config?deleteMaestro=true`}>
         <Button

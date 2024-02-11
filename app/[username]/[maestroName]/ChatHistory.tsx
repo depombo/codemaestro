@@ -17,7 +17,7 @@ type ChatHistoryProps = {
 };
 
 export default function ChatHistory({ maestro, user, pastMessages, className }: ChatHistoryProps) {
-  const [rtMessages, setRtMessages] = useState<Message[]>(pastMessages);
+  const [messages, setMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase
     .channel('messages-db')
@@ -30,8 +30,7 @@ export default function ChatHistory({ maestro, user, pastMessages, className }: 
         filter: `maestro_id=eq.${maestro.id}`,
       },
       (payload) => {
-        setRtMessages([...rtMessages, payload.new])
-        scrollToBottom()
+        setMessages([...messages, payload.new])
       }
     )
     .on<Message>(
@@ -43,24 +42,34 @@ export default function ChatHistory({ maestro, user, pastMessages, className }: 
         filter: `maestro_id=eq.${maestro.id}`,
       },
       (payload) => {
-        setRtMessages(
-          rtMessages
+        setMessages(
+          messages
             .map(m => m.id === payload.new.id ? payload.new : m)
         )
       }
     )
     .subscribe()
 
+  const allMessagesRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    const elem = allMessagesRef.current;
+    if (!elem) return;
+    const scrollDiff = (elem.scrollHeight - elem.scrollTop) - elem.clientHeight;
+    // console.log(elem.scrollHeight, elem.scrollTop, elem.clientHeight)
+    // console.log(scrollDiff)
+    if (scrollDiff < 450) {
+      //elem.scrollTop = elem.scrollHeight;
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    }
   }
-  // useEffect(scrollToBottom, [rtMessages]);
+  useEffect(scrollToBottom, [messages])
+  // setInterval(scrollToBottom, 1000)
 
   return (
-    <div className={className}>
+    <div ref={allMessagesRef} className={className}>
       {
-        rtMessages.map(m => (
+        messages.map(m => (
           m.model_name ?
             <MaestroMessage
               key={m.id}

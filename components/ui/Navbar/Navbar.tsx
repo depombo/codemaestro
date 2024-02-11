@@ -9,8 +9,10 @@ import TabbedButton from '../TabbedButton';
 
 export default async function Navbar({
   params,
+  className,
 }: {
   params?: { username?: string, maestroName?: string },
+  className?: string,
 },
 ) {
   const user = await getUserDetails();
@@ -19,7 +21,7 @@ export default async function Navbar({
   const isChat = !!maestroName;
 
   return (
-    <nav className={"sticky top-0 bg-black z-40 transition-all duration-150 h-22 border-b border-zinc-700"}>
+    <nav className={!!className ? className : "sticky top-0 bg-black z-40 transition-all duration-150 h-22 border-b border-zinc-700"}>
       <div className="py-2 px-8 mx-auto">
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
