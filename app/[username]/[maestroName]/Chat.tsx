@@ -10,13 +10,13 @@ import { useRef, useState, useEffect } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
 import UserInput from './UserInput';
 
-type ChatHistoryProps = {
+type ChatProps = {
   maestro: CodeMaestro;
   user: User;
   pastMessages: Message[];
 };
 
-export default function ChatHistory({ maestro, user, pastMessages }: ChatHistoryProps) {
+export default function Chat({ maestro, user, pastMessages }: ChatProps) {
   const [messages, setMessages] = useState<Message[]>(pastMessages);
   const supabase = getBrowserClient();
   supabase

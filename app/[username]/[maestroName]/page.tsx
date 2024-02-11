@@ -4,7 +4,7 @@ import {
   getMaestro,
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
-import ChatHistory from './ChatHistory';
+import Chat from './Chat';
 import Navbar from '@/components/ui/Navbar';
 
 type ChatPageProps = {
@@ -22,7 +22,7 @@ export default async function ChatPage({ params }: ChatPageProps) {
   return (
     <div className="flex flex-col justify-between h-screen">
       <Navbar params={params} />
-      <ChatHistory
+      <Chat
         user={user}
         maestro={maestro}
         pastMessages={pastMessages}
