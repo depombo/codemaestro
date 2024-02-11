@@ -35,7 +35,7 @@ const UserInput = ({ pastMessages, maestro, className }: UserInputProps) => {
     setIsLoading(false);
   }
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault(); // Prevents the addition of a new line in the textarea (if you don't want this)
       handleFormSubmit();
     }
