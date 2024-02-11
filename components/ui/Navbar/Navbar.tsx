@@ -15,6 +15,7 @@ export default async function Navbar({
 ) {
   const user = await getUserDetails();
   const { maestroName, username } = params || {};
+  const isProfile = !!username;
   const isChat = !!maestroName;
 
   return (
@@ -48,19 +49,18 @@ export default async function Navbar({
 
           <div className="flex justify-end flex-1 space-x-8 px-8 items-center align-center">
             {isChat && <TabbedButton aLabel="Chat" aPath={`/${username}/${maestroName}`} bPath={`/${username}/${maestroName}/config`} bLabel="Config" />}
-            {!user && <Link className={s.link} href="/signin">
-              Dashboard
-            </Link>}
-            {user && !isChat && <Link href="/settings" className={s.link}>
-              Settings
-            </Link>
-            }
-            {
-              !isChat && <Link href="/pricing" className={s.link}>
+            {!user && <>
+              <Link className={s.link} href="/signin">
+                Dashboard
+              </Link>
+              <Link href="/pricing" className={s.link}>
                 Pricing
               </Link>
+            </>
             }
-
+            {
+              isProfile && !isChat && <TabbedButton aLabel="CodeMaestros" aPath={`/${username}`} bPath={`/${username}/account`} bLabel="Account" />
+            }
           </div>
         </div>
       </div>

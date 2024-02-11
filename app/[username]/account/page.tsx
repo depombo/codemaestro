@@ -4,10 +4,14 @@ import {
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import Navbar from '@/components/ui/Navbar';
-import Settings from './Settings';
+import Account from './Account';
+
+type Props = {
+  params: { username: string };
+};
 
 
-export default async function SettingsPage() {
+export default async function SettingsPage({ params }: Props) {
   const session = await getSession();
   if (!session) {
     return redirect('/signin');
@@ -15,8 +19,8 @@ export default async function SettingsPage() {
 
   return (
     <>
-      <Navbar />
-      <Settings />
+      <Navbar params={params} />
+      <Account />
     </>
   );
 }
