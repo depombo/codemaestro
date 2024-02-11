@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import React from 'react';
-import { CreateMaestroModal, } from './Modal';
+import { NewMaestroModal, } from './Modal';
 import { CodeMaestro, maestroNamePath } from '../actions';
 import Button from '@/components/ui/Button';
 import { GitHub, } from '@/components/icons';
 import { SearchParams } from '@/utils/helpers';
 
-const GithubBadge = ({ url, hyperlink }: { url: string, hyperlink: boolean }) => {
+export const GithubBadge = ({ url, hyperlink }: { url: string, hyperlink: boolean }) => {
   const badge = (
     <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
       {
@@ -86,7 +86,7 @@ const MaestroList = ({ maestros, params, searchParams, className }: MaestroListP
           New Maestro
         </Button>
       </Link>
-      {createMaestro && <CreateMaestroModal username={username} />}
+      {createMaestro && <NewMaestroModal username={username} />}
     </div>
   );
 };

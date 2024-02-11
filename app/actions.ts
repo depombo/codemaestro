@@ -174,10 +174,12 @@ export const deleteMaestro = async (id: number, redirectPath: string) => {
   redirect(redirectPath, RedirectType.push);
 }
 
-const createAndJoinSource = async (url: string, maestro: CodeMaestro) => {
+/* TODO add validation for repo and url */
+export const createAndJoinSource = async (maestro: CodeMaestro, redirectPath: string | null, formData: FormData) => {
   const session = await getSession();
   if (!session) redirect('/signin')
   const user = session.user;
+  const url = formData.get('url') as string;
   const src = {
     user_id: await isSrcPrivate(url) ? user?.id : null,
     url,
@@ -206,6 +208,7 @@ const createAndJoinSource = async (url: string, maestro: CodeMaestro) => {
       maestro_id: maestro.id,
     });
   if (errorJ) console.error(error);
+  if (redirectPath) redirect(redirectPath, RedirectType.push);
 };
 
 
@@ -221,8 +224,7 @@ export const createMaestro = async (username: string, formData: FormData) => {
     .select()
     .single();
   if (error) console.error(error);
-  const url = formData.get('url') as string;
-  await createAndJoinSource(url, { ...data!, context_sources: [] });
+  await createAndJoinSource({ ...data!, context_sources: [] }, null, formData);
   redirect(`/${username}/${maestroNamePath(name)}`, RedirectType.push);
 };
 

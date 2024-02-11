@@ -2,6 +2,7 @@ import Button from '@/components/ui/Button';
 import {
   CodeMaestro,
   createMaestro,
+  createAndJoinSource,
   deleteMaestro,
 } from '@/app/actions';
 import { Logo } from '@/components/icons';
@@ -20,7 +21,50 @@ const BaseModal = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export const CreateMaestroModal = ({ username }: { username: string }) => (
+export const CreateCtxSrcModal = ({ maestro, redirectPath }: { maestro: CodeMaestro, redirectPath: string }) => (
+  <BaseModal>
+    <Card
+      title="New Context Source URL"
+      description="Enter the url for the new context source to use with this maestro"
+      footer={
+        <div className='flex flex-row justify-between'>
+          <Link href={redirectPath}>
+            <Button
+              outline={true}
+              variant="slim"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Button
+            variant="slim"
+            type="submit"
+            form="createSrc"
+          >
+            Create context source
+          </Button>
+        </div>
+      }
+    >
+      <form id="createSrc" action={createAndJoinSource.bind(null, maestro, redirectPath)}>
+        <div className="mt-8 mb-2 ml-2 text-l font-semibold">
+          <label>GitHub repo or website URL</label>
+        </div>
+        <div className="mt-4 mb-4 text-l font-semibold">
+          <input
+            type="text"
+            name="url"
+            className="w-1/2 p-3 rounded-md bg-zinc-800"
+            placeholder="https://github.com/denoland/deno_std"
+          />
+        </div>
+      </form>
+    </Card>
+  </BaseModal>
+)
+
+
+export const NewMaestroModal = ({ username }: { username: string }) => (
   <BaseModal>
     <Card
       title="New Code Maestro"
@@ -62,7 +106,6 @@ export const CreateMaestroModal = ({ username }: { username: string }) => (
           <label>GitHub Repository or Website URL</label>
         </div>
         <div className="mt-4 mb-4 text-l font-semibold">
-          {/* TODO add validation for repo and url */}
           <input
             type="text"
             name="url"
@@ -75,14 +118,14 @@ export const CreateMaestroModal = ({ username }: { username: string }) => (
   </BaseModal>
 )
 
-export const DeleteConfirmationMaestroModal = ({ maestro, redirectPath }: { maestro: CodeMaestro, redirectPath: string }) => (
+export const DeleteConfirmationMaestroModal = ({ maestro, cancelPath, delPath }: { maestro: CodeMaestro, cancelPath: string, delPath: string }) => (
   <BaseModal>
     <Card
       title={`Are you sure you want to delete ${maestro.name} Maestro?`}
       description="This cannot be undone."
       footer={
         <div className='flex flex-row justify-between'>
-          <Link href={redirectPath}>
+          <Link href={cancelPath}>
             <Button
               variant="slim"
               outline={true}
@@ -90,7 +133,7 @@ export const DeleteConfirmationMaestroModal = ({ maestro, redirectPath }: { maes
               Cancel
             </Button>
           </Link>
-          <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id, redirectPath)}>
+          <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id, delPath)}>
             <Button
               variant="slim"
               type="submit"
