@@ -86,7 +86,7 @@ const MaestroList = ({ maestros, params, searchParams, className }: MaestroListP
           New Maestro
         </Button>
       </Link>
-      {createMaestro && <CreateMaestroModal redirectPath={`/${username}`} />}
+      {createMaestro && <CreateMaestroModal username={username} />}
     </div>
   );
 };

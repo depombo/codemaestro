@@ -20,15 +20,14 @@ const BaseModal = ({ children }: { children: ReactNode }) => {
   )
 }
 
-// TODO send to chat specific to this maestro
-export const CreateMaestroModal = ({ redirectPath }: { redirectPath: string }) => (
+export const CreateMaestroModal = ({ username }: { username: string }) => (
   <BaseModal>
     <Card
       title="New Code Maestro"
       description="Enter the name and Github repositories to create a Code Maestro to chat with"
       footer={
         <div className='flex flex-row justify-between'>
-          <Link href={redirectPath}>
+          <Link href={`/${username}`}>
             <Button
               outline={true}
               variant="slim"
@@ -46,7 +45,7 @@ export const CreateMaestroModal = ({ redirectPath }: { redirectPath: string }) =
         </div>
       }
     >
-      <form id="createMaestro" action={createMaestro.bind(null, redirectPath)}>
+      <form id="createMaestro" action={createMaestro.bind(null, username)}>
         <div className="mt-6 mb-2 ml-2 text-l font-semibold">
           <label>Maestro Name</label>
         </div>

@@ -215,9 +215,8 @@ const createAndJoinSource = async (formData: FormData, maestro: CodeMaestro) => 
 };
 
 
-export const createMaestro = async (redirectPath: string, formData: FormData) => {
+export const createMaestro = async (username: string, formData: FormData) => {
   const session = await getSession();
-  // console.log(formData);
   const name = formData.get('name') as string;
   if (!session) redirect('/signin')
   const user = session.user;
@@ -229,7 +228,7 @@ export const createMaestro = async (redirectPath: string, formData: FormData) =>
     .single();
   if (error) console.error(error);
   await createAndJoinSource(formData, { ...data!, context_sources: [] });
-  redirect(redirectPath, RedirectType.push);
+  redirect(`/${username}/${name}`, RedirectType.push);
 };
 
 // TODO error handling and solidify type
