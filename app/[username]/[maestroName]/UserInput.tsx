@@ -5,7 +5,7 @@ import React, { useState, useRef, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 import { CodeMaestro, Message, messageMaestro } from '../../actions';
-import { getModel } from '@/components/ui/Navbar/ModelSelect';
+import { getModel } from './config/ModelSelect';
 
 type UserInputProps = {
   maestro: CodeMaestro;

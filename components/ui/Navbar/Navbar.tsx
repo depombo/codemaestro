@@ -5,8 +5,7 @@ import {
 import { IconSeparator, Logo } from '@/components/icons';
 
 import s from './Navbar.module.css';
-import { ModelSelect } from './ModelSelect';
-import TabbedButton from './TabbedButton';
+import TabbedButton from '../TabbedButton';
 
 export default async function Navbar({
   params,
@@ -15,11 +14,12 @@ export default async function Navbar({
 },
 ) {
   const user = await getUserDetails();
-  const isChat = !!params && !!params.maestroName;
+  const { maestroName, username } = params || {};
+  const isChat = !!maestroName;
 
   return (
-    <nav className={"sticky top-0 bg-black z-40 transition-all duration-150 h-16 md:h-20 border-b border-zinc-700"}>
-      <div className="p-2 mx-auto">
+    <nav className={"sticky top-0 bg-black z-40 transition-all duration-150 h-22 border-b border-zinc-700"}>
+      <div className="py-2 px-8 mx-auto">
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">
@@ -43,12 +43,11 @@ export default async function Navbar({
                   <p className='ml-2 font-bold'>CodeMaestro</p>
                 </Link>
             }
-            {isChat && <><IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" /> {params.maestroName} </>}
-            {isChat && <ModelSelect />}
+            {isChat && <><IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" /> {maestroName} </>}
           </div>
 
           <div className="flex justify-end flex-1 space-x-8 px-8 items-center align-center">
-            {isChat && <TabbedButton />}
+            {isChat && <TabbedButton aLabel="Chat" aPath={`/${username}/${maestroName}`} bPath={`/${username}/${maestroName}/config`} bLabel="Config" />}
             {!user && <Link className={s.link} href="/signin">
               Dashboard
             </Link>}

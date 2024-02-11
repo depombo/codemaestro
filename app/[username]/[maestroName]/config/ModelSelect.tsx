@@ -1,9 +1,8 @@
 'use client';
 
-import { IconSeparator } from '@/components/icons';
+import Selector from '@/components/ui/Selector';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import React, { useState } from 'react';
-import Selector from '../Selector';
 
 
 // https://platform.openai.com/docs/models/continuous-model-upgrades
@@ -32,7 +31,6 @@ export const ModelSelect = () => {
   };
   return (
     <>
-      <IconSeparator className="mx-4 size-6" stroke="rgb(113 113 122)" />
       <Selector options={MODELS} selection={selected} onChange={handleChange} />
     </>
   );
