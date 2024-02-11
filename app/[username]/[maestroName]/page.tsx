@@ -6,7 +6,7 @@ import {
 } from '@/app/actions';
 import { redirect } from 'next/navigation';
 import UserInput from './UserInput';
-import RtChatHistory from './RtChatHistory';
+import ChatHistory from './ChatHistory';
 import Navbar from '@/components/ui/Navbar';
 import { SearchParams } from '@/utils/helpers';
 import { getRelevantDocs } from '@/app/llm';
@@ -34,7 +34,7 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
   return (
     <>
       <Navbar params={params} />
-      <RtChatHistory
+      <ChatHistory
         className="flex-col pt-4 pb-32 px-8 sm:px-20"
         user={user}
         maestro={maestro}
