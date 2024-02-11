@@ -6,116 +6,106 @@ import {
 } from '@/app/actions';
 import { Logo } from '@/components/icons';
 import Link from 'next/link';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+
+const BaseModal = ({ children }: { children: ReactNode }) => {
+  return (
+    <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
+      <div className="shadow-lg">
+        <div className="p-4 bg-black">
+          {children}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 // TODO send to chat specific to this maestro
 export const CreateMaestroModal = ({ redirectPath }: { redirectPath: string }) => (
-  <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
-    <div className="shadow-lg">
-      <div className="p-4 bg-black">
-        <Card
-          title="New Code Maestro"
-          description="Enter the name and Github repositories to create a Code Maestro to chat with"
-          footer={
-            <div className='flex flex-row justify-between'>
-              <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Button
-                  variant="slim"
-                  type="submit"
-                  form="createMaestro"
-                >
-                  Create Maestro
-                </Button>
-              </div>
-              <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href={redirectPath}>
-                  <Button
-                    variant="slim"
-                  >
-                    Close
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          }
-        >
-          <form id="createMaestro" action={createMaestro.bind(null, redirectPath)}>
-            <div className="mt-6 mb-2 ml-2 text-l font-semibold">
-              <label>Maestro Name</label>
-            </div>
-            <div className="mt-4 mb-4 text-l font-semibold">
-              <input
-                type="text"
-                name="name"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
-                placeholder="Deno Backend"
-                maxLength={64}
-              />
-            </div>
-            <div className="mt-8 mb-2 ml-2 text-l font-semibold">
-              <label>Github Repository Name</label>
-            </div>
-            <div className="mt-4 mb-4 text-l font-semibold">
-              {/* TODO add validation that repo is valid */}
-              <input
-                type="text"
-                name="repo"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
-                placeholder="denoland/deno_std"
-              />
-              {/* TODO multiple repo support */}
-              {/* <Button
-                    className="mx-8"
-                    variant="slim"
-                    width={1}
-                    disabled={false}
-                  >
-                    +
-                  </Button> */}
-            </div>
-          </form>
-        </Card>
-      </div>
-    </div>
-  </div>
+  <BaseModal>
+    <Card
+      title="New Code Maestro"
+      description="Enter the name and Github repositories to create a Code Maestro to chat with"
+      footer={
+        <div className='flex flex-row justify-between'>
+          <Link href={redirectPath}>
+            <Button
+              outline={true}
+              variant="slim"
+            >
+              Cancel
+            </Button>
+          </Link>
+          <Button
+            variant="slim"
+            type="submit"
+            form="createMaestro"
+          >
+            Create Maestro
+          </Button>
+        </div>
+      }
+    >
+      <form id="createMaestro" action={createMaestro.bind(null, redirectPath)}>
+        <div className="mt-6 mb-2 ml-2 text-l font-semibold">
+          <label>Maestro Name</label>
+        </div>
+        <div className="mt-4 mb-4 text-l font-semibold">
+          <input
+            type="text"
+            name="name"
+            className="w-1/2 p-3 rounded-md bg-zinc-800"
+            placeholder="Deno Backend"
+            maxLength={64}
+          />
+        </div>
+        <div className="mt-8 mb-2 ml-2 text-l font-semibold">
+          <label>Github Repository Name</label>
+        </div>
+        <div className="mt-4 mb-4 text-l font-semibold">
+          {/* TODO add validation that repo is valid */}
+          <input
+            type="text"
+            name="repo"
+            className="w-1/2 p-3 rounded-md bg-zinc-800"
+            placeholder="denoland/deno_std"
+          />
+        </div>
+      </form>
+    </Card>
+  </BaseModal>
+
 )
 
 export const DeleteConfirmationMaestroModal = ({ maestro, redirectPath }: { maestro: CodeMaestro, redirectPath: string }) => (
-  <div className="fixed inset-0 bg-black/80 overflow-y-auto h-full w-full flex items-center justify-center">
-    <div className="shadow-lg">
-      <div className="p-4 bg-black">
-        <Card
-          title={`Are you sure you want to delete ${maestro.name} Maestro?`}
-          description="This cannot be undone."
-          footer={
-            <div className='flex flex-row justify-between'>
-              <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id, redirectPath)}>
-                  <Button
-                    variant="slim"
-                    type="submit"
-                    form="deleteMaestro"
-                  >
-                    Delete
-                  </Button>
-                </form>
-              </div>
-              <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-                <Link href={redirectPath}>
-                  <Button
-                    variant="slim"
-                  >
-                    Close
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          }
-        >
-        </Card>
-      </div>
-    </div>
-  </div>
+  <BaseModal>
+    <Card
+      title={`Are you sure you want to delete ${maestro.name} Maestro?`}
+      description="This cannot be undone."
+      footer={
+        <div className='flex flex-row justify-between'>
+          <Link href={redirectPath}>
+            <Button
+              variant="slim"
+              outline={true}
+            >
+              Cancel
+            </Button>
+          </Link>
+          <form id="deleteMaestro" action={deleteMaestro.bind(null, maestro.id, redirectPath)}>
+            <Button
+              variant="slim"
+              type="submit"
+              form="deleteMaestro"
+            >
+              Delete
+            </Button>
+          </form>
+        </div>
+      }
+    >
+    </Card>
+  </BaseModal>
 )
 
 interface Props {

@@ -13,6 +13,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   active?: boolean;
   width?: number;
   loading?: boolean;
+  outline?: boolean;
   Component?: React.ComponentType;
 }
 
@@ -25,17 +26,20 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
     width,
     loading = false,
     disabled = false,
+    outline = false,
     style = {},
     Component = 'button',
     ...rest
   } = props;
   const ref = useRef(null);
+  console.log(styles.outline)
   const rootClassName = cn(
     styles.root,
     {
       [styles.slim]: variant === 'slim',
       [styles.loading]: loading,
-      [styles.disabled]: disabled
+      [styles.disabled]: disabled,
+      [styles.outline]: outline
     },
     className
   );
