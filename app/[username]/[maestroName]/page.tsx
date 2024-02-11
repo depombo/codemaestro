@@ -7,15 +7,12 @@ import { redirect } from 'next/navigation';
 import UserInput from './UserInput';
 import ChatHistory from './ChatHistory';
 import Navbar from '@/components/ui/Navbar';
-import { SearchParams } from '@/utils/helpers';
-import { getRelevantDocs } from '@/app/llm';
 
 type ChatPageProps = {
-  searchParams: SearchParams;
   params: { maestroName: string, username: string };
 };
 
-export default async function ChatPage({ params, searchParams }: ChatPageProps) {
+export default async function ChatPage({ params }: ChatPageProps) {
   const user = await getUserDetails();
   if (!user) {
     return redirect('/signin');
@@ -31,7 +28,6 @@ export default async function ChatPage({ params, searchParams }: ChatPageProps) 
         user={user}
         maestro={maestro}
         pastMessages={pastMessages}
-        searchParams={searchParams}
       />
       <UserInput
         className="fixed w-full bottom-0 h-28 p-4 bg-black border-t border-zinc-700"

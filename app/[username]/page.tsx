@@ -14,18 +14,13 @@ type Props = {
 };
 
 export default async function ChatPage({ params, searchParams }: Props) {
-  // TODO get user from actual param
-  const userDetails = await getUserDetails();
-  if (!userDetails) {
-    return redirect('/signin');
-  }
   const maestros = await getMaestros();
 
   return (
     <>
       <Navbar params={params} />
       <MaestroList
-        user={userDetails}
+        params={params}
         className='grid col-span-1'
         maestros={maestros!}
         searchParams={searchParams}

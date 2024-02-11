@@ -19,7 +19,7 @@ export type User = Database['public']['Tables']['users']['Row'];
 type ContextSource = Database['public']['Tables']['context_sources']['Row'];
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'] & { 'context_sources': ContextSource[] };
 export type ModelName = Database['public']['Enums']['model_name'];
-// TODO mappers once it makes sense or add into CodeMaestro type
+// TODO remove and sanitize at creation
 export const maestroNamePath = (name: string) => name.replace(/[^a-z0-9]+/gi, "");
 
 export const getMessages = async (maestroId: number) => {
