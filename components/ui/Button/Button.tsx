@@ -32,7 +32,6 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
     ...rest
   } = props;
   const ref = useRef(null);
-  console.log(styles.outline)
   const rootClassName = cn(
     styles.root,
     {

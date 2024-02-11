@@ -32,6 +32,7 @@ export async function GET(request: NextRequest) {
         // so username can be non nullable, but whatever
         username: user?.username || session?.user.user_metadata.preferred_username,
       })
+      .eq("id", user?.id!)
     console.error(error);
     // TODO ensure this is unique
     // if (error) throw error;
