@@ -174,43 +174,37 @@ export const deleteMaestro = async (id: number, redirectPath: string) => {
   redirect(redirectPath, RedirectType.push);
 }
 
-// TODO create and join independently
-const createAndJoinSource = async (formData: FormData, maestro: CodeMaestro) => {
+const createAndJoinSource = async (url: string, maestro: CodeMaestro) => {
   const session = await getSession();
-  // TODO get rid of split hack
-  const repos = (formData.get('repo') as string).split(',');
   if (!session) redirect('/signin')
   const user = session.user;
-  const srcs = await Promise.all(repos
-    .map(async (r) => {
-      return {
-        user_id: await isSrcPrivate(r) ? user?.id : null,
-        url: r,
-      }
-    }))
+  const src = {
+    user_id: await isSrcPrivate(url) ? user?.id : null,
+    url,
+  }
   const supabase = await getServerClient();
   const { data, error } = await supabase
     .from('context_sources')
-    .insert(srcs)
-    .select();
+    .insert(src)
+    .select()
+    .single();
   if (error) console.error(error);
-  let sources = data;
+  let source = data;
   if (error?.code === '23505' || !data) {
     const { data, error } = await supabase
       .from('context_sources')
       .select()
-      .or(repos.map(r => `url.eq.${r}`).join(","));
+      .eq("url", url)
+      .single();
     if (error) console.error(error);
-    sources = data;
+    source = data;
   }
   const { error: errorJ } = await supabase
     .from('maestro_context')
-    .insert(sources!
-      .map(src => ({
-        source_id: src.id,
-        maestro_id: maestro.id,
-      }))
-    );
+    .insert({
+      source_id: source!.id,
+      maestro_id: maestro.id,
+    });
   if (errorJ) console.error(error);
 };
 
@@ -227,8 +221,9 @@ export const createMaestro = async (username: string, formData: FormData) => {
     .select()
     .single();
   if (error) console.error(error);
-  await createAndJoinSource(formData, { ...data!, context_sources: [] });
-  redirect(`/${username}/${name}`, RedirectType.push);
+  const url = formData.get('url') as string;
+  await createAndJoinSource(url, { ...data!, context_sources: [] });
+  redirect(`/${username}/${maestroNamePath(name)}`, RedirectType.push);
 };
 
 // TODO error handling and solidify type

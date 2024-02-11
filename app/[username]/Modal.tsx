@@ -24,7 +24,7 @@ export const CreateMaestroModal = ({ username }: { username: string }) => (
   <BaseModal>
     <Card
       title="New Code Maestro"
-      description="Enter the name and Github repositories to create a Code Maestro to chat with"
+      description="Enter a name and an initial context source to create a Code Maestro to chat with"
       footer={
         <div className='flex flex-row justify-between'>
           <Link href={`/${username}`}>
@@ -59,21 +59,20 @@ export const CreateMaestroModal = ({ username }: { username: string }) => (
           />
         </div>
         <div className="mt-8 mb-2 ml-2 text-l font-semibold">
-          <label>Github Repository Name</label>
+          <label>GitHub Repository or Website URL</label>
         </div>
         <div className="mt-4 mb-4 text-l font-semibold">
-          {/* TODO add validation that repo is valid */}
+          {/* TODO add validation for repo and url */}
           <input
             type="text"
-            name="repo"
+            name="url"
             className="w-1/2 p-3 rounded-md bg-zinc-800"
-            placeholder="denoland/deno_std"
+            placeholder="https://github.com/denoland/deno_std"
           />
         </div>
       </form>
     </Card>
   </BaseModal>
-
 )
 
 export const DeleteConfirmationMaestroModal = ({ maestro, redirectPath }: { maestro: CodeMaestro, redirectPath: string }) => (
