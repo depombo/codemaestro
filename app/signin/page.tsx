@@ -1,4 +1,4 @@
-import { getSession } from '@/app/actions';
+import { getSession, getUserDetails } from '@/app/actions';
 import AuthUI from './AuthUI';
 
 import { redirect } from 'next/navigation';
@@ -9,7 +9,8 @@ export default async function SignIn() {
   const session = await getSession();
 
   if (session) {
-    return redirect('/account');
+    const user = await getUserDetails();
+    return redirect(`/${user?.username}`);
   }
 
   return (

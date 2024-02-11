@@ -16,7 +16,7 @@ export default async function Homepage() {
               Chat with an AI that understands your code
             </p>
             <div className="max-w-2xl m-auto mt-10 items-center">
-              <Link href="/profile"><Button variant="slim">Get started</Button></Link>
+              <Link href="/signin"><Button variant="slim">Get started</Button></Link>
             </div>
 
           </div>
