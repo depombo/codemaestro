@@ -35,7 +35,7 @@ export const getMessages = async (maestroId: number) => {
   return data || [];
 };
 
-export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string) => {
+export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message[], newMessage: string, path: string) => {
   const { id: maestro_id, user_id, model_name } = maestro;
   const supabase = await getServerClient();
   // save user message
@@ -45,6 +45,7 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
   if (error) {
     console.error(error);
   }
+  revalidatePath(path);
 
   const outputStream = await chat(newMessage, maestro, pastMessages, model_name);
   const aiMessageFields = { maestro_id, user_id, model_name };
@@ -67,6 +68,7 @@ export const messageMaestro = async (maestro: CodeMaestro, pastMessages: Message
       console.error(aiMessageError);
     }
   }
+  revalidatePath(path);
 };
 
 export const updateName = async (formData: FormData) => {
@@ -82,7 +84,8 @@ export const updateName = async (formData: FormData) => {
   if (error) {
     console.error(error);
   }
-  redirect('/account', RedirectType.push);
+  const userDetails = await getUserDetails()
+  revalidatePath(`/${userDetails?.username}/account`);
 };
 
 export const updateUsername = async (formData: FormData) => {
@@ -117,18 +120,6 @@ export const updateGithubTokens = async (accessToken: string | null, refreshToke
   }
 };
 
-export const updateEmail = async (formData: FormData) => {
-  const supabase = await getServerClient();
-  const session = await getSession();
-  if (!session) redirect('/signin')
-  const newEmail = formData.get('email') as string;
-  const { error } = await supabase.auth.updateUser({ email: newEmail });
-  if (error) {
-    console.error(error);
-  }
-  revalidatePath('/account');
-};
-
 export const getMaestros = async (): Promise<CodeMaestro[] | null> => {
   const session = await getSession();
   if (!session) redirect('/signin')
@@ -151,7 +142,7 @@ export const getMaestro = async (name: string): Promise<CodeMaestro> => {
   return maestro;
 }
 
-export const updateMaestroModel = async (maestro: CodeMaestro, newModelName: ModelName) => {
+export const updateMaestroModel = async (maestro: CodeMaestro, newModelName: ModelName, path: string) => {
   const supabase = await getServerClient();
   const { error } = await supabase
     .from("code_maestros")
@@ -160,6 +151,7 @@ export const updateMaestroModel = async (maestro: CodeMaestro, newModelName: Mod
   if (error) {
     console.error(error);
   }
+  revalidatePath(path);
 }
 
 export const deleteMaestro = async (id: number, redirectPath: string) => {

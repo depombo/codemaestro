@@ -5,6 +5,7 @@ import React, { useState, useRef, FormEvent } from 'react';
 
 import { CodeMaestro, Message, messageMaestro } from '../../actions';
 import { getBrowserClient } from '@/app/supabase/client';
+import { usePathname } from 'next/navigation';
 
 type UserInputProps = {
   maestro: CodeMaestro;
@@ -17,6 +18,7 @@ const UserInput = ({ messages, maestro }: UserInputProps) => {
   const [isLoading, setIsLoading] = useState(false)
   const supabase = getBrowserClient();
   const lastMessage = messages[messages.length - 1];
+  const path = usePathname();
 
   const handleInputChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(event.target.value);
@@ -45,7 +47,8 @@ const UserInput = ({ messages, maestro }: UserInputProps) => {
     await messageMaestro(
       maestro,
       messages.filter(m => !m.aborted && !m.deleted),
-      messageToSend
+      messageToSend,
+      path
     );
     setIsLoading(false);
   }
