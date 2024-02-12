@@ -72,12 +72,13 @@ export default function Chat({ maestro, user, pastMessages }: ChatProps) {
     // console.log(elem.scrollHeight, elem.scrollTop, elem.clientHeight)
     // console.log(scrollDiff)
     if (!loaded) {
-      // elem.scrollTop = elem.scrollHeight;
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
       setLoaded(true);
     }
-    if (scrollDiff < 450) {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+    // console.log(scrollDiff)
+    if (scrollDiff < 150) {
+      elem.scrollTop = elem.scrollHeight;
+      //messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     }
   }
   useEffect(scrollToBottom, [messages])

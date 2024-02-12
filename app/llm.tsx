@@ -44,6 +44,8 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     new StringOutputParser()
   );
 
+  // console.log(pastMessages.slice(pastMessages.length - 6))
+
   // https://js.langchain.com/docs/modules/memory/chat_messages
   // https://js.langchain.com/docs/modules/memory/
   const history = new ChatMessageHistory();

@@ -44,7 +44,7 @@ const UserInput = ({ messages, maestro }: UserInputProps) => {
     setMessage('');
     await messageMaestro(
       maestro,
-      messages.filter(m => !m.aborted),
+      messages.filter(m => !m.aborted && !m.deleted),
       messageToSend
     );
     setIsLoading(false);
