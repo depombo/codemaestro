@@ -42,7 +42,11 @@ const UserInput = ({ messages, maestro }: UserInputProps) => {
     const messageToSend = message;
     setIsLoading(true);
     setMessage('');
-    await messageMaestro(maestro, messages, messageToSend);
+    await messageMaestro(
+      maestro,
+      messages.filter(m => !m.aborted),
+      messageToSend
+    );
     setIsLoading(false);
   }
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {

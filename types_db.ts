@@ -154,6 +154,7 @@ export type Database = {
         Row: {
           aborted: boolean
           created_at: string
+          deleted: boolean
           id: number
           maestro_id: number
           message: string
@@ -163,6 +164,7 @@ export type Database = {
         Insert: {
           aborted?: boolean
           created_at?: string
+          deleted?: boolean
           id?: number
           maestro_id: number
           message: string
@@ -172,6 +174,7 @@ export type Database = {
         Update: {
           aborted?: boolean
           created_at?: string
+          deleted?: boolean
           id?: number
           maestro_id?: number
           message?: string

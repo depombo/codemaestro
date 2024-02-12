@@ -51,6 +51,18 @@ export default function Chat({ maestro, user, pastMessages }: ChatProps) {
     )
     .subscribe()
 
+  const onDelMessage = (msg: Message) => {
+    msg.deleted = true;
+    setMessages(messages.map(m => m.id === msg.id ? msg : m));
+    supabase
+      .from('messages')
+      .update({ deleted: true })
+      .eq('id', msg.id)
+      .then(resp => {
+        if (resp.error) console.error(resp.error)
+      })
+  }
+
   const allMessagesRef = useRef<HTMLDivElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
@@ -73,23 +85,27 @@ export default function Chat({ maestro, user, pastMessages }: ChatProps) {
 
   return (
     <>
-      <div ref={allMessagesRef} className="py-4 px-8 sm:px-20 overflow-y-auto">
+      <div ref={allMessagesRef} className="flex-1 py-4 px-8 sm:px-20 overflow-y-auto">
         {
-          messages.map(m => (
-            m.model_name ?
-              <MaestroMessage
-                key={m.id}
-                name={maestro.name}
-                msg={m}
-              />
-              :
-              <UserMessage
-                key={m.id}
-                name={user.full_name || "You"}
-                avatarUrl={user.avatar_url || ""}
-                msg={m}
-              />
-          ))
+          messages
+            .filter(m => !m.deleted)
+            .map(m => (
+              m.model_name ?
+                <MaestroMessage
+                  key={m.id}
+                  name={maestro.name}
+                  msg={m}
+                  onDelMessage={onDelMessage}
+                />
+                :
+                <UserMessage
+                  key={m.id}
+                  name={user.full_name || "You"}
+                  avatarUrl={user.avatar_url || ""}
+                  msg={m}
+                  onDelMessage={onDelMessage}
+                />
+            ))
         }
         <div ref={messagesEndRef} />
       </div>

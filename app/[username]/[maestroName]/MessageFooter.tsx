@@ -1,8 +1,7 @@
 'use client';
 
 import { Message } from '@/app/actions';
-import { getBrowserClient } from '@/app/supabase/client';
-import { IconBookmark, IconBookmarkFilled } from '@/components/icons';
+import { IconBookmark, IconBookmarkFilled, TrashOutline } from '@/components/icons';
 import { useState } from 'react';
 
 // const BookmarkMessage = ({ msg }: { msg: Message }) => {
@@ -25,9 +24,21 @@ import { useState } from 'react';
 //   )
 // };
 
-export const MessageFooter = ({ msg }: { msg: Message }) => {
+const DeleteMessage = ({ msg, onDelMessage }: { msg: Message, onDelMessage: Function }) => {
   return (
-    <div className="flex flex-row items-start ml-10 mt-2 space-x-1">
+    <TrashOutline
+      onClick={() => onDelMessage(msg)}
+      className={
+        'fill-zinc-700 hover:fill-zinc-500 cursor-pointer size-4 items-center justify center'
+      }
+    />
+  )
+};
+
+export const MessageFooter = ({ msg, onDelMessage }: { msg: Message, onDelMessage: Function }) => {
+  return (
+    <div className="flex flex-row items-start ml-10 mt-3">
+      <DeleteMessage msg={msg} onDelMessage={onDelMessage} />
       {/* <BookmarkMessage msg={msg} /> */}
     </div>
   )
