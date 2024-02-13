@@ -43,12 +43,10 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
         </Card>
       </div>
 
-      <div className="px-4 pt-8 mx-auto sm:px-6 sm:pt-10 lg:px-8">
-        <div className="sm:align-center sm:flex sm:flex-col">
-          <h1 className="text-2xl font-bold text-white sm:text-center">
-            Context Sources
-          </h1>
-        </div>
+      <div className="px-4 mx-auto px-8">
+        <h1 className="text-2xl font-bold text-white text-center">
+          Context Sources
+        </h1>
       </div>
       {
         createSource &&
