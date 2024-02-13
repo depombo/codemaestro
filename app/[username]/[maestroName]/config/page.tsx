@@ -38,7 +38,7 @@ export default async function ChatPage({ searchParams, params }: Props) {
       }
       <div className="flex flex-col">
         {
-          maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={true} url={s.url} />)
+          maestro.context_sources.map(s => <GithubBadge summary={false} key={s.id} url={s.url} />)
         }
       </div>
       <Link href={`/${username}/${maestroName}/config?deleteMaestro=true`}>

@@ -6,33 +6,28 @@ import Button from '@/components/ui/Button';
 import { GitHub, } from '@/components/icons';
 import { SearchParams } from '@/utils/helpers';
 
-export const GithubBadge = ({ url, hyperlink }: { url: string, hyperlink: boolean }) => {
-  const badge = (
-    <span className="flex items-center space-x-2 my-4 px-3 py-2 text-white text-sm bg-zinc-800 rounded-full">
-      {
-        url.startsWith('https://github.com/') ?
-          <>
-            <GitHub className="h-5" />
-            <p>{url.split('https://github.com/')[1]}</p>
-          </>
-          :
-          <p>{url}</p>
-      }
-
-      {/* <button
-      className="text-gray-500 hover:text-red-500 focus:outline-none"
-    >
-      &#10005;
-    </button> */}
-    </span>
-  );
-  return (
-    hyperlink ? <Link href={url} target="_blank" rel="noopener noreferrer">
-      {badge}
+export const GithubBadge = ({ url, summary }: { url: string, summary: boolean }) => {
+  const text = (
+    !summary ? <Link className="hover:text-zinc-300" href={url} target="_blank" rel="noopener noreferrer">
+      {url}
     </Link>
       :
-      badge
+      url
   )
+  return (
+    <div className="flex flex-row justify-between my-4 px-4 py-2 text-white text-sm bg-zinc-800 rounded-full">
+      <div className="flex flex-row space-x-2">
+        {url.startsWith('https://github.com/') && <GitHub className="h-5" />}
+        {text}
+      </div>
+      {!summary && <button
+        className="text-white hover:text-red-500 focus:outline-none"
+      >
+        &#10005;
+      </button>}
+    </div>
+  );
+
 };
 
 interface MaestroCardProps {
@@ -47,7 +42,7 @@ const MaestroCard = ({ maestro, path }: MaestroCardProps) => {
         <div className="mb-1 text-l font-medium">{maestro.name}</div>
         <div className="flex flex-col">
           {
-            maestro.context_sources.map(s => <GithubBadge key={s.id} hyperlink={false} url={s.url} />)
+            maestro.context_sources.map(s => <GithubBadge key={s.id} summary={true} url={s.url} />)
           }
         </div>
         <div className="flex flex-row justify-between">
