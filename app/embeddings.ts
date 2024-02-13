@@ -65,12 +65,12 @@ const getSplitterForFileType = async (file: string) => {
     new RecursiveCharacterTextSplitter(splitterOpts);
 };
 
-const isRepoInVectorStore = async (repoUrl: string) => {
+const isSrcInVectorStore = async (url: string) => {
   const supabase = await getServerClient()
   let { data, error, count } = await supabase
     .from('documents')
     .select('*', { count: 'estimated' })
-    .eq('metadata->>repository', repoUrl)
+    .or(`metadata->>repository.eq.${url},metadata->>source.eq.${url}`)
 
   if (error) {
     console.error('Error checking Vector Store:', error);
@@ -78,7 +78,7 @@ const isRepoInVectorStore = async (repoUrl: string) => {
   }
 
   const hasRepo = count && count > 0;
-  if (hasRepo) console.log(`found embeddings for repo ${repoUrl}`)
+  if (hasRepo) console.log(`found embeddings for src ${url}`)
   return hasRepo;
 }
 
@@ -222,6 +222,7 @@ const extractOwnerAndRepoAndPath = (url: string): RepoName | null => {
 }
 
 export const getStore = async (maestro: CodeMaestro) => {
+  await genStore(maestro);
   const storeOpts = {
     client: await getServerClient(),
     tableName: "documents",
@@ -240,9 +241,10 @@ export const genStore = async (maestro: CodeMaestro) => {
     repoParts: extractOwnerAndRepoAndPath(n.url)
   }));
   for (const src of srcs) {
+    const hasSrc = await isSrcInVectorStore(src.url);
+    if (hasSrc) continue;
     if (src.repoParts) {
-      const hasRepo = await isRepoInVectorStore(src.url);
-      if (!hasRepo) await genRepo(src.repoParts);
+      await genRepo(src.repoParts);
     } else {
       await genUrl(src.url);
     }
