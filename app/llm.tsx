@@ -1,7 +1,10 @@
 
 import { GithubRepoLoader } from "langchain/document_loaders/web/github";
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import {
+  ChatOpenAI, OpenAIEmbeddings,
+} from "@langchain/openai";
+import { AgentExecutor, createOpenAIFunctionsAgent } from "langchain/agents";
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { RecursiveCharacterTextSplitter, SupportedTextSplitterLanguages } from "langchain/text_splitter";
 import { BufferMemory, ChatMessageHistory, } from "langchain/memory";
@@ -112,6 +115,23 @@ const preMadeRagChain = async (question: string, modelName: string, vectorStore:
     .stream({ question, chat_history: memory });
 }
 
+// const openAiFnRag = async (question: string, modelName: string, vectorStore: SupabaseVectorStore, memory: BufferMemory) => {
+//   const llm = new ChatOpenAI({ modelName: modelName });
+//   const agent = await createOpenAIFunctionsAgent({ llm });
+//   const chain = ConversationalRetrievalQAChain.fromLLM(
+//     model,
+//     vectorStore.asRetriever(),
+//     {
+//       returnSourceDocuments: true,
+//       returnGeneratedQuestion: true,
+//     }
+//   );
+//   return chain
+//     .pipe(v => v.text as string)
+//     .stream({ question, chat_history: memory });
+// }
+
+
 export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
 
   const vectorStore = await getOrGenStore(maestro);
@@ -125,6 +145,10 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     if (pastMessage.model_name) await history.addMessage(new AIMessage(pastMessage.message))
     else await history.addMessage(new HumanMessage(pastMessage.message));
   }
+
+  console.log(history)
+
+  // TODO use https://js.langchain.com/docs/modules/memory/types/summary
   const memory = new BufferMemory({
     returnMessages: true, // Return stored messages as instances of `BaseMessage`
     memoryKey: "chat_history", // This must match up with our prompt template input variable.
