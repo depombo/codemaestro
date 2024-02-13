@@ -96,7 +96,7 @@ export const UserMessage = ({ name, msg, avatarUrl, onDelMessage }: { name: stri
         <img src={avatarUrl} alt="User Avatar" className="w-6 h-6 rounded-full" />
         <span className="text-sm ml-3 font-semibold text-gray-200">{name}</span>
       </div>
-      <p className="text-sm break-all font-normal ml-10 text-gray-200">{msg.message}</p>
+      <p className="whitespace-pre whitespace-pre-wrap text-sm break-all font-normal ml-10 text-gray-200">{msg.message}</p>
       <MessageFooter onDelMessage={onDelMessage} msg={msg} />
     </div>
   )
