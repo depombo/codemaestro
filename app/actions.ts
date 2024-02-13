@@ -3,9 +3,10 @@
 import { Database } from '@/types_db';
 import { revalidatePath } from 'next/cache';
 import { RedirectType, redirect } from 'next/navigation';
-import { chat, isSrcPrivate } from './llm';
+import { chat } from './llm';
 import { getServerClient } from './supabase/server';
 import { Session } from '@supabase/supabase-js';
+import { isSrcPrivate } from './embeddings';
 
 // server actions that can be used in client or server react components
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
@@ -200,6 +201,7 @@ export const createAndJoinSource = async (maestro: CodeMaestro, redirectPath: st
       maestro_id: maestro.id,
     });
   if (errorJ) console.error(error);
+  // TODO create emebeddings in background
   if (redirectPath) redirect(redirectPath, RedirectType.push);
 };
 
