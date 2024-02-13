@@ -6,31 +6,7 @@ import Button from '@/components/ui/Button';
 import { GitHub, } from '@/components/icons';
 import { SearchParams } from '@/utils/helpers';
 
-export const GithubBadge = ({ url, summary }: { url: string, summary: boolean }) => {
-  const text = (
-    !summary ? <Link className="hover:text-zinc-300" href={url} target="_blank" rel="noopener noreferrer">
-      {url}
-    </Link>
-      :
-      url
-  )
-  return (
-    <div className="flex flex-row justify-between my-4 px-4 py-2 text-white text-sm bg-zinc-800 rounded-full">
-      <div className="flex flex-row space-x-2">
-        {url.startsWith('https://github.com/') && <GitHub className="h-5" />}
-        {text}
-      </div>
-      {!summary && <button
-        className="text-white hover:text-red-500 focus:outline-none"
-      >
-        &#10005;
-      </button>}
-    </div>
-  );
-
-};
-
-export const SourceDisplay = ({ url }: { url: string }) => {
+const SourceDisplay = ({ url }: { url: string }) => {
   return (
     <div className="flex flex-row justify-start my-4 px-4 py-2 text-white text-sm rounded-full bg-zinc-800">
       <div className="flex-row space-x-2">

@@ -10,10 +10,10 @@ import {
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
-import { ReactNode } from 'react';
 
 import { Stripe, GitHub } from '@/components/icons';
 import ManageGithubButton from './ManageGithubButton';
+import Card from '@/components/ui/Card';
 
 export default async function Settings() {
 
@@ -167,39 +167,10 @@ export default async function Settings() {
           </div>
         </Card> */}
       </div>
-      <div className="w-full m-auto pb-8 flex justify-center">
+      <div className="w-full m-auto pb-14 flex justify-center">
         <SignOutButton />
       </div>
     </div>
   );
 }
 
-interface Props {
-  title: string;
-  logo?: ReactNode;
-  description?: string;
-  footer?: ReactNode;
-  children: ReactNode;
-}
-
-function Card({ title, description, footer, logo, children }: Props) {
-  return (
-    <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
-      <div className="px-4 py-4">
-        <div className="flex justify-between py-2 px-1">
-          <div>
-            <h3 className="mb-1 text-xl font-bold">{title}</h3>
-            <p className="text-zinc-300">{description}</p>
-          </div>
-          <div className='mr-4'>
-            {logo}
-          </div>
-        </div>
-        {children}
-      </div>
-      <div className="text-sm p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
-        {footer}
-      </div>
-    </div>
-  );
-}
