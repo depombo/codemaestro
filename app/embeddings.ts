@@ -236,17 +236,22 @@ export const getStore = async (maestro: CodeMaestro) => {
 }
 
 export const genStore = async (maestro: CodeMaestro) => {
-  const srcs = maestro.context_sources.map(n => ({
-    url: n.url,
-    repoParts: extractOwnerAndRepoAndPath(n.url)
-  }));
-  for (const src of srcs) {
+  for (const src of maestro.context_sources) {
     const hasSrc = await isSrcInVectorStore(src.url);
     if (hasSrc) continue;
-    if (src.repoParts) {
-      await genRepo(src.repoParts);
+    const repoParts = extractOwnerAndRepoAndPath(src.url)
+    if (repoParts !== null) {
+      await genRepo(repoParts);
     } else {
       await genUrl(src.url);
+    }
+    const supabase = await getServerClient();
+    const { error } = await supabase
+      .from("context_source")
+      .update({ last_updated: Date.now() })
+      .eq("id", src.id);
+    if (error) {
+      console.error(error);
     }
   }
 }

@@ -6,7 +6,7 @@ import { RedirectType, redirect } from 'next/navigation';
 import { chat } from './llm';
 import { getServerClient } from './supabase/server';
 import { Session } from '@supabase/supabase-js';
-import { isSrcPrivate } from './embeddings';
+import { genStore, isSrcPrivate } from './embeddings';
 
 // server actions that can be used in client or server react components
 // https://nextjs.org/docs/app/building-your-application/data-fetching/server-actions-and-mutations
@@ -201,7 +201,8 @@ export const createAndJoinSource = async (maestro: CodeMaestro, redirectPath: st
       maestro_id: maestro.id,
     });
   if (errorJ) console.error(error);
-  // TODO create emebeddings in background
+  // create embeddings in background
+  genStore(maestro).then(() => { });
   if (redirectPath) redirect(redirectPath, RedirectType.push);
 };
 
