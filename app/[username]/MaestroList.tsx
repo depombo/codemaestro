@@ -30,6 +30,17 @@ export const GithubBadge = ({ url, summary }: { url: string, summary: boolean })
 
 };
 
+export const SourceDisplay = ({ url }: { url: string }) => {
+  return (
+    <div className="flex flex-row justify-start my-4 px-4 py-2 text-white text-sm rounded-full bg-zinc-800">
+      <div className="flex-row space-x-2">
+        {url.startsWith('https://github.com/') && <GitHub className="h-5 mr-2" />}
+      </div>
+      <p className='truncate'>{url.replace('https://', '')}</p>
+    </div>
+  );
+};
+
 interface MaestroCardProps {
   maestro: CodeMaestro;
   path: string
@@ -38,11 +49,11 @@ interface MaestroCardProps {
 const MaestroCard = ({ maestro, path }: MaestroCardProps) => {
   return (
     <Link href={`${path}`}>
-      <div className={"flex flex-col p-4 m-2 border rounded-md border-zinc-700"}>
-        <div className="mb-1 text-l font-medium">{maestro.name}</div>
+      <div className={"flex flex-col cursor-pointer p-4 m-2 border rounded-md border-zinc-700 hover:border-zinc-400"}>
+        <div className="mb-1 text-lg font-semibold">{maestro.name}</div>
         <div className="flex flex-col">
           {
-            maestro.context_sources.map(s => <GithubBadge key={s.id} summary={true} url={s.url} />)
+            maestro.context_sources.map(s => <SourceDisplay key={s.id} url={s.url} />)
           }
         </div>
         <div className="flex flex-row justify-between">
@@ -73,14 +84,16 @@ const MaestroList = ({ maestros, params, searchParams, className }: MaestroListP
           />
         ))
       }
-      <Link href={`/${username}?createMaestro=true`}>
-        <Button
-          variant="slim"
-          type="submit"
-        >
-          New Maestro
-        </Button>
-      </Link>
+      <div className="flex justify-center col-span-2 py-10">
+        <Link href={`/${username}?createMaestro=true`}>
+          <Button
+            variant="slim"
+            type="submit"
+          >
+            New Maestro
+          </Button>
+        </Link>
+      </div>
       {createMaestro && <NewMaestroModal username={username} />}
     </div>
   );

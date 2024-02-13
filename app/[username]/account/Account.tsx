@@ -35,14 +35,14 @@ export default async function Settings() {
     }).format((subscription?.prices?.unit_amount || 0) / 100);
 
   return (
-    <section className="mb-32 bg-black">
-      <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-20 lg:px-8">
+    <div className="mb-32 bg-black">
+      {/* <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-20 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center">
             Account
           </h1>
         </div>
-      </div>
+      </div> */}
       <div className="p-4">
         <Card
           title="Authentication"
@@ -52,7 +52,7 @@ export default async function Settings() {
             <ManageGithubButton />
           }
         >
-          <div className="mt-8 mb-4 text-xl font-semibold hover:text-zinc-400">
+          <div className="mt-8 mb-4 font-semibold hover:text-zinc-400">
             <Link href={"https://github.com/" + ghUser} target="_blank" rel="noopener noreferrer">@{ghUser}</Link>
           </div>
         </Card>
@@ -66,7 +66,7 @@ export default async function Settings() {
           }
           footer={<ManageStripeButton session={session} />}
         >
-          <div className="mt-8 mb-4 text-xl font-semibold hover:text-zinc-400">
+          <div className="mt-8 mb-4 font-semibold hover:text-zinc-400">
             {subscription ? (
               `${subscriptionPrice}/${subscription?.prices?.interval}`
             ) : (
@@ -91,7 +91,7 @@ export default async function Settings() {
             </div>
           }
         >
-          <div className="mt-8 mb-4 text-xl font-semibold">
+          <div className="mt-8 mb-4 text-sm">
             <form id="nameForm" action={updateUsername}>
               <input
                 type="text"
@@ -121,7 +121,7 @@ export default async function Settings() {
             </div>
           }
         >
-          <div className="mt-8 mb-4 text-xl font-semibold">
+          <div className="mt-8 mb-4 text-sm">
             <form id="nameForm" action={updateName}>
               <input
                 type="text"
@@ -153,7 +153,7 @@ export default async function Settings() {
             </div>
           }
         >
-          <div className="mt-8 mb-4 text-xl font-semibold">
+          <div className="mt-8 mb-4 text-sm font-semibold">
             <form id="emailForm" action={updateEmail}>
               <input
                 type="text"
@@ -170,7 +170,7 @@ export default async function Settings() {
       <div className="w-full m-auto pb-8 flex justify-center">
         <SignOutButton />
       </div>
-    </section>
+    </div>
   );
 }
 
@@ -188,7 +188,7 @@ function Card({ title, description, footer, logo, children }: Props) {
       <div className="px-4 py-4">
         <div className="flex justify-between py-2 px-1">
           <div>
-            <h3 className="mb-1 text-2xl font-medium">{title}</h3>
+            <h3 className="mb-1 text-xl font-bold">{title}</h3>
             <p className="text-zinc-300">{description}</p>
           </div>
           <div className='mr-4'>
@@ -197,7 +197,7 @@ function Card({ title, description, footer, logo, children }: Props) {
         </div>
         {children}
       </div>
-      <div className="p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
+      <div className="text-sm p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
         {footer}
       </div>
     </div>

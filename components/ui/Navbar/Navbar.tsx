@@ -20,7 +20,7 @@ export default async function Navbar({
 
   return (
     <nav className={"bg-black z-40 border-b border-zinc-700"}>
-      <div className="py-2 px-8 mx-auto">
+      <div className="py-2 px-4 md:px-8">
         <div className="flex flex-row justify-between align-center md:py-4">
           <div className="flex flex-row items-center">
             <Link href="/">

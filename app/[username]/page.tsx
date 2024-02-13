@@ -21,7 +21,7 @@ export default async function ChatPage({ params, searchParams }: Props) {
       <Navbar params={params} />
       <MaestroList
         params={params}
-        className='grid col-span-1'
+        className='grid space-4 p-4 grid-cols-2'
         maestros={maestros!}
         searchParams={searchParams}
       />
