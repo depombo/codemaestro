@@ -133,7 +133,7 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     else await history.addMessage(new HumanMessage(pastMessage.message));
   }
 
-  console.log(history)
+  // console.log(history)
 
   // TODO use https://js.langchain.com/docs/modules/memory/types/summary
   const memory = new BufferMemory({

@@ -247,8 +247,8 @@ export const genStore = async (maestro: CodeMaestro) => {
     }
     const supabase = await getServerClient();
     const { error } = await supabase
-      .from("context_source")
-      .update({ last_updated: Date.now() })
+      .from("context_sources")
+      .update({ last_updated_at: new Date().toISOString() })
       .eq("id", src.id);
     if (error) {
       console.error(error);
