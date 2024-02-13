@@ -17,7 +17,7 @@ import { genStore, isSrcPrivate } from './embeddings';
 
 export type Message = Database['public']['Tables']['messages']['Row'];
 export type User = Database['public']['Tables']['users']['Row'];
-type ContextSource = Database['public']['Tables']['context_sources']['Row'];
+export type ContextSource = Database['public']['Tables']['context_sources']['Row'];
 export type CodeMaestro = Database['public']['Tables']['code_maestros']['Row'] & { 'context_sources': ContextSource[] };
 export type ModelName = Database['public']['Enums']['model_name'];
 // TODO remove and sanitize at creation
@@ -165,6 +165,18 @@ export const deleteMaestro = async (id: number, redirectPath: string) => {
     console.error(error);
   }
   redirect(redirectPath, RedirectType.push);
+}
+
+export const deleteSource = async (id: number, path: string) => {
+  const supabase = await getServerClient();
+  const { error } = await supabase
+    .from('context_sources')
+    .delete()
+    .match({ id: id });
+  if (error) {
+    console.error(error);
+  }
+  revalidatePath(path);
 }
 
 /* TODO add validation for repo and url */

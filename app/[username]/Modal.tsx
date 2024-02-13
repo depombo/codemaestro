@@ -4,6 +4,8 @@ import {
   createMaestro,
   createAndJoinSource,
   deleteMaestro,
+  ContextSource,
+  deleteSource,
 } from '@/app/actions';
 import { Logo } from '@/components/icons';
 import Link from 'next/link';
@@ -118,6 +120,37 @@ export const NewMaestroModal = ({ username }: { username: string }) => (
   </BaseModal>
 )
 
+export const DeleteConfirmationSourceModal = ({ src, path }: { src: ContextSource, path: string }) => (
+  <BaseModal>
+    <Card
+      title={`Are you sure you want to delete this context source?`}
+      footer={
+        <div className='flex flex-row justify-between'>
+          <Link href={path}>
+            <Button
+              variant="slim"
+              outline={true}
+            >
+              Cancel
+            </Button>
+          </Link>
+          <form id="deleteMaestro" action={deleteSource.bind(null, src.id, path)}>
+            <Button
+              variant="slim"
+              type="submit"
+              form="deleteMaestro"
+            >
+              Delete
+            </Button>
+          </form>
+        </div>
+      }
+    >
+      <p>{src.url.replace("https://", "")}</p>
+    </Card>
+  </BaseModal>
+)
+
 export const DeleteConfirmationMaestroModal = ({ maestro, cancelPath, delPath }: { maestro: CodeMaestro, cancelPath: string, delPath: string }) => (
   <BaseModal>
     <Card
@@ -162,7 +195,7 @@ function Card({ title, description, footer, children }: Props) {
       <div className="px-4 py-4">
         <div className="flex justify-between py-2 px-1">
           <div className='pr-10'>
-            <h3 className="mb-1 text-2xl font-medium">{title}</h3>
+            <h3 className="mb-1 text-2xl font-medium text-white">{title}</h3>
             <p className="text-zinc-300">{description}</p>
           </div>
           <Logo fill='white' stroke='zinc-700' />

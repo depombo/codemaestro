@@ -2,7 +2,7 @@ import Navbar from "@/components/ui/Navbar";
 import { ModelSelect } from "./ModelSelect";
 import { getMaestro, } from "@/app/actions";
 import { SearchParams } from '@/utils/helpers';
-import { DeleteConfirmationMaestroModal, CreateCtxSrcModal } from "../../Modal";
+import { DeleteConfirmationMaestroModal, CreateCtxSrcModal, DeleteConfirmationSourceModal } from "../../Modal";
 import Link from "next/link";
 import Button from "@/components/ui/Button";
 import Card from "@/components/ui/Card";
@@ -18,6 +18,7 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
   const maestro = await getMaestro(params.maestroName);
   const deleteMaestro = !!searchParams?.deleteMaestro;
   const createSource = !!searchParams?.createSource;
+  const deleteSource = searchParams?.deleteSource;
   return (
     <div className="mb-32">
       <Navbar params={params} />
@@ -58,7 +59,12 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
       <div className="grid p-8 md:gap-6 md:grid-cols-2">
         {
           maestro.context_sources.map(s => <Card
-            title={<Link className="hover:text-zinc-300" href={s.url}>{s.url.replace("https://", "")}</Link>}
+            key={s.id}
+            title={
+              <Link className="hover:text-zinc-300"
+                href={s.url}>{s.url.replace("https://", "")}
+              </Link>
+            }
             logo={
               <div className="flex flex-row space-x-4">
                 {/* TODO display lock instead of GH logo */}
@@ -69,8 +75,7 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
             footer={
               <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
                 <p className="pb-4 sm:pb-0">Delete this context source.</p>
-                {/* TODO Delete context source */}
-                <Link href={`/${username}/${maestroName}/config?deleteMaestro=true`}>
+                <Link href={`/${username}/${maestroName}/config?deleteSource=${s.id}`}>
                   <Button
                     variant="slim"
                     type="submit"
@@ -78,11 +83,17 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
                     Delete Context
                   </Button>
                 </Link>
+                {
+                  deleteSource === s.id.toString() &&
+                  <DeleteConfirmationSourceModal
+                    path={`/${username}/${maestroName}/config`}
+                    src={s}
+                  />
+                }
               </div>
             }
           >
-            {/* TODO humanize */}
-            <p>{s.last_updated_at}</p>
+            <p>Last updated on {new Date(s.last_updated_at as string).toLocaleDateString()}</p>
           </Card>)
         }
       </div>
@@ -96,7 +107,6 @@ export default async function ConfigPage({ searchParams, params }: ConfigProps) 
           </Button>
         </Link>
       </div>
-
       {
         deleteMaestro &&
         <DeleteConfirmationMaestroModal
