@@ -8,6 +8,7 @@ import { BufferMemory, ChatMessageHistory, } from "langchain/memory";
 import { Document } from "@langchain/core/documents";
 import { SupabaseHybridSearch } from "@langchain/community/retrievers/supabase";
 
+import { ConversationalRetrievalQAChain } from "langchain/chains"
 import {
   ChatPromptTemplate,
   MessagesPlaceholder,
@@ -29,12 +30,11 @@ import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase
 // https://js.langchain.com/docs/integrations/document_loaders/web_loaders/github
+
+// example custom chain code rag
 // https://js.langchain.com/docs/use_cases/code_understanding
 
-export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
-
-  const vectorStore = await getOrGenStore(maestro);
-
+const customRag = async (question: string, modelName: string, vectorStore: SupabaseVectorStore, memory: BufferMemory) => {
   const retriever = vectorStore.asRetriever({
     searchType: "mmr", // Use max marginal relevance search
     searchKwargs: { fetchK: 5 },
@@ -44,28 +44,12 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     new StringOutputParser()
   );
 
-  // console.log(pastMessages.slice(pastMessages.length - 6))
-
-  // https://js.langchain.com/docs/modules/memory/chat_messages
-  // https://js.langchain.com/docs/modules/memory/
-  const history = new ChatMessageHistory();
-  for (const pastMessage of pastMessages) {
-    if (pastMessage.model_name) await history.addMessage(new AIMessage(pastMessage.message))
-    else await history.addMessage(new HumanMessage(pastMessage.message));
-  }
-  const memory = new BufferMemory({
-    returnMessages: true, // Return stored messages as instances of `BaseMessage`
-    memoryKey: "chat_history", // This must match up with our prompt template input variable.
-    chatHistory: history,
-  });
-
   const questionGeneratorTemplate = ChatPromptTemplate.fromMessages([
     AIMessagePromptTemplate.fromTemplate(
       "Given the following conversation about a codebase and a follow up question, rephrase the follow up question to be a standalone question."
     ),
     new MessagesPlaceholder("chat_history"),
-    AIMessagePromptTemplate.fromTemplate(`Follow Up Input: {question}
-   Standalone question:`),
+    AIMessagePromptTemplate.fromTemplate(`Follow Up Input: {question}\nStandalone question:`),
   ]);
 
   const combineDocumentsPrompt = ChatPromptTemplate.fromMessages([
@@ -107,11 +91,47 @@ export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Me
     combineDocumentsChain,
   ]);
 
-  const result = await conversationalQaChain.stream({
-    question: input,
+  return conversationalQaChain.stream({
+    question,
+  });
+}
+
+// https://js.langchain.com/docs/modules/chains/popular/chat_vector_db_legacy
+const preMadeRagChain = async (question: string, modelName: string, vectorStore: SupabaseVectorStore, memory: BufferMemory) => {
+  const model = new ChatOpenAI({ modelName: modelName });
+  const chain = ConversationalRetrievalQAChain.fromLLM(
+    model,
+    vectorStore.asRetriever(),
+    {
+      returnSourceDocuments: true,
+      returnGeneratedQuestion: true,
+    }
+  );
+  return chain
+    .pipe(v => v.text as string)
+    .stream({ question, chat_history: memory });
+}
+
+export const chat = async (input: string, maestro: CodeMaestro, pastMessages: Message[], modelName: string) => {
+
+  const vectorStore = await getOrGenStore(maestro);
+
+  // console.log(pastMessages.slice(pastMessages.length - 6))
+
+  // https://js.langchain.com/docs/modules/memory/chat_messages
+  // https://js.langchain.com/docs/modules/memory/
+  const history = new ChatMessageHistory();
+  for (const pastMessage of pastMessages) {
+    if (pastMessage.model_name) await history.addMessage(new AIMessage(pastMessage.message))
+    else await history.addMessage(new HumanMessage(pastMessage.message));
+  }
+  const memory = new BufferMemory({
+    returnMessages: true, // Return stored messages as instances of `BaseMessage`
+    memoryKey: "chat_history", // This must match up with our prompt template input variable.
+    chatHistory: history,
   });
 
-  return result;
+  return customRag(input, modelName, vectorStore, memory);
 }
 
 export const getRelevantDocs = async (query: string) => {
