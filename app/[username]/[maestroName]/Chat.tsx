@@ -9,6 +9,7 @@ import { getBrowserClient } from '../../supabase/client';
 import { useRef, useState, useEffect } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
 import UserInput from './UserInput';
+import Test from './Test';
 
 type ChatProps = {
   maestro: CodeMaestro;
@@ -83,6 +84,8 @@ export default function Chat({ maestro, user, pastMessages }: ChatProps) {
   }
   useEffect(scrollToBottom, [messages])
   // setInterval(scrollToBottom, 1000)
+
+  return <Test />
 
   return (
     <>
