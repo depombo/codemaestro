@@ -1,6 +1,6 @@
 'use client';
 
-import { getBrowserClient } from '@/app/supabase/client';
+import { getBrowserClient } from '@/lib/supabase/client';
 import { GitHub } from '@/components/icons';
 import Button from '@/components/ui/Button';
 import { getURL } from '@/utils/helpers';

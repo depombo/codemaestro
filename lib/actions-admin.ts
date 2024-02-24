@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/app/supabase/server';
+import { supabaseAdmin } from '@/lib/supabase/server';
 import { toDateTime } from '../utils/helpers';
 import { stripe } from '../utils/stripe';
 import Stripe from 'stripe';

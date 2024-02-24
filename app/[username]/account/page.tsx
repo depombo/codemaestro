@@ -1,7 +1,7 @@
 
 import {
   getSession,
-} from '@/app/actions';
+} from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import Navbar from '@/components/ui/Navbar';
 import Account from './Account';

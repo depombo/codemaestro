@@ -3,7 +3,7 @@ import {
   getSession,
   getSubscription,
   getActiveProductsWithPrices
-} from '@/app/actions';
+} from '@/lib/actions';
 import Navbar from '@/components/ui/Navbar';
 
 export default async function PricingPage() {

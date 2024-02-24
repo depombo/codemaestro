@@ -6,7 +6,7 @@ import {
   getUserDetails,
   getSubscription,
   updateUsername
-} from '@/app/actions';
+} from '@/lib/actions';
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';

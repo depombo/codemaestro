@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 
 import type { NextRequest } from 'next/server'
-import { getServerClient } from '@/app/supabase/server';
-import { getSession, getUserDetails, } from '@/app/actions';
+import { getServerClient } from '@/lib/supabase/server';
+import { getSession, getUserDetails, } from '@/lib/actions';
 
 export async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url)

@@ -4,8 +4,8 @@ import {
   Message,
   CodeMaestro,
   User,
-} from '@/app/actions';
-import { getBrowserClient } from '../../supabase/client';
+} from '@/lib/actions';
+import { getBrowserClient } from '@/lib/supabase/client';
 import { useRef, useState, useEffect } from 'react';
 import { MaestroMessage, UserMessage } from './Message';
 import UserInput from './UserInput';

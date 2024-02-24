@@ -2,7 +2,7 @@
 import {
   getMaestros,
   getUserDetails,
-} from '@/app/actions';
+} from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import MaestroList from './MaestroList';
 import Navbar from '@/components/ui/Navbar';

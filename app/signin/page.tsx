@@ -1,4 +1,4 @@
-import { getSession, getUserDetails } from '@/app/actions';
+import { getSession, getUserDetails } from '@/lib/actions';
 import AuthUI from './AuthUI';
 
 import { redirect } from 'next/navigation';

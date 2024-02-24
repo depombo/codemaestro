@@ -2,7 +2,7 @@ import {
   getMessages,
   getUserDetails,
   getMaestro,
-} from '@/app/actions';
+} from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import Chat from './Chat';
 import Navbar from '@/components/ui/Navbar';

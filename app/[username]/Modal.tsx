@@ -6,7 +6,7 @@ import {
   deleteMaestro,
   ContextSource,
   deleteSource,
-} from '@/app/actions';
+} from '@/lib/actions';
 import { Logo } from '@/components/icons';
 import Link from 'next/link';
 import React, { ReactNode } from 'react';

@@ -1,6 +1,6 @@
 'use client';
 
-import { Message } from '@/app/actions';
+import { Message } from '@/lib/actions';
 import { IconBookmark, IconBookmarkFilled, TrashOutline } from '@/components/icons';
 import { useState } from 'react';
 

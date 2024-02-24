@@ -18,7 +18,7 @@ import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
   CodeMaestro,
   Message,
-} from '@/app/actions';
+} from '@/lib/actions';
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import { getStore } from "./embeddings";
 

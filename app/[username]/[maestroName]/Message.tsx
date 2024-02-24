@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus as style } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { MessageFooter } from './MessageFooter';
-import { Message } from '@/app/actions';
+import { Message } from '@/lib/actions';
 
 // https://www.mozzlog.com/blog/fix-react-markdown-tailwindcss-nextjs
 // https://www.mozzlog.com/blog/react-markdown-custom-renderer
