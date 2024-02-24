@@ -12,7 +12,7 @@ import {
   CodeMaestro,
   getUserDetails,
   updateGithubTokens,
-} from '@/app/actions';
+} from '@/app/lib/actions';
 import { getServerClient } from "./supabase/server";
 
 // https://js.langchain.com/docs/integrations/vectorstores/supabase

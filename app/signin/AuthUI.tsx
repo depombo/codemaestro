@@ -1,8 +1,8 @@
 'use client';
 
-import { getBrowserClient } from '@/app/supabase/client';
-import { GitHub } from '@/components/icons';
-import Button from '@/components/ui/Button';
+import { getBrowserClient } from '@/app/lib/supabase/client';
+import { GitHub } from '@/app/components/icons';
+import Button from '@/app/components/ui/Button';
 import { getURL } from '@/utils/helpers';
 
 // https://supabase.com/docs/guides/auth/social-login/auth-github

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import { Logo, GitHub } from '@/components/icons';
+import { Logo, GitHub } from '@/app/components/icons';
 
 export default function Footer() {
   return (

@@ -4,7 +4,7 @@ import {
   upsertProductRecord,
   upsertPriceRecord,
   manageSubscriptionStatusChange
-} from '@/app/actions-admin';
+} from '@/app/lib/actions-admin';
 
 const relevantEvents = new Set([
   'product.created',

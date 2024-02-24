@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/components/ui/Button';
+import Button from '@/app/components/ui/Button';
 
 export default async function ManageGithubButton() {
   const openWindow = async () => {

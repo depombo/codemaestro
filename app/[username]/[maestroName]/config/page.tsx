@@ -1,12 +1,12 @@
-import Navbar from "@/components/ui/Navbar";
+import Navbar from "@/app/components/ui/Navbar";
 import { ModelSelect } from "./ModelSelect";
-import { getMaestro, } from "@/app/actions";
+import { getMaestro, } from "@/app/lib/actions";
 import { SearchParams } from '@/utils/helpers';
 import { DeleteConfirmationMaestroModal, CreateCtxSrcModal, DeleteConfirmationSourceModal } from "../../Modal";
 import Link from "next/link";
-import Button from "@/components/ui/Button";
-import Card from "@/components/ui/Card";
-import { GitHub } from "@/components/icons";
+import Button from "@/app/components/ui/Button";
+import Card from "@/app/components/ui/Card";
+import { GitHub } from "@/app/components/icons";
 
 type ConfigProps = {
   params: { username: string, maestroName: string };
