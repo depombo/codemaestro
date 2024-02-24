@@ -3,7 +3,7 @@
 import Button from '@/components/ui/Button';
 import React, { useState, useRef, FormEvent } from 'react';
 
-import { CodeMaestro, Message, messageMaestro } from '../../../lib/actions';
+import { CodeMaestro, Message, messageMaestro } from '@/lib/actions';
 import { getBrowserClient } from '@/lib/supabase/client';
 import { usePathname } from 'next/navigation';
 
