@@ -1,7 +1,7 @@
 'use client';
 
-import { Message } from '@/app/lib/actions';
-import { IconBookmark, IconBookmarkFilled, TrashOutline } from '@/app/components/icons';
+import { Message } from '@/lib/actions';
+import { IconBookmark, IconBookmarkFilled, TrashOutline } from '@/components/icons';
 import { useState } from 'react';
 
 // const BookmarkMessage = ({ msg }: { msg: Message }) => {

@@ -2,10 +2,10 @@
 import {
   getMaestros,
   getUserDetails,
-} from '@/app/lib/actions';
+} from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import MaestroList from './MaestroList';
-import Navbar from '@/app/components/ui/Navbar';
+import Navbar from '@/components/ui/Navbar';
 import { SearchParams } from '@/utils/helpers';
 
 type Props = {

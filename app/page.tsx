@@ -1,5 +1,5 @@
-import Button from "@/app/components/ui/Button";
-import Navbar from "@/app/components/ui/Navbar";
+import Button from "@/components/ui/Button";
+import Navbar from "@/components/ui/Navbar";
 import Link from "next/link";
 
 export default async function Homepage() {

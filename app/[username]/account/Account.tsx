@@ -6,14 +6,14 @@ import {
   getUserDetails,
   getSubscription,
   updateUsername
-} from '@/app/lib/actions';
-import Button from '@/app/components/ui/Button';
+} from '@/lib/actions';
+import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { Stripe, GitHub } from '@/app/components/icons';
+import { Stripe, GitHub } from '@/components/icons';
 import ManageGithubButton from './ManageGithubButton';
-import Card from '@/app/components/ui/Card';
+import Card from '@/components/ui/Card';
 
 export default async function Settings() {
 

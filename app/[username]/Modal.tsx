@@ -1,4 +1,4 @@
-import Button from '@/app/components/ui/Button';
+import Button from '@/components/ui/Button';
 import {
   CodeMaestro,
   createMaestro,
@@ -6,8 +6,8 @@ import {
   deleteMaestro,
   ContextSource,
   deleteSource,
-} from '@/app/lib/actions';
-import { Logo } from '@/app/components/icons';
+} from '@/lib/actions';
+import { Logo } from '@/components/icons';
 import Link from 'next/link';
 import React, { ReactNode } from 'react';
 

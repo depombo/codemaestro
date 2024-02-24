@@ -1,7 +1,7 @@
 'use client';
 
-import { getBrowserClient } from '@/app/lib/supabase/client';
-import Button from '@/app/components/ui/Button';
+import { getBrowserClient } from '@/lib/supabase/client';
+import Button from '@/components/ui/Button';
 import { useRouter } from 'next/navigation';
 
 export default async function SignOutButton() {

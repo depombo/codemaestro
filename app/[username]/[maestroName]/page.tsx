@@ -2,10 +2,10 @@ import {
   getMessages,
   getUserDetails,
   getMaestro,
-} from '@/app/lib/actions';
+} from '@/lib/actions';
 import { redirect } from 'next/navigation';
 import Chat from './Chat';
-import Navbar from '@/app/components/ui/Navbar';
+import Navbar from '@/components/ui/Navbar';
 
 type ChatPageProps = {
   params: { maestroName: string, username: string };

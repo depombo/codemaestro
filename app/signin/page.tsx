@@ -1,9 +1,9 @@
-import { getSession, getUserDetails } from '@/app/lib/actions';
+import { getSession, getUserDetails } from '@/lib/actions';
 import AuthUI from './AuthUI';
 
 import { redirect } from 'next/navigation';
-import { Logo } from '@/app/components/icons';
-import Navbar from '@/app/components/ui/Navbar';
+import { Logo } from '@/components/icons';
+import Navbar from '@/components/ui/Navbar';
 
 export default async function SignIn() {
   const session = await getSession();

@@ -1,8 +1,8 @@
 import Link from 'next/link';
 import {
   getUserDetails
-} from '@/app/lib/actions';
-import { IconSeparator, Logo } from '@/app/components/icons';
+} from '@/lib/actions';
+import { IconSeparator, Logo } from '@/components/icons';
 
 import s from './Navbar.module.css';
 import TabbedButton from '../TabbedButton';

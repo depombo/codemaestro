@@ -1,10 +1,10 @@
-import Pricing from '@/app/components/Pricing';
+import Pricing from '@/components/Pricing';
 import {
   getSession,
   getSubscription,
   getActiveProductsWithPrices
-} from '@/app/lib/actions';
-import Navbar from '@/app/components/ui/Navbar';
+} from '@/lib/actions';
+import Navbar from '@/components/ui/Navbar';
 
 export default async function PricingPage() {
   const [session, products, subscription] = await Promise.all([

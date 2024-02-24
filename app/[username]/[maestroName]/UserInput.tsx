@@ -1,10 +1,10 @@
 'use client'
 
-import Button from '@/app/components/ui/Button';
+import Button from '@/components/ui/Button';
 import React, { useState, useRef, FormEvent } from 'react';
 
-import { CodeMaestro, Message, messageMaestro } from '../../lib/actions';
-import { getBrowserClient } from '@/app/lib/supabase/client';
+import { CodeMaestro, Message, messageMaestro } from '../../../lib/actions';
+import { getBrowserClient } from '@/lib/supabase/client';
 import { usePathname } from 'next/navigation';
 
 type UserInputProps = {

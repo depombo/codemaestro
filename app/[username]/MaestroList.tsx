@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import React from 'react';
 import { NewMaestroModal, } from './Modal';
-import { CodeMaestro, maestroNamePath } from '../lib/actions';
-import Button from '@/app/components/ui/Button';
-import { GitHub, } from '@/app/components/icons';
+import { CodeMaestro, maestroNamePath } from '../../lib/actions';
+import Button from '@/components/ui/Button';
+import { GitHub, } from '@/components/icons';
 import { SearchParams } from '@/utils/helpers';
 
 const SourceDisplay = ({ url }: { url: string }) => {

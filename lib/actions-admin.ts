@@ -1,6 +1,6 @@
-import { supabaseAdmin } from '@/app/lib/supabase/server';
-import { toDateTime } from '../../utils/helpers';
-import { stripe } from '../../utils/stripe';
+import { supabaseAdmin } from '@/lib/supabase/server';
+import { toDateTime } from '../utils/helpers';
+import { stripe } from '../utils/stripe';
 import Stripe from 'stripe';
 import type { Database } from 'types_db';
 

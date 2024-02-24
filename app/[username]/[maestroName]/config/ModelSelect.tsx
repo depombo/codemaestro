@@ -1,7 +1,7 @@
 'use client';
 
-import { CodeMaestro, ModelName, updateMaestroModel } from '@/app/lib/actions';
-import Selector from '@/app/components/ui/Selector';
+import { CodeMaestro, ModelName, updateMaestroModel } from '@/lib/actions';
+import Selector from '@/components/ui/Selector';
 import { usePathname } from 'next/navigation';
 import React, { useState } from 'react';
 
